@@ -24,13 +24,6 @@ def register():
                 "username": "parid",
                 "password": "1",
                 "grant_type": "password",
-                "credentials": [
-                    {
-                        "type": "password",
-                        "value": password,
-                        "temporary": False
-                    }
-                ]
             },
             headers={
                 "Content-Type": "application/x-www-form-urlencoded"
