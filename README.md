@@ -57,4 +57,5 @@ After than we use the token received to create the second request which creates 
         )
 ```
 
-If everything works perfectly fine and receive a 200 status code, we return  a json with `success:
+If everything works perfectly fine and receive a 200 status code, we return  a json with `success:True`.
+If we receive a status code of 409, means that with the credentials given, a user exists.
