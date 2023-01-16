@@ -4,6 +4,7 @@ from flask_cors import CORS
 import smtplib
 
 app = Flask(__name__)
+app.config['DEBUG'] = True
 CORS(app)
 
 
@@ -76,6 +77,26 @@ def register():
 
         # # end the SMTP session
         # server.quit()
+
+        # Step 4: Create a new client for the user
+
+        create_client_request = requests.post(
+            "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+            json={
+                "clientId": username,
+                "enabled": True,
+                # This is the URL of the Keycloak
+                "redirectUris": ["http://localhost:8080/*"],
+                "webOrigins": ["*"],
+                "protocol": "openid-connect",
+                "bearerOnly": False
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_client_request.raise_for_status()
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
