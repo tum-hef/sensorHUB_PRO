@@ -8,6 +8,14 @@ app.config['DEBUG'] = True
 CORS(app)
 
 
+def get_max_frost(arr):
+    frost_nums = list(filter(lambda x: x.startswith("frost_"), arr))
+    if not frost_nums:
+        return 0
+    max_num = max(frost_nums, key=lambda x: int(x.split("_")[1]))
+    return int(max_num.split("_")[1]) + 1
+
+
 @app.route("/register", methods=["POST"])
 def register():
     firstName = request.json.get("firstName")
@@ -50,7 +58,7 @@ def register():
                         "temporary": False
                     }
                 ],
-                "username": username,
+                "username": email,
                 "enabled": True
             },
             headers={
@@ -78,12 +86,29 @@ def register():
         # # end the SMTP session
         # server.quit()
 
-        # Step 4: Create a new client for the user
+        # Step 4: GET ALL THE CLIENTS and generate new client id
+
+        get_clients_request = requests.get(
+            "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_clients_request.raise_for_status()
+
+        clients = get_clients_request.json()
+        clientIds = [client["clientId"] for client in clients]
+        # Generate new client id
+        new_clientId = f"frost_{get_max_frost(clientIds)}"
+
+        # Step 5: Generate new client
 
         create_client_request = requests.post(
             "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
             json={
-                "clientId": username,
+                "clientId": new_clientId,
                 "enabled": True,
                 # This is the URL of the Keycloak
                 "redirectUris": ["http://localhost:8080/*"],
@@ -97,6 +122,7 @@ def register():
             })
 
         create_client_request.raise_for_status()
+        print(new_clientId, flush=True)
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
