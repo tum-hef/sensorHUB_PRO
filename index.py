@@ -122,7 +122,71 @@ def register():
             })
 
         create_client_request.raise_for_status()
+
+        # Step 6: Get the client id of the new client
+
+        get_client_request = requests.get(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients?clientId={new_clientId}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_client_request.raise_for_status()
+        client_id = get_client_request.json()[0]["id"]
+
+        # STEP 7: Create role for the new client
+
         print(new_clientId, flush=True)
+
+        create_role_admin_request = requests.post(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            json={
+                "name": "admin"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_admin_request.raise_for_status()
+
+        create_role_read_request = requests.post(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            json={
+                "name": "read"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_read_request.raise_for_status()
+
+        create_role_create_request = requests.post(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            json={
+                "name": "create"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_create_request.raise_for_status()
+
+        create_role_delete_request = requests.post(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            json={
+                "name": "delete"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_delete_request.raise_for_status()
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
