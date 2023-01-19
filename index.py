@@ -138,8 +138,6 @@ def register():
 
         # STEP 7: Create role for the new client
 
-        print(new_clientId, flush=True)
-
         create_role_admin_request = requests.post(
             f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
             json={
@@ -187,6 +185,43 @@ def register():
             })
 
         create_role_delete_request.raise_for_status()
+
+        # Step 8 : Get the user id of the new user
+
+        get_user_request = requests.get(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/users?username={username}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_user_request.raise_for_status()
+
+        user_id = get_user_request.json()[0]["id"]
+
+        # Step 9: GET Role ID where role name is admin, read, create, delete for the new client
+
+        get_role_new_client_request = requests.get(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_role_new_client_request.raise_for_status()
+
+        role_mapping_request = requests.post(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id}",
+            json=get_role_new_client_request.json(),
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        role_mapping_request.raise_for_status()
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
