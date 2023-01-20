@@ -222,7 +222,7 @@ def register():
         # Step 8 : Get the user id of the new user
 
         get_user_request = requests.get(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/users?username={username}",
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/users?username={email}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
