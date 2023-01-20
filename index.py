@@ -121,10 +121,44 @@ def register():
                 "Content-Type": "application/json"
             })
 
+        # check if request returns 409 status code
+        if create_client_request.status_code == 409:
+            while create_client_request.status_code == 409:
+                get_clients_request = requests.get(
+                    "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json"
+                    }
+                )
+
+                get_clients_request.raise_for_status()
+
+                clients = get_clients_request.json()
+                clientIds = [client["clientId"] for client in clients]
+                print(clientIds)
+                # Generate new client id
+                new_clientId = f"frost_{get_max_frost(clientIds)}"
+
+                create_client_request = requests.post(
+                    "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+                    json={
+                        "clientId": new_clientId,
+                        "enabled": True,
+                        # This is the URL of the Keycloak
+                        "redirectUris": ["http://localhost:8080/*"],
+                        "webOrigins": ["*"],
+                        "protocol": "openid-connect",
+                        "bearerOnly": False
+                    },
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json"
+                    })
+
         create_client_request.raise_for_status()
 
         # Step 6: Get the client id of the new client
-
         get_client_request = requests.get(
             f"http://localhost:8080/admin/realms/keycloak-react-auth/clients?clientId={new_clientId}",
             headers={
@@ -137,7 +171,6 @@ def register():
         client_id = get_client_request.json()[0]["id"]
 
         # STEP 7: Create role for the new client
-
         create_role_admin_request = requests.post(
             f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
             json={
@@ -225,7 +258,7 @@ def register():
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
-        print(err.response.json())
+        print(err)
 
         if err.response.status_code == 409:
             errorText = err.response.json()["errorMessage"]
