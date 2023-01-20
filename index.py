@@ -16,6 +16,47 @@ def get_max_frost(arr):
     return int(max_num.split("_")[1]) + 1
 
 
+def generateYML(clientID, port, clientSecret):
+    yml_template = """
+    version: '3'
+    name: {clientID}
+    services:
+      web:
+        image: fraunhoferiosb/frost-server:latest
+        environment:
+          - serviceRootUrl=http://138.246.225.0:{port}/FROST-Server
+          - http_cors_enable=true
+          - http_cors_allowed.origins=*
+          - persistence_db_driver=org.postgresql.Driver
+          - persistence_db_url=jdbc:postgresql://database:5432/sensorthings
+          - persistence_db_username=sensorthings
+          - persistence_db_password=ChangeMe
+          - persistence_autoUpdateDatabase=true
+          - persistence_alwaysOrderbyId=true
+          - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
+          - auth.keycloakConfigUrl=http://tuzehez-hefiot.srv.mwn.de:8080/auth/realms/master/clients-registrations/install/{clientID}
+          - auth.keycloakConfigSecret={clientSecret}
+        ports:
+          - {port}:8080
+          - 1890:1883
+        depends_on:
+          - database
+        restart: always
+      database:
+        image: postgis/postgis:11-2.5-alpine
+        environment:
+          - POSTGRES_DB=sensorthings
+          - POSTGRES_USER=sensorthings
+          - POSTGRES_PASSWORD=ChangeMe
+        volumes:
+          - postgis_volume:/var/lib/postgresql/data
+        restart: always
+    volumes:
+        postgis_volume:
+    """
+    return yml_template.format(clientID=clientID, port=port, clientSecret=clientSecret)
+
+
 @app.route("/register", methods=["POST"])
 def register():
     firstName = request.json.get("firstName")
@@ -101,7 +142,8 @@ def register():
         clients = get_clients_request.json()
         clientIds = [client["clientId"] for client in clients]
         # Generate new client id
-        new_clientId = f"frost_{get_max_frost(clientIds)}"
+        new_clientIDNumber = get_max_frost(clientIds)
+        new_clientId = f"frost_{new_clientIDNumber}"
 
         # Step 5: Generate new client
 
@@ -110,6 +152,7 @@ def register():
             json={
                 "clientId": new_clientId,
                 "enabled": True,
+                "publicClient": False,  # Access type: confidential
                 # This is the URL of the Keycloak
                 "redirectUris": ["http://localhost:8080/*"],
                 "webOrigins": ["*"],
@@ -136,9 +179,9 @@ def register():
 
                 clients = get_clients_request.json()
                 clientIds = [client["clientId"] for client in clients]
-                print(clientIds)
-                # Generate new client id
-                new_clientId = f"frost_{get_max_frost(clientIds)}"
+
+                new_clientIDNumber = get_max_frost(clientIds)
+                new_clientId = f"frost_{new_clientIDNumber}"
 
                 create_client_request = requests.post(
                     "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
@@ -255,6 +298,27 @@ def register():
         )
 
         role_mapping_request.raise_for_status()
+
+        # Step 10 : GET CLIENT Secret of the new client
+
+        get_client_secret_request = requests.get(
+            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_client_secret_request.raise_for_status()
+        client_secret = get_client_secret_request.json()["value"]
+
+        # Step 11 : Generate new YML Template
+
+        PORT = 6000
+        clientPORT = PORT+new_clientIDNumber
+
+        new_yml_template = generateYML(
+            new_clientId, clientPORT, client_secret)  # YML Template Content
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
