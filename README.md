@@ -4,6 +4,8 @@
 The script is designed to interact with a local Keycloak server to perform various actions (Currently creating new user, client, roles, and role-mapping)
 
 1) **POST** - */register*
+
+
 When a user makes a POST request to the endpoint "/register" with a JSON payload containing their first name, last name, email, username, and password, the following process occurs:
 
  - The script makes a POST request to the endpoint
