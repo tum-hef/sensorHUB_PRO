@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
+import re
 import smtplib
 
 app = Flask(__name__)
@@ -16,7 +17,7 @@ def get_max_frost(arr):
     return int(max_num.split("_")[1]) + 1
 
 
-def generateYML(clientID, port, clientSecret):
+def generateYML(clientID, port, secondPort, clientSecret):
     yml_template = """
     version: '3'
     name: {clientID}
@@ -38,7 +39,7 @@ def generateYML(clientID, port, clientSecret):
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
-          - 1890:1883
+          - {secondPort}:1883
         depends_on:
           - database
         restart: always
@@ -54,7 +55,19 @@ def generateYML(clientID, port, clientSecret):
     volumes:
         postgis_volume:
     """
-    return yml_template.format(clientID=clientID, port=port, clientSecret=clientSecret)
+    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret)
+
+
+def verifyTUMresponseString(response):
+    if (not response):
+        return jsonify(success=False, error="Error in TUM Verification Response"), 500
+    match = re.search(r'cn=(\w+),', response)
+    if match:
+        print(match.group(1), flush=True)
+        return True
+    else:
+        print("No match found.", flush=True)
+        return False
 
 
 @app.route("/register", methods=["POST"])
@@ -182,6 +195,7 @@ def register():
 
                 new_clientIDNumber = get_max_frost(clientIds)
                 new_clientId = f"frost_{new_clientIDNumber}"
+                print(new_clientId, flush=True)
 
                 create_client_request = requests.post(
                     "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
@@ -315,11 +329,15 @@ def register():
         # Step 11 : Generate new YML Template
 
         PORT = 6000
+        SECONDPORT = 1890
+
         clientPORT = PORT+new_clientIDNumber
+        internalPORT = SECONDPORT+new_clientIDNumber
 
         new_yml_template = generateYML(
-            new_clientId, clientPORT, client_secret)  # YML Template Content
+            new_clientId, clientPORT, internalPORT, client_secret)  # YML Template Content
 
+        print(new_yml_template, flush=True)
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
         print(err)
