@@ -88,7 +88,7 @@ Please note that authentication via LDAP is not a recommended method, especially
     - You will then be asked to enter the old password twice, then the new password twice, and then again to enter and confirm the old password once.
 
 - Request/verify mail-adresse or others with ldapsearch:
-```ldapsearch -H "ldaps://iauth.tum.de/" -D "cn=LDAP-USERNAME-HERE,ou=bindDNs,ou=iauth,dc=tum,dc=de" -b "ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de" -W (&(imAffiliation=member)(imEmailAdressen=david.gackstetter@tum.de))"```
+```ldapsearch -H "ldaps://iauth.tum.de/" -D "cn=LDAP-USERNAME-HERE,ou=bindDNs,ou=iauth,dc=tum,dc=de" -b "ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de" -W "(&(imAffiliation=member)(imEmailAdressen=david.gackstetter@tum.de))"```
 
     - imAffiliation may be either student or member
     
