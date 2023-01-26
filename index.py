@@ -378,8 +378,12 @@ def register():
             return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
 
         command1 = ["docker", "exec", container_node_red_id, "bash", "-c",
-                    "cd node_modules && npm install passport-keycloak-oauth2-oidc"]
+                    "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
+
         com1 = subprocess.run(command1)
+        if com1.returncode != 0:
+            return jsonify(success=False, error="Error when installing passport-keycloak-oauth2-oidc"), 500
+        print(com1, flush=True)
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
