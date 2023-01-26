@@ -3,6 +3,7 @@ import requests
 from flask_cors import CORS
 import re
 import smtplib
+import subprocess
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -83,7 +84,7 @@ def register():
     try:
         # Step 1: Get access token
         token_request = requests.post(
-            "http://localhost:8080/realms/keycloak-react-auth/protocol/openid-connect/token",
+            "http://localhost:8080/auth/realms/keycloak-react-auth/protocol/openid-connect/token",
             data={
                 "client_id": "react",
                 "username": "parid",
@@ -100,7 +101,7 @@ def register():
 
         # Step 2: Create user
         create_user_request = requests.post(
-            "http://localhost:8080/admin/realms/keycloak-react-auth/users",
+            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/users",
             json={
                 "firstName": firstName,
                 "lastName": lastName,
@@ -143,7 +144,7 @@ def register():
         # Step 4: GET ALL THE CLIENTS and generate new client id
 
         get_clients_request = requests.get(
-            "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -161,7 +162,7 @@ def register():
         # Step 5: Generate new client
 
         create_client_request = requests.post(
-            "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
             json={
                 "clientId": new_clientId,
                 "enabled": True,
@@ -181,7 +182,7 @@ def register():
         if create_client_request.status_code == 409:
             while create_client_request.status_code == 409:
                 get_clients_request = requests.get(
-                    "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+                    "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
                     headers={
                         "Authorization": f"Bearer {access_token}",
                         "Content-Type": "application/json"
@@ -198,7 +199,7 @@ def register():
                 print(new_clientId, flush=True)
 
                 create_client_request = requests.post(
-                    "http://localhost:8080/admin/realms/keycloak-react-auth/clients",
+                    "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
                     json={
                         "clientId": new_clientId,
                         "enabled": True,
@@ -217,7 +218,7 @@ def register():
 
         # Step 6: Get the client id of the new client
         get_client_request = requests.get(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients?clientId={new_clientId}",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients?clientId={new_clientId}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -229,7 +230,7 @@ def register():
 
         # STEP 7: Create role for the new client
         create_role_admin_request = requests.post(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
             json={
                 "name": "admin"
             },
@@ -241,7 +242,7 @@ def register():
         create_role_admin_request.raise_for_status()
 
         create_role_read_request = requests.post(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
             json={
                 "name": "read"
             },
@@ -253,7 +254,7 @@ def register():
         create_role_read_request.raise_for_status()
 
         create_role_create_request = requests.post(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
             json={
                 "name": "create"
             },
@@ -265,7 +266,7 @@ def register():
         create_role_create_request.raise_for_status()
 
         create_role_delete_request = requests.post(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
             json={
                 "name": "delete"
             },
@@ -279,7 +280,7 @@ def register():
         # Step 8 : Get the user id of the new user
 
         get_user_request = requests.get(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/users?username={email}",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users?username={email}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -293,7 +294,7 @@ def register():
         # Step 9: GET Role ID where role name is admin, read, create, delete for the new client
 
         get_role_new_client_request = requests.get(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -303,7 +304,7 @@ def register():
         get_role_new_client_request.raise_for_status()
 
         role_mapping_request = requests.post(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id}",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id}",
             json=get_role_new_client_request.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -316,7 +317,7 @@ def register():
         # Step 10 : GET CLIENT Secret of the new client
 
         get_client_secret_request = requests.get(
-            f"http://localhost:8080/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -338,6 +339,21 @@ def register():
             new_clientId, clientPORT, internalPORT, client_secret)  # YML Template Content
 
         print(new_yml_template, flush=True)
+        # Create a new file in the yml folder with the new client id as the file name using the new yml template
+        with open(f"yml_files/{new_clientId}.yml", "w") as f:
+            f.write(new_yml_template)
+
+        # Step 12 : Run the new yml file using docker-compose
+
+        subprocess_run_frost = subprocess.run(
+            ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+
+        print(subprocess_run_frost, flush=True)
+
+        # Check if any error occurs when running the new yml file
+        if subprocess_run_frost.returncode != 0:
+            return jsonify(success=False, error="Error when running the new yml file"), 500
+
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
         print(err)
