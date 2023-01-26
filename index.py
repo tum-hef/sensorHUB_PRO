@@ -4,10 +4,17 @@ from flask_cors import CORS
 import re
 import smtplib
 import subprocess
+import os
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app)
+
+
+def get_container_id(container_name):
+    command = f"docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
+    output = subprocess.run(command, shell=True, capture_output=True)
+    return output.stdout.decode().strip()
 
 
 def get_max_frost(arr):
@@ -345,14 +352,34 @@ def register():
 
         # Step 12 : Run the new yml file using docker-compose
 
-        subprocess_run_frost = subprocess.run(
-            ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        # subprocess_run_frost = subprocess.run(
+        #     ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
-        print(subprocess_run_frost, flush=True)
+        # print(subprocess_run_frost, flush=True)
 
-        # Check if any error occurs when running the new yml file
-        if subprocess_run_frost.returncode != 0:
-            return jsonify(success=False, error="Error when running the new yml file"), 500
+        # # Check if any error occurs when running the new yml file
+        # if subprocess_run_frost.returncode != 0:
+        #     return jsonify(success=False, error="Error when running the new yml file"), 500
+
+        # Step 13 : docker run -it -p 20000:1880 -v node_red_data:/data --name test_nodered nodered/node-red
+
+        PORT_DEFAULT = 20000
+        new_node_red_port = PORT_DEFAULT+new_clientIDNumber
+        node_red_name = f"node_red_{new_clientIDNumber}"
+
+        command = f"docker run -d --init -p {new_node_red_port}:1880 -v node_red_data:/data --name {node_red_name} nodered/node-red"
+        os.system(command)
+
+        container_node_red_id = get_container_id(node_red_name)
+        container_node_red_id = container_node_red_id[1:-1]
+        print(container_node_red_id, flush=True)
+
+        if (not container_node_red_id):
+            return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
+
+        command1 = ["docker", "exec", container_node_red_id, "bash", "-c",
+                    "cd node_modules && npm install passport-keycloak-oauth2-oidc"]
+        com1 = subprocess.run(command1)
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
