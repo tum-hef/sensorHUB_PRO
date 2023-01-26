@@ -67,3 +67,29 @@ When a user makes a POST request to the endpoint "/register" with a JSON payload
    
 	  This script is designed to run on localhost and assumes that
    the Keycloak server is also running on localhost.
+   
+   
+## TUM-LDAP-request
+   
+### Overview
+The TUM directory service (LDAP) makes basic master and authentication data, such as name, e-mail or TUM identifier, available to authorized organizational units via an LDAP interface. This service was established as part of the IntegraTUM project under the name "MetaDirectory". With its help, the effort of the own user administration can be minimized.
+
+The authentication service can be used to authenticate persons who are registered in the directory service. The current group of persons includes all persons active in TUMonline with TUM identification, i.e. employees, students, guests and alumni of TUM. Applicants are available from the time of acceptance.
+
+Please note that authentication via LDAP is not a recommended method, especially for web applications. We strongly recommend the use of SAML2 via Shibboleth Login (or OAuth2 Login) and require a compelling written justification otherwise. New use cases must be limited to using the LDAP Directory as a directory service.
+
+### Implement and use LDAP
+- Ask for username and password with HEF-admin
+	
+- Install ldap-utils on linux: ```apt install ldap-utils```
+- Change password: 
+    - https://wiki.tum.de/pages/viewpage.action?pageId=20881370
+    - ```ldappasswd -A -S -W -H "ldaps://iauth.tum.de:636" -D "cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de"```
+    - You will then be asked to enter the old password twice, then the new password twice, and then again to enter and confirm the old password once.
+
+- Request/verify mail-adresse or others with ldapsearch:
+```ldapsearch -H "ldaps://iauth.tum.de/" -D "cn=LDAP-USERNAME-HERE,ou=bindDNs,ou=iauth,dc=tum,dc=de" -b "ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de" -W "(&(imAffiliation=member)(imEmailAdressen=david.gackstetter@tum.de))"```
+
+    - imAffiliation may be either student or member
+    
+   
