@@ -352,22 +352,23 @@ def register():
 
         # Step 12 : Run the new yml file using docker-compose
 
-        # subprocess_run_frost = subprocess.run(
-        #     ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        subprocess_run_frost = subprocess.run(
+            ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
-        # print(subprocess_run_frost, flush=True)
+        print(subprocess_run_frost, flush=True)
 
-        # # Check if any error occurs when running the new yml file
-        # if subprocess_run_frost.returncode != 0:
-        #     return jsonify(success=False, error="Error when running the new yml file"), 500
+        # Check if any error occurs when running the new yml file
+        if subprocess_run_frost.returncode != 0:
+            return jsonify(success=False, error="Error when running the new yml file"), 500
 
-        # Step 13 : docker run -it -p 20000:1880 -v node_red_data:/data --name test_nodered nodered/node-red
+        # Step 13 : Create a new node-red container for the new client
 
         PORT_DEFAULT = 20000
         new_node_red_port = PORT_DEFAULT+new_clientIDNumber
         node_red_name = f"node_red_{new_clientIDNumber}"
+        node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
 
-        command = f"docker run -d --init -p {new_node_red_port}:1880 -v node_red_data:/data --name {node_red_name} nodered/node-red"
+        command = f"docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
         os.system(command)
 
         container_node_red_id = get_container_id(node_red_name)
