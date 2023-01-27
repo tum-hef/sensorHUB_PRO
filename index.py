@@ -25,6 +25,14 @@ def get_max_frost(arr):
     return int(max_num.split("_")[1]) + 1
 
 
+def get_max_node_red(arr):
+    frost_nums = list(filter(lambda x: x.startswith("node_red_"), arr))
+    if not frost_nums:
+        return 0
+    max_num = max(frost_nums, key=lambda x: int(x.split("_")[1]))
+    return int(max_num.split("_")[1]) + 1
+
+
 def generateYML(clientID, port, secondPort, clientSecret):
     yml_template = """
     version: '3'
@@ -352,14 +360,14 @@ def register():
 
         # Step 12 : Run the new yml file using docker-compose
 
-        subprocess_run_frost = subprocess.run(
-            ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        # subprocess_run_frost = subprocess.run(
+        #     ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
-        print(subprocess_run_frost, flush=True)
+        # print(subprocess_run_frost, flush=True)
 
-        # Check if any error occurs when running the new yml file
-        if subprocess_run_frost.returncode != 0:
-            return jsonify(success=False, error="Error when running the new yml file"), 500
+        # # Check if any error occurs when running the new yml file
+        # if subprocess_run_frost.returncode != 0:
+        #     return jsonify(success=False, error="Error when running the new yml file"), 500
 
         # Step 13 : Create a new node-red container for the new client
 
@@ -368,8 +376,8 @@ def register():
         node_red_name = f"node_red_{new_clientIDNumber}"
         node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
 
-        command = f"docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
-        os.system(command)
+        command_create_node_red_instance = f"docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
+        os.system(command_create_node_red_instance)
 
         container_node_red_id = get_container_id(node_red_name)
         container_node_red_id = container_node_red_id[1:-1]
@@ -378,13 +386,150 @@ def register():
         if (not container_node_red_id):
             return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
 
-        command1 = ["docker", "exec", container_node_red_id, "bash", "-c",
-                    "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
+        # Step 14 : Create new node-red container and specify the data_storage-directory accordingly
 
-        com1 = subprocess.run(command1)
-        if com1.returncode != 0:
+        # command_node_red_creating_node_red_container_specifing_data_storage = ["docker", "run", "-d", "--restart", "always", "-p",
+        #                                                                        f"{new_node_red_port}:1880", "-v", f"{node_red_name_storage_name}:/data", "--name", f"{node_red_name}", "nodered/node-red"]
+
+        # command_red_node_specifying_data_storage = subprocess.run(
+        #     command_node_red_creating_node_red_container_specifing_data_storage)
+        # if command_red_node_specifying_data_storage.returncode != 0:
+        #     return jsonify(success=False, error="Error when running the new node-red container"), 500
+        # print(command_red_node_specifying_data_storage, flush=True)
+
+        # Step 15 : Install passport-keycloak-oauth2-oidc in the new node-red container
+
+        command_node_red_dependency_installation = ["docker", "exec", container_node_red_id, "bash", "-c",
+                                                    "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
+
+        command_red_node = subprocess.run(
+            command_node_red_dependency_installation)
+        if command_red_node.returncode != 0:
             return jsonify(success=False, error="Error when installing passport-keycloak-oauth2-oidc"), 500
-        print(com1, flush=True)
+        print(command_red_node, flush=True)
+
+        # Step 16 : Create a new keycloak client in the new node-red
+
+        # step 16.1 : Get the max client id number in the new node-red and generate the new client id
+
+        new_clientIDNumber_node_red = new_clientIDNumber
+        new_clientId_node_red = f"node_red_{new_clientIDNumber_node_red}"
+
+        # Step 16.2 : Create the new client in the new node-red
+
+        create_client_request_node_red = requests.post(
+            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+            json={
+                "clientId": new_clientId_node_red,
+                "enabled": True,
+                "publicClient": False,  # Access type: confidential
+                # This is the URL of the Keycloak
+                "redirectUris": ["http://localhost:8080/*"],
+                "webOrigins": ["*"],
+                "protocol": "openid-connect",
+                "bearerOnly": False
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        # Step 16.3 check if returns 409 status code
+
+        if create_client_request_node_red.status_code == 409:
+            return jsonify(success=False, error="Client in Node Red already exists"), 409
+
+        create_client_request_node_red.raise_for_status()
+
+        # Step 16.4 : Get the client id of the new client
+
+        get_client_request_node_red = requests.get(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients?clientId={new_clientId_node_red}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        get_client_request_node_red.raise_for_status()
+        client_id_node_red = get_client_request_node_red.json()[0]["id"]
+
+        # Step 16.5 : Create role admin, read, create, delete in the new node-red client
+
+        create_role_admin_node_red = requests.post(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            json={
+                "name": "admin"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_admin_node_red.raise_for_status()
+
+        create_role_read_node_red = requests.post(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            json={
+                "name": "read"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_read_node_red.raise_for_status()
+
+        create_role_create_node_red = requests.post(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            json={
+                "name": "create"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_create_node_red.raise_for_status()
+
+        create_role_delete_node_red = requests.post(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            json={
+                "name": "delete"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_delete_node_red.raise_for_status()
+
+        # Step 16.6 get the role id of the role admin, read, create, delete
+
+        get_role_new_client_node_red = requests.get(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        get_role_new_client_node_red.raise_for_status()
+
+        # Step 16.7 : Do the role mapping for the new user
+
+        role_mapping_request_node_red = requests.post(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id_node_red}",
+            json=get_role_new_client_node_red.json(),
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        role_mapping_request_node_red.raise_for_status()
 
         return jsonify(success=True, message="User created successfully")
     except requests.exceptions.HTTPError as err:
@@ -396,6 +541,7 @@ def register():
         else:
             return jsonify(success=False, error="Server Error"), 500
     except Exception as err:
+        print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
 
 
