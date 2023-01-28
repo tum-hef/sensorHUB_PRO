@@ -86,6 +86,95 @@ def verifyTUMresponseString(response):
         return False
 
 
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL):
+    new_file_content = f"""
+    module.exports = {{
+        flowFile: 'flows.json',
+        flowFilePretty: true,
+        adminAuth: {{
+            type:"strategy",
+            strategy: {{
+                name: "keycloak",
+                label: 'Sign in',
+                icon:"fa-lock",
+                strategy: require("passport-keycloak-oauth2-oidc").Strategy,
+                options: {{
+                    clientID: "{clientID}",
+                    realm: 'master',
+                    publicClient: "false",
+                    clientSecret: "{clientSecret}",
+                    sslRequired: "external",
+                    authServerURL: "http://tuzehez-hefiot.srv.mwn.de:8080/auth",
+                    callbackURL: "{callbackURL}",
+                }},
+                verify: function(token, tokenSecret, profile, done) {{
+                    done(null, profile);
+                }}
+            }},
+            users: [
+               {{ username: "node-red-user1",permissions: ["*"]}}
+            ]
+        }},
+        uiPort: process.env.PORT || 1880,
+        diagnostics: {{
+            enabled: true,
+            ui: true,
+        }},
+        runtimeState: {{
+            enabled: false,
+            ui: false,
+        }},
+        logging: {{
+            console: {{
+                level: "info",
+                metrics: false,
+                audit: false
+            }}
+        }},
+        exportGlobalContextKeys: false,
+        externalModules: {{
+        }},
+        editorTheme: {{
+            palette: {{
+              
+            }},
+
+            projects: {{
+                enabled: false,
+                workflow: {{
+                    mode: "manual"
+                }}
+            }},
+            codeEditor: {{
+                lib: "monaco",
+                options: {{    
+                }}
+            }},
+        }},
+        functionExternalModules: true,
+        functionGlobalContext: {{
+        }},
+        debugMaxLength: 1000,
+        mqttReconnectTime: 15000,
+        serialReconnectTime: 15000,
+    }}
+    """
+    return new_file_content
+
+
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL):
+    directory = "\\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\{}\\_data".format(
+        node_red_storage)
+
+    os.chdir(directory)
+
+    new_file_content = create_node_red_new_settings_file(
+        clientID, clientSecret, callbackURL)
+
+    with open("settings.js", "w") as f:
+        f.write(new_file_content)
+
+
 @app.route("/register", methods=["POST"])
 def register():
     firstName = request.json.get("firstName")
@@ -351,23 +440,28 @@ def register():
         internalPORT = SECONDPORT+new_clientIDNumber
 
         new_yml_template = generateYML(
-            new_clientId, clientPORT, internalPORT, client_secret)  # YML Template Content
+            new_clientId, clientPORT, internalPORT, client_secret)
+
+        # store the new yml file in yml_files folder
 
         print(new_yml_template, flush=True)
-        # Create a new file in the yml folder with the new client id as the file name using the new yml template
-        with open(f"yml_files/{new_clientId}.yml", "w") as f:
+
+        file_path = os.path.join(
+            os.getcwd(), "yml_files", f"{new_clientId}.yml")
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w") as f:
             f.write(new_yml_template)
 
         # Step 12 : Run the new yml file using docker-compose
 
-        # subprocess_run_frost = subprocess.run(
-        #     ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        subprocess_run_frost = subprocess.run(
+            ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
-        # print(subprocess_run_frost, flush=True)
+        print(subprocess_run_frost, flush=True)
 
-        # # Check if any error occurs when running the new yml file
-        # if subprocess_run_frost.returncode != 0:
-        #     return jsonify(success=False, error="Error when running the new yml file"), 500
+        # Check if any error occurs when running the new yml file
+        if subprocess_run_frost.returncode != 0:
+            return jsonify(success=False, error="Error when running the new yml file"), 500
 
         # Step 13 : Create a new node-red container for the new client
 
@@ -531,7 +625,43 @@ def register():
 
         role_mapping_request_node_red.raise_for_status()
 
+    # call the function with the correct path to the folder
+        # replace_settings_js(
+        #     '\\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\node_red_storage_1\\_data')
+
+        # Step 16.8 : Create the secret
+
+        get_client_node_red_secret_request = requests.get(
+            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_client_node_red_secret_request.raise_for_status()
+        node_red_client_secret = get_client_secret_request.json()["value"]
+
+        replace_settings_file(node_red_name_storage_name,
+                              client_id_node_red, node_red_client_secret, "callbackURL")
+
+        # Step 16.9 : Restart the node-red container
+
+        restart_node_red_container = subprocess.run(
+            f"docker restart {container_node_red_id}", shell=True, check=True)
+
+        if restart_node_red_container.returncode != 0:
+            return jsonify(success=False, error="Server Error by restarting container"), 500
+
+        try:
+            subprocess.run(
+                f"cd \\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\{node_red_name_storage_name}", shell=True, check=True)
+            subprocess.run("dir", shell=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(e.stderr)
+
         return jsonify(success=True, message="User created successfully")
+
     except requests.exceptions.HTTPError as err:
         print(err)
 
