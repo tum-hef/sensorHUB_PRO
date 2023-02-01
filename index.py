@@ -12,8 +12,10 @@ CORS(app)
 
 
 def get_container_id(container_name):
-    command = f"docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
+    command = f"sudo docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
     output = subprocess.run(command, shell=True, capture_output=True)
+    if output.returncode != 0:
+        return jsonify(success=False, error="Error getting the container ID"), 500
     return output.stdout.decode().strip()
 
 
@@ -36,10 +38,10 @@ def get_max_node_red(arr):
 def generateYML(clientID, port, secondPort, clientSecret):
     yml_template = """
     version: '3'
-    name: {clientID}
     services:
       web:
         image: fraunhoferiosb/frost-server:latest
+        container_name: {clientID}
         environment:
           - serviceRootUrl=http://138.246.225.0:{port}/FROST-Server
           - http_cors_enable=true
@@ -61,6 +63,7 @@ def generateYML(clientID, port, secondPort, clientSecret):
         restart: always
       database:
         image: postgis/postgis:11-2.5-alpine
+        container_name: {clientID}_db
         environment:
           - POSTGRES_DB=sensorthings
           - POSTGRES_USER=sensorthings
@@ -86,21 +89,21 @@ def verifyTUMresponseString(response):
         return False
 
 
-def create_node_red_new_settings_file(clientID, clientSecret, callbackURL):
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,email):
     new_file_content = f"""
     module.exports = {{
-        flowFile: 'flows.json',
+        flowFile: "flows.json",
         flowFilePretty: true,
         adminAuth: {{
             type:"strategy",
             strategy: {{
                 name: "keycloak",
-                label: 'Sign in',
+                label: "Sign in",
                 icon:"fa-lock",
                 strategy: require("passport-keycloak-oauth2-oidc").Strategy,
                 options: {{
                     clientID: "{clientID}",
-                    realm: 'master',
+                    realm: "master",
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
@@ -112,7 +115,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL):
                 }}
             }},
             users: [
-               {{ username: "node-red-user1",permissions: ["*"]}}
+               {{ username: "{email}",permissions: ["*"]}}
             ]
         }},
         uiPort: process.env.PORT || 1880,
@@ -162,17 +165,13 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL):
     return new_file_content
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL):
-    directory = "\\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\{}\\_data".format(
-        node_red_storage)
-
-    os.chdir(directory)
-
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,email):
+    directory = "/var/lib/docker/volumes/{}/_data".format(node_red_storage)
     new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL)
+        clientID, clientSecret, callbackURL,email)
 
-    with open("settings.js", "w") as f:
-        f.write(new_file_content)
+    cmd = f"echo '{new_file_content}' | sudo tee {directory}/settings.js"
+    subprocess.run(cmd, shell=True)
 
 
 @app.route("/register", methods=["POST"])
@@ -454,8 +453,11 @@ def register():
 
         # Step 12 : Run the new yml file using docker-compose
 
+        print(new_clientId, flush=True)
+
         subprocess_run_frost = subprocess.run(
-            ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        ["sudo","docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+
 
         print(subprocess_run_frost, flush=True)
 
@@ -463,53 +465,56 @@ def register():
         if subprocess_run_frost.returncode != 0:
             return jsonify(success=False, error="Error when running the new yml file"), 500
 
-        # Step 13 : Create a new node-red container for the new client
 
+
+        # Step 13 : Create a new node-red container for the new client
+        
         PORT_DEFAULT = 20000
         new_node_red_port = PORT_DEFAULT+new_clientIDNumber
         node_red_name = f"node_red_{new_clientIDNumber}"
         node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
 
-        command_create_node_red_instance = f"docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
-        os.system(command_create_node_red_instance)
+        command_create_node_red_instance = f"sudo docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
+        result_command_create_new_node_instance = subprocess.run(command_create_node_red_instance, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        print(result_command_create_new_node_instance,flush=True)
+        if result_command_create_new_node_instance.returncode != 0:
+            return jsonify(success=False, error="Error Generating New Node Red Instance"), 500
 
         container_node_red_id = get_container_id(node_red_name)
-        container_node_red_id = container_node_red_id[1:-1]
+
+        print(node_red_name + "WASS ",flush=True)
+        print(container_node_red_id + " WASSS ",flush=True)
         print(container_node_red_id, flush=True)
 
         if (not container_node_red_id):
             return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
 
-        # Step 14 : Create new node-red container and specify the data_storage-directory accordingly
 
-        # command_node_red_creating_node_red_container_specifing_data_storage = ["docker", "run", "-d", "--restart", "always", "-p",
-        #                                                                        f"{new_node_red_port}:1880", "-v", f"{node_red_name_storage_name}:/data", "--name", f"{node_red_name}", "nodered/node-red"]
+        # Step 14 : Install passport-keycloak-oauth2-oidc in the new node-red container
 
-        # command_red_node_specifying_data_storage = subprocess.run(
-        #     command_node_red_creating_node_red_container_specifing_data_storage)
-        # if command_red_node_specifying_data_storage.returncode != 0:
-        #     return jsonify(success=False, error="Error when running the new node-red container"), 500
-        # print(command_red_node_specifying_data_storage, flush=True)
 
-        # Step 15 : Install passport-keycloak-oauth2-oidc in the new node-red container
 
-        command_node_red_dependency_installation = ["docker", "exec", container_node_red_id, "bash", "-c",
+        command_node_red_dependency_installation = ["sudo","docker", "exec", container_node_red_id, "bash", "-c",
                                                     "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
 
         command_red_node = subprocess.run(
             command_node_red_dependency_installation)
+        
+        print(command_red_node,flush=True)
+        
         if command_red_node.returncode != 0:
             return jsonify(success=False, error="Error when installing passport-keycloak-oauth2-oidc"), 500
         print(command_red_node, flush=True)
 
-        # Step 16 : Create a new keycloak client in the new node-red
+        # Step 15 : Create a new keycloak client in the new node-red
 
-        # step 16.1 : Get the max client id number in the new node-red and generate the new client id
+        # step 15.1 : Get the max client id number in the new node-red and generate the new client id
 
         new_clientIDNumber_node_red = new_clientIDNumber
         new_clientId_node_red = f"node_red_{new_clientIDNumber_node_red}"
 
-        # Step 16.2 : Create the new client in the new node-red
+        # Step 15.2 : Create the new client in the new node-red
 
         create_client_request_node_red = requests.post(
             "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
@@ -528,14 +533,14 @@ def register():
                 "Content-Type": "application/json"
             })
 
-        # Step 16.3 check if returns 409 status code
+        # Step 15.3 check if returns 409 status code
 
         if create_client_request_node_red.status_code == 409:
             return jsonify(success=False, error="Client in Node Red already exists"), 409
 
         create_client_request_node_red.raise_for_status()
 
-        # Step 16.4 : Get the client id of the new client
+        # Step 15.4 : Get the client id of the new client
 
         get_client_request_node_red = requests.get(
             f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients?clientId={new_clientId_node_red}",
@@ -547,7 +552,7 @@ def register():
         get_client_request_node_red.raise_for_status()
         client_id_node_red = get_client_request_node_red.json()[0]["id"]
 
-        # Step 16.5 : Create role admin, read, create, delete in the new node-red client
+        # Step 15.5 : Create role admin, read, create, delete in the new node-red client
 
         create_role_admin_node_red = requests.post(
             f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
@@ -601,7 +606,7 @@ def register():
 
         create_role_delete_node_red.raise_for_status()
 
-        # Step 16.6 get the role id of the role admin, read, create, delete
+        # Step 15.6 get the role id of the role admin, read, create, delete
 
         get_role_new_client_node_red = requests.get(
             f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
@@ -612,7 +617,7 @@ def register():
         )
         get_role_new_client_node_red.raise_for_status()
 
-        # Step 16.7 : Do the role mapping for the new user
+        # Step 15.7 : Do the role mapping for the new user
 
         role_mapping_request_node_red = requests.post(
             f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id_node_red}",
@@ -625,11 +630,8 @@ def register():
 
         role_mapping_request_node_red.raise_for_status()
 
-    # call the function with the correct path to the folder
-        # replace_settings_js(
-        #     '\\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\node_red_storage_1\\_data')
 
-        # Step 16.8 : Create the secret
+        # Step 15.8 : Create the secret
 
         get_client_node_red_secret_request = requests.get(
             f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
@@ -642,23 +644,22 @@ def register():
         get_client_node_red_secret_request.raise_for_status()
         node_red_client_secret = get_client_secret_request.json()["value"]
 
-        replace_settings_file(node_red_name_storage_name,
-                              client_id_node_red, node_red_client_secret, "callbackURL")
+        
 
-        # Step 16.9 : Restart the node-red container
+        replace_settings_file(node_red_name_storage_name,
+                              client_id_node_red, node_red_client_secret, "callbackURL",email)
+
+
+        # Step 15.9 : Restart the node-red container
 
         restart_node_red_container = subprocess.run(
-            f"docker restart {container_node_red_id}", shell=True, check=True)
+            f"sudo docker restart {container_node_red_id}", shell=True, check=True)
+        
+        print(restart_node_red_container,flush=True)
 
         if restart_node_red_container.returncode != 0:
             return jsonify(success=False, error="Server Error by restarting container"), 500
 
-        try:
-            subprocess.run(
-                f"cd \\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\{node_red_name_storage_name}", shell=True, check=True)
-            subprocess.run("dir", shell=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(e.stderr)
 
         return jsonify(success=True, message="User created successfully")
 
