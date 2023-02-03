@@ -89,7 +89,7 @@ def verifyTUMresponseString(response):
         return False
 
 
-def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,email):
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
     new_file_content = f"""
     module.exports = {{
         flowFile: "flows.json",
@@ -103,11 +103,11 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,email)
                 strategy: require("passport-keycloak-oauth2-oidc").Strategy,
                 options: {{
                     clientID: "{clientID}",
-                    realm: "master",
+                    realm: "{KEYCLOAK_REALM}",
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
-                    authServerURL: "http://tuzehez-hefiot.srv.mwn.de:8080/auth",
+                    authServerURL: "{KEYCLOAK_SERVER_URL}/auth",
                     callbackURL: "{callbackURL}",
                 }},
                 verify: function(token, tokenSecret, profile, done) {{
@@ -165,10 +165,10 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,email)
     return new_file_content
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,email):
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
     directory = "/var/lib/docker/volumes/{}/_data".format(node_red_storage)
     new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL,email)
+        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
 
     cmd = f"echo '{new_file_content}' | sudo tee {directory}/settings.js"
     subprocess.run(cmd, shell=True)
@@ -176,6 +176,24 @@ def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,
 
 @app.route("/register", methods=["POST"])
 def register():
+
+    KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+    KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+    KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+    KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+    KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+    KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+
+    if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM,KEYCLOAK_DOMAIN]):
+        return jsonify(success=False, error="One or more .env variable is missing"), 500
+
+    print(KEYCLOAK_SERVER_URL,flush=True)
+    print(KEYCLOAK_CLIENT_ID,flush=True)
+    print(KEYCLOAK_USERNAME,flush=True)
+    print(KEYCLOAK_PASSWORD,flush=True)
+    print(KEYCLOAK_REALM,flush=True)
+    print(KEYCLOAK_DOMAIN,flush=True)
+
     firstName = request.json.get("firstName")
     lastName = request.json.get("lastName")
     email = request.json.get("email")
@@ -187,16 +205,16 @@ def register():
     try:
         # Step 1: Get access token
         token_request = requests.post(
-            "http://localhost:8080/auth/realms/keycloak-react-auth/protocol/openid-connect/token",
-            data={
-                "client_id": "react",
-                "username": "parid",
-                "password": "1",
-                "grant_type": "password",
-            },
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
+        f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+        data={
+            "client_id": KEYCLOAK_CLIENT_ID,
+            "username": KEYCLOAK_USERNAME,
+            "password": KEYCLOAK_PASSWORD,
+            "grant_type": "password",
+        },
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
         )
 
         token_request.raise_for_status()
@@ -204,7 +222,7 @@ def register():
 
         # Step 2: Create user
         create_user_request = requests.post(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/users",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users",
             json={
                 "firstName": firstName,
                 "lastName": lastName,
@@ -247,7 +265,7 @@ def register():
         # Step 4: GET ALL THE CLIENTS and generate new client id
 
         get_clients_request = requests.get(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -265,13 +283,13 @@ def register():
         # Step 5: Generate new client
 
         create_client_request = requests.post(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             json={
                 "clientId": new_clientId,
                 "enabled": True,
                 "publicClient": False,  # Access type: confidential
                 # This is the URL of the Keycloak
-                "redirectUris": ["http://localhost:8080/*"],
+                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
                 "webOrigins": ["*"],
                 "protocol": "openid-connect",
                 "bearerOnly": False
@@ -285,7 +303,7 @@ def register():
         if create_client_request.status_code == 409:
             while create_client_request.status_code == 409:
                 get_clients_request = requests.get(
-                    "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+                    f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
                     headers={
                         "Authorization": f"Bearer {access_token}",
                         "Content-Type": "application/json"
@@ -302,12 +320,12 @@ def register():
                 print(new_clientId, flush=True)
 
                 create_client_request = requests.post(
-                    "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+                      f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
                     json={
                         "clientId": new_clientId,
                         "enabled": True,
                         # This is the URL of the Keycloak
-                        "redirectUris": ["http://localhost:8080/*"],
+                        "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
                         "webOrigins": ["*"],
                         "protocol": "openid-connect",
                         "bearerOnly": False
@@ -321,7 +339,7 @@ def register():
 
         # Step 6: Get the client id of the new client
         get_client_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients?clientId={new_clientId}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -333,7 +351,7 @@ def register():
 
         # STEP 7: Create role for the new client
         create_role_admin_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "admin"
             },
@@ -345,7 +363,7 @@ def register():
         create_role_admin_request.raise_for_status()
 
         create_role_read_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "read"
             },
@@ -357,7 +375,7 @@ def register():
         create_role_read_request.raise_for_status()
 
         create_role_create_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "create"
             },
@@ -369,7 +387,7 @@ def register():
         create_role_create_request.raise_for_status()
 
         create_role_delete_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "delete"
             },
@@ -383,7 +401,7 @@ def register():
         # Step 8 : Get the user id of the new user
 
         get_user_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users?username={email}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users?username={email}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -397,7 +415,7 @@ def register():
         # Step 9: GET Role ID where role name is admin, read, create, delete for the new client
 
         get_role_new_client_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -407,7 +425,7 @@ def register():
         get_role_new_client_request.raise_for_status()
 
         role_mapping_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id}",
             json=get_role_new_client_request.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -420,7 +438,7 @@ def register():
         # Step 10 : GET CLIENT Secret of the new client
 
         get_client_secret_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -517,13 +535,13 @@ def register():
         # Step 15.2 : Create the new client in the new node-red
 
         create_client_request_node_red = requests.post(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+              f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             json={
                 "clientId": new_clientId_node_red,
                 "enabled": True,
                 "publicClient": False,  # Access type: confidential
                 # This is the URL of the Keycloak
-                "redirectUris": ["http://localhost:8080/*"],
+                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
                 "webOrigins": ["*"],
                 "protocol": "openid-connect",
                 "bearerOnly": False
@@ -543,7 +561,7 @@ def register():
         # Step 15.4 : Get the client id of the new client
 
         get_client_request_node_red = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients?clientId={new_clientId_node_red}",
+        f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId_node_red}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -555,7 +573,7 @@ def register():
         # Step 15.5 : Create role admin, read, create, delete in the new node-red client
 
         create_role_admin_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "admin"
             },
@@ -568,7 +586,7 @@ def register():
         create_role_admin_node_red.raise_for_status()
 
         create_role_read_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "read"
             },
@@ -581,7 +599,7 @@ def register():
         create_role_read_node_red.raise_for_status()
 
         create_role_create_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "create"
             },
@@ -594,7 +612,7 @@ def register():
         create_role_create_node_red.raise_for_status()
 
         create_role_delete_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "delete"
             },
@@ -609,7 +627,7 @@ def register():
         # Step 15.6 get the role id of the role admin, read, create, delete
 
         get_role_new_client_node_red = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -620,7 +638,7 @@ def register():
         # Step 15.7 : Do the role mapping for the new user
 
         role_mapping_request_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id_node_red}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id_node_red}",
             json=get_role_new_client_node_red.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -634,7 +652,7 @@ def register():
         # Step 15.8 : Create the secret
 
         get_client_node_red_secret_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -644,11 +662,10 @@ def register():
         get_client_node_red_secret_request.raise_for_status()
         node_red_client_secret = get_client_secret_request.json()["value"]
 
-        
+        callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
 
         replace_settings_file(node_red_name_storage_name,
-                              client_id_node_red, node_red_client_secret, "callbackURL",email)
-
+                              client_id_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
 
         # Step 15.9 : Restart the node-red container
 
