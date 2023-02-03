@@ -652,7 +652,7 @@ def register():
         # Step 15.8 : Create the secret
 
         get_client_node_red_secret_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -660,7 +660,11 @@ def register():
         )
 
         get_client_node_red_secret_request.raise_for_status()
-        node_red_client_secret = get_client_secret_request.json()["value"]
+        node_red_client_secret = get_client_node_red_secret_request.json()["value"]
+
+
+        print(node_red_client_secret + " SECRET OF NODE RED",flush=True)
+        print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
 
         callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
 
