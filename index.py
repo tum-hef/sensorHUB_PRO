@@ -668,8 +668,10 @@ def register():
 
         callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
 
+        print(new_clientId_node_red + " TEST ", flush=True)
+
         replace_settings_file(node_red_name_storage_name,
-                              client_id_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
+                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
 
         # Step 15.9 : Restart the node-red container
 
