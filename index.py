@@ -203,6 +203,22 @@ def register():
     if not all([firstName, lastName, email, username, password]):
         return jsonify(success=False, error="Inputs are missing"), 400
     try:
+        commandTUM = ['ldapsearch', '-H', 'ldaps://iauth.tum.de/', '-D', 'cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de', '-b', 'ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de', '-x', '-w', 'HEF@sensorservice2023', f'(&(imAffiliation=member)(imEmailAdressen={email}))']
+
+        resultcommandTUM = subprocess.run(commandTUM, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        print(resultcommandTUM.stdout)
+        print(resultcommandTUM.stderr)
+
+        if resultcommandTUM.returncode != 0:
+            print("Error:", resultcommandTUM.stderr )
+            return jsonify(success=False, error=resultcommandTUM.stderr), 500
+
+        tumVerificationResult = verifyTUMresponseString(resultcommandTUM.stdout)
+
+        if(tumVerificationResult is False):
+            return jsonify(success=False, error="Your Email is Invalid or does not exist in TUM Database"), 403
+
         # Step 1: Get access token
         token_request = requests.post(
         f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
@@ -482,7 +498,6 @@ def register():
         # Check if any error occurs when running the new yml file
         if subprocess_run_frost.returncode != 0:
             return jsonify(success=False, error="Error when running the new yml file"), 500
-
 
 
         # Step 13 : Create a new node-red container for the new client
