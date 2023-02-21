@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,render_template
 import requests
 from flask_cors import CORS
 import re
@@ -178,7 +178,7 @@ def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,
     subprocess.run(cmd, shell=True)
 
 
-def generate_initial_email(status,token,firstName,expiredAt):
+def generate_email(status,token,firstName,expiredAt):
     try:
         # Status 1 => User is new and send token for first time
         # Status 2 => User is not new but token is send again
@@ -190,11 +190,15 @@ def generate_initial_email(status,token,firstName,expiredAt):
         SMTP_USERNAME = os.getenv("SMTP_USERNAME")
         SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
+        SERVER_URL = os.getenv("SERVER_URL")
+
         message = MIMEText(f"Your token is: {token}")
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "TUM-HEF Account Verification"
         msg['From'] = SMTP_USERNAME
         msg['To'] = "tumhefservicetest@gmail.com"
+
+        URL=f'{SERVER_URL}/validate?token={token}'
 
         if status == 1: 
             # Create HTML message for Status 1 
@@ -240,6 +244,15 @@ def generate_initial_email(status,token,firstName,expiredAt):
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
 
+
+@app.route('/validate')
+def my_page():
+    token = request.args.get('token')
+    if token is None:
+        error = 'Token is not set'
+        return render_template('token.html', error=error)
+    else:
+        return render_template('token.html', token=token)
 
 @app.route('/generate', methods=['POST'])
 def process_data():
@@ -370,7 +383,7 @@ def register():
                 print(e)
                 return jsonify(success=False, error="Failed to update data in database"), 500
             # Send email
-            generate_initial_email(status=2,token=token,firstName=firstName,expiredAt=expiredAt)
+            generate_email(status=2,token=token,firstName=firstName,expiredAt=expiredAt)
             return jsonify(success=True, message="Email will be sent again because you are already registered" ), 200
 
         query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 0"
@@ -394,7 +407,7 @@ def register():
             return jsonify(success=False, error="Failed to insert data into database"), 500
         
         # Send email
-        generate_initial_email(status=1,token=token,firstName=firstName,expiredAt=expiredAt)
+        generate_email(status=1,token=token,firstName=firstName,expiredAt=expiredAt)
         
         return jsonify(success=True,message="Email Send Successfully"),200
 
