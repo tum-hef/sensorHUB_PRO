@@ -14,7 +14,6 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app)
 
-
 def get_container_id(container_name):
     command = f"sudo docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
     output = subprocess.run(command, shell=True, capture_output=True)
@@ -227,7 +226,7 @@ def generate_email(status,token,firstName,expiredAt):
             </html>
             """
         # Replace placeholders with actual values
-        html = html.format(firstname=firstName, link="http://example.com/verification",expires_at=expiredAt)
+        html = html.format(firstname=firstName, link=URL,expires_at=expiredAt)
 
         # Attach HTML message to email
         msg.attach(MIMEText(html, 'html'))
@@ -248,11 +247,48 @@ def generate_email(status,token,firstName,expiredAt):
 @app.route('/validate')
 def my_page():
     token = request.args.get('token')
+    DATABASE_HOST=os.getenv("DATABASE_HOST")
+    DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
+    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+    DATABASE_NAME=os.getenv("DATABASE_NAME")
+
+    # Check if there is no Token passed in the URL as Query Parameter
     if token is None:
         error = 'Token is not set'
         return render_template('token.html', error=error)
-    else:
-        return render_template('token.html', token=token)
+    
+    # Try to connect to the database
+    try:
+        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+    except pymysql.err.OperationalError as e:
+        print(e,flush=True)
+        return render_template('token.html', error="Failed to connect to the database")
+
+    if db is None:
+        return render_template('token.html', error="Failed to connect to the database")
+    
+    cursor = db.cursor()
+
+    # Query to check if token is valid
+    query = "SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))"
+    print(query,flush=True)
+    cursor.execute(query, (token,))
+    result = cursor.fetchall()
+
+    print(result,flush=True)
+
+    # Check if token is invalid or user's registration is already completed 
+    if len(result) == 0:
+        return render_template('token.html', error="Token is Invalid or you have already created an account.")
+    
+    firstName = result[0][1]
+    lastName = result[0][2]
+    email = result[0][3]
+
+    print(firstName + lastName + email,flush=True)
+    
+    return render_template('token.html', token=token)
 
 @app.route('/generate', methods=['POST'])
 def process_data():
