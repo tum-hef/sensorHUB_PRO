@@ -231,14 +231,52 @@ def generate_email(status,token,firstName,expiredAt):
         # Attach HTML message to email
         msg.attach(MIMEText(html, 'html'))
      
-
         # connect to SMTP server and send email
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
             server.starttls()
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.sendmail(SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string())
 
-    
+    except Exception as err:
+        print(err, flush=True)
+        return jsonify(success=False, error=str(err)), 500
+
+def generate_success_email(firstName,email):
+    try:
+   
+        SMTP_SERVER = os.getenv("SMTP_SERVER")
+        SMTP_PORT = int(os.getenv("SMTP_PORT"))
+        SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+        SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "TUM-HEF Success"
+        msg['From'] = SMTP_USERNAME
+        msg['To'] = "tumhefservicetest@gmail.com" #email of the user
+
+        html = """\
+        <html>
+        <head></head>
+        <body style="text-align: center;">
+            <h2>Mr. {firstname}, thank you for registering!</h2>
+            <p>Your account has been successfully created.</p>
+            <p>You can access your account now.</p>
+            <p>Thank you!</p>
+        </body>
+        </html>
+        """
+        # Replace placeholders with actual values
+        html = html.format(firstname=firstName)
+
+        # Attach HTML message to email
+        msg.attach(MIMEText(html, 'html'))
+     
+        # connect to SMTP server and send email
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string()) #Here should be the user's email
+
     except Exception as err:
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
@@ -246,52 +284,582 @@ def generate_email(status,token,firstName,expiredAt):
 
 @app.route('/validate')
 def my_page():
-    token = request.args.get('token')
-    DATABASE_HOST=os.getenv("DATABASE_HOST")
-    DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
-    DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
-    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
-    DATABASE_NAME=os.getenv("DATABASE_NAME")
-
-    # Check if there is no Token passed in the URL as Query Parameter
-    if token is None:
-        error = 'Token is not set'
-        return render_template('token.html', error=error)
-    
-    # Try to connect to the database
     try:
-        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
-    except pymysql.err.OperationalError as e:
-        print(e,flush=True)
-        return render_template('token.html', error="Failed to connect to the database")
+        token = request.args.get('token')
+        KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+        KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+        KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+        KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+        KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+        KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+        DATABASE_HOST=os.getenv("DATABASE_HOST")
+        DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
+        DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
+        DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+        DATABASE_NAME=os.getenv("DATABASE_NAME")
 
-    if db is None:
-        return render_template('token.html', error="Failed to connect to the database")
+        # Check if there is no Token passed in the URL as Query Parameter
+        if token is None:
+            error = 'Token is not set'
+            return render_template('token.html', error=error)
+        
+        # Try to connect to the database
+        try:
+            db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+        except pymysql.err.OperationalError as e:
+            print(e,flush=True)
+            return render_template('token.html', error="Failed to connect to the database")
+
+        if db is None:
+            return render_template('token.html', error="Failed to connect to the database")
+        
+        cursor = db.cursor()
+
+        # Query to check if token is valid
+        query = "SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        result = cursor.fetchall()
+
+        print(result,flush=True)
+
+        # Check if token is invalid or user's registration is already completed 
+        if len(result) == 0:
+            return render_template('token.html', error="Token is Invalid or you have already created an account.")
+        
+        firstName = result[0][1]
+        lastName = result[0][2]
+        email = result[0][3]
+        createdAt = result[0][7]
+        password="1"
+
+        # Checking if token is valid based on the time that was created
+
+        # Set the timezone to Munich
+        munich_tz = timezone(timedelta(hours=1))
+
+        # Get the current time in Munich
+        now = datetime.now(munich_tz)
+
+        # Convert createdAt to a UTC datetime object and replace the timezone with UTC
+        created_at = createdAt.replace(tzinfo=munich_tz).astimezone(timezone.utc)
+
+        # Convert the createdAt datetime to Munich timezone
+        created_at_munich = created_at.astimezone(munich_tz)
+
+        # Calculate the time difference between createdAt and now
+        time_diff = now - created_at_munich
+
+        # Check if the time difference is more than 24 hours
+        if time_diff > timedelta(hours=24):
+            print("Error: createdAt is more than 24 hours ago.",flush=True)
+            return render_template('token.html', error="Token is no more valid, try to register again in order to generate a new one.")
+
+        # Verifing the user
+        query = "UPDATE user_registered SET isVerified = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+        
+        # Step 1: Get access token
+        token_request = requests.post(
+        f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+        data={
+            "client_id": KEYCLOAK_CLIENT_ID,
+            "username": KEYCLOAK_USERNAME,
+            "password": KEYCLOAK_PASSWORD,
+            "grant_type": "password",
+        },
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        )
+
+        token_request.raise_for_status()
+        access_token = token_request.json()["access_token"]
+
+        # Step 2: Create user
+        create_user_request = requests.post(
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users",
+            json={
+                "firstName": firstName,
+                "lastName": lastName,
+                "email": email,
+                "credentials": [
+                    {
+                        "type": "password",
+                        "value": password,
+                        "temporary": False
+                    }
+                ],
+                "username": email,
+                "enabled": True
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_user_request.raise_for_status()
+
+        get_clients_request = requests.get(
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_clients_request.raise_for_status()
+
+        clients = get_clients_request.json()
+        clientIds = [client["clientId"] for client in clients]
+        # Generate new client id
+        new_clientIDNumber = get_max_frost(clientIds)
+        new_clientId = f"frost_{new_clientIDNumber}"
+
+        # Step 5: Generate new client
+
+        create_client_request = requests.post(
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+            json={
+                "clientId": new_clientId,
+                "enabled": True,
+                "publicClient": False,  # Access type: confidential
+                # This is the URL of the Keycloak
+                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
+                "webOrigins": ["*"],
+                "protocol": "openid-connect",
+                "bearerOnly": False
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        # check if request returns 409 status code
+        if create_client_request.status_code == 409:
+            while create_client_request.status_code == 409:
+                get_clients_request = requests.get(
+                    f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json"
+                    }
+                )
+
+                get_clients_request.raise_for_status()
+
+                clients = get_clients_request.json()
+                clientIds = [client["clientId"] for client in clients]
+
+                new_clientIDNumber = get_max_frost(clientIds)
+                new_clientId = f"frost_{new_clientIDNumber}"
+                print(new_clientId, flush=True)
+
+                create_client_request = requests.post(
+                      f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+                    json={
+                        "clientId": new_clientId,
+                        "enabled": True,
+                        # This is the URL of the Keycloak
+                        "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
+                        "webOrigins": ["*"],
+                        "protocol": "openid-connect",
+                        "bearerOnly": False
+                    },
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json"
+                    })
+
+        create_client_request.raise_for_status()
+
+        # Step 6: Get the client id of the new client
+        get_client_request = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_client_request.raise_for_status()
+        client_id = get_client_request.json()[0]["id"]
+
+        # STEP 7: Create role for the new client
+        create_role_admin_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            json={
+                "name": "admin"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_admin_request.raise_for_status()
+
+        create_role_read_request = requests.post(
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            json={
+                "name": "read"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_read_request.raise_for_status()
+
+        create_role_create_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            json={
+                "name": "create"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_create_request.raise_for_status()
+
+        create_role_delete_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            json={
+                "name": "delete"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_delete_request.raise_for_status()
+
+        # Step 8 : Get the user id of the new user
+
+        get_user_request = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users?username={email}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_user_request.raise_for_status()
+
+        user_id = get_user_request.json()[0]["id"]
+
+        # Step 9: GET Role ID where role name is admin, read, create, delete for the new client
+
+        get_role_new_client_request = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_role_new_client_request.raise_for_status()
+
+        role_mapping_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id}",
+            json=get_role_new_client_request.json(),
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        role_mapping_request.raise_for_status()
+
+        # Step 10 : GET CLIENT Secret of the new client
+
+        get_client_secret_request = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_client_secret_request.raise_for_status()
+        client_secret = get_client_secret_request.json()["value"]
+
+        # Step 11 : Generate new YML Template
+
+        PORT = 6000
+        SECONDPORT = 1890
+
+        clientPORT = PORT+new_clientIDNumber
+        internalPORT = SECONDPORT+new_clientIDNumber
+
+        new_yml_template = generateYML(
+            new_clientId, clientPORT, internalPORT, client_secret)
+
+        # store the new yml file in yml_files folder
+
+        print(new_yml_template, flush=True)
+
+        file_path = os.path.join(
+            os.getcwd(), "yml_files", f"{new_clientId}.yml")
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w") as f:
+            f.write(new_yml_template)
+
+        # Step 12 : Run the new yml file using docker-compose
+
+        print(new_clientId, flush=True)
+
+        subprocess_run_frost = subprocess.run(
+        ["sudo","docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+
+
+        print(subprocess_run_frost, flush=True)
+
+        # Check if any error occurs when running the new yml file
+        if subprocess_run_frost.returncode != 0:
+            # return jsonify(success=False, error="Error when running the new yml file"), 500
+            return render_template('token.html', error="Error when running the new yml file")
+
+
+        # Step 13 : Create a new node-red container for the new client
+        
+        PORT_DEFAULT = 20000
+        new_node_red_port = PORT_DEFAULT+new_clientIDNumber
+        node_red_name = f"node_red_{new_clientIDNumber}"
+        node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
+
+        command_create_node_red_instance = f"sudo docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
+        result_command_create_new_node_instance = subprocess.run(command_create_node_red_instance, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        print(result_command_create_new_node_instance,flush=True)
+        if result_command_create_new_node_instance.returncode != 0:
+            # return jsonify(success=False, error="Error Generating New Node Red Instance"), 500
+            return render_template('token.html', error="Error Generating New Node Red Instance")
+            
+
+        container_node_red_id = get_container_id(node_red_name)
+
+        print(node_red_name + "WASS ",flush=True)
+        print(container_node_red_id + " WASSS ",flush=True)
+        print(container_node_red_id, flush=True)
+
+        if (not container_node_red_id):
+            # return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
+            return render_template('token.html', error="Error when running the new node-red container, container ID")
+
+
+        # Step 14 : Install passport-keycloak-oauth2-oidc in the new node-red container
+
+
+
+        command_node_red_dependency_installation = ["sudo","docker", "exec", container_node_red_id, "bash", "-c",
+                                                    "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
+
+        command_red_node = subprocess.run(
+            command_node_red_dependency_installation)
+        
+        print(command_red_node,flush=True)
+        
+        if command_red_node.returncode != 0:
+            # return jsonify(success=False, error="Error when installing passport-keycloak-oauth2-oidc"), 500
+            return render_template('token.html', error="Error when installing passport-keycloak-oauth2-oidc")
+        print(command_red_node, flush=True)
+
+        # Step 15 : Create a new keycloak client in the new node-red
+
+        # step 15.1 : Get the max client id number in the new node-red and generate the new client id
+
+        new_clientIDNumber_node_red = new_clientIDNumber
+        new_clientId_node_red = f"node_red_{new_clientIDNumber_node_red}"
+
+        # Step 15.2 : Create the new client in the new node-red
+
+        create_client_request_node_red = requests.post(
+              f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+            json={
+                "clientId": new_clientId_node_red,
+                "enabled": True,
+                "publicClient": False,  # Access type: confidential
+                # This is the URL of the Keycloak
+                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
+                "webOrigins": ["*"],
+                "protocol": "openid-connect",
+                "bearerOnly": False
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        # Step 15.3 check if returns 409 status code
+
+        if create_client_request_node_red.status_code == 409:
+            # return jsonify(success=False, error="Client in Node Red already exists"), 409
+            return render_template('token.html', error="Client in Node Red already exists")
+
+        create_client_request_node_red.raise_for_status()
+
+        # Step 15.4 : Get the client id of the new client
+
+        get_client_request_node_red = requests.get(
+        f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId_node_red}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        get_client_request_node_red.raise_for_status()
+        client_id_node_red = get_client_request_node_red.json()[0]["id"]
+
+        # Step 15.5 : Create role admin, read, create, delete in the new node-red client
+
+        create_role_admin_node_red = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            json={
+                "name": "admin"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_admin_node_red.raise_for_status()
+
+        create_role_read_node_red = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            json={
+                "name": "read"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_read_node_red.raise_for_status()
+
+        create_role_create_node_red = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            json={
+                "name": "create"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_create_node_red.raise_for_status()
+
+        create_role_delete_node_red = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            json={
+                "name": "delete"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_delete_node_red.raise_for_status()
+
+        # Step 15.6 get the role id of the role admin, read, create, delete
+
+        get_role_new_client_node_red = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        get_role_new_client_node_red.raise_for_status()
+
+        # Step 15.7 : Do the role mapping for the new user
+
+        role_mapping_request_node_red = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id_node_red}",
+            json=get_role_new_client_node_red.json(),
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        role_mapping_request_node_red.raise_for_status()
+
+
+        # Step 15.8 : Create the secret
+
+        get_client_node_red_secret_request = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/client-secret",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_client_node_red_secret_request.raise_for_status()
+        node_red_client_secret = get_client_node_red_secret_request.json()["value"]
+
+
+        print(node_red_client_secret + " SECRET OF NODE RED",flush=True)
+        print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
+
+        callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
+
+        print(new_clientId_node_red + " TEST ", flush=True)
+
+        replace_settings_file(node_red_name_storage_name,
+                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
+
+        # Step 15.9 : Restart the node-red container
+
+        restart_node_red_container = subprocess.run(
+            f"sudo docker restart {container_node_red_id}", shell=True, check=True)
+        
+        print(restart_node_red_container,flush=True)
+
+        if restart_node_red_container.returncode != 0:
+            # return jsonify(success=False, error="Server Error by restarting container"), 500
+            return render_template('token.html', error="Server Error by restarting container")
+
+        # Get current timestamp as a datetime object
+        now = datetime.now(timezone(timedelta(hours=1)))
+
+        # Making isCompleted true
+        query = "UPDATE user_registered SET isCompleted = 1, completedAt = %s WHERE token = %s;"
+        print(query, flush=True)
+
+        # Execute the query, passing the current timestamp as a datetime object
+        cursor.execute(query, (now, token))
+        db.commit()
+
+        # Send confirmation mail
+        generate_success_email(firstName,email)
+
+        return render_template('token.html', token="Account created successfully")
     
-    cursor = db.cursor()
+    except requests.exceptions.HTTPError as err:
+        print(err)
 
-    # Query to check if token is valid
-    query = "SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))"
-    print(query,flush=True)
-    cursor.execute(query, (token,))
-    result = cursor.fetchall()
-
-    print(result,flush=True)
-
-    # Check if token is invalid or user's registration is already completed 
-    if len(result) == 0:
-        return render_template('token.html', error="Token is Invalid or you have already created an account.")
+        if err.response.status_code == 409:
+            errorText = err.response.json()["errorMessage"]
+            # return jsonify(success=False, error=errorText), 409
+            return render_template('token.html', error=errorText)
+        else:
+            # return jsonify(success=False, error="Server Error"), 500
+            return render_template('token.html', error="Server Error")
+    except Exception as err:
+        print(err, flush=True)
+        # return jsonify(success=False, error=str(err)), 500
+        return render_template('token.html', error=str(err))
     
-    firstName = result[0][1]
-    lastName = result[0][2]
-    email = result[0][3]
 
-    print(firstName + lastName + email,flush=True)
-    
-    return render_template('token.html', token=token)
-
-@app.route('/generate', methods=['POST'])
-def process_data():
     token = request.form.get('token')
 
     if not token:
@@ -392,8 +960,8 @@ def register():
 
         tumVerificationResult = verifyTUMresponseString(resultcommandTUM.stdout)
 
-        if(tumVerificationResult is False):
-            return jsonify(success=False, error="Your Email is Invalid or does not exist in TUM Database"), 403
+        # if(tumVerificationResult is False):
+        #     return jsonify(success=False, error="Your Email is Invalid or does not exist in TUM Database"), 403
 
         # Get current timestamp
         now_utc2 = datetime.now(timezone(timedelta(hours=1)))
@@ -432,7 +1000,7 @@ def register():
         cursor.execute(query, (email,))
         result = cursor.fetchall()
         if len(result) > 0:
-            return jsonify(success=False, error="You are already verified and registered but completed" ), 400
+            return jsonify(success=False, error="You are already verified and registered in our system"), 400
 
         query = "INSERT INTO user_registered (firstName, lastName, email, token, createdAt) VALUES (%s, %s, %s, %s, %s)"
         try:
@@ -446,489 +1014,6 @@ def register():
         generate_email(status=1,token=token,firstName=firstName,expiredAt=expiredAt)
         
         return jsonify(success=True,message="Email Send Successfully"),200
-
-        
-        # # Step 1: Get access token
-        # token_request = requests.post(
-        # f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
-        # data={
-        #     "client_id": KEYCLOAK_CLIENT_ID,
-        #     "username": KEYCLOAK_USERNAME,
-        #     "password": KEYCLOAK_PASSWORD,
-        #     "grant_type": "password",
-        # },
-        # headers={
-        #     "Content-Type": "application/x-www-form-urlencoded"
-        # }
-        # )
-
-        # token_request.raise_for_status()
-        # access_token = token_request.json()["access_token"]
-
-        # # Step 2: Create user
-        # create_user_request = requests.post(
-        #      f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users",
-        #     json={
-        #         "firstName": firstName,
-        #         "lastName": lastName,
-        #         "email": email,
-        #         "credentials": [
-        #             {
-        #                 "type": "password",
-        #                 "value": password,
-        #                 "temporary": False
-        #             }
-        #         ],
-        #         "username": email,
-        #         "enabled": True
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # create_user_request.raise_for_status()
-
-        # # Step 3: Send email
-        # # create an SMTP object
-        # # server = smtplib.SMTP('smtp.gmail.com', 587)
-
-        # # # start the encryption
-        # # server.starttls()
-
-        # # # login to your email account
-        # # server.login("your_email@gmail.com", "your_password")
-
-        # # # send the email
-        # # msg = "Hello, this is a test email."
-        # # server.sendmail("your_email@gmail.com", "recipient_email@example.com", msg)
-
-        # # # end the SMTP session
-        # # server.quit()
-
-        # # Step 4: GET ALL THE CLIENTS and generate new client id
-
-        # get_clients_request = requests.get(
-        #      f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # get_clients_request.raise_for_status()
-
-        # clients = get_clients_request.json()
-        # clientIds = [client["clientId"] for client in clients]
-        # # Generate new client id
-        # new_clientIDNumber = get_max_frost(clientIds)
-        # new_clientId = f"frost_{new_clientIDNumber}"
-
-        # # Step 5: Generate new client
-
-        # create_client_request = requests.post(
-        #      f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-        #     json={
-        #         "clientId": new_clientId,
-        #         "enabled": True,
-        #         "publicClient": False,  # Access type: confidential
-        #         # This is the URL of the Keycloak
-        #         "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
-        #         "webOrigins": ["*"],
-        #         "protocol": "openid-connect",
-        #         "bearerOnly": False
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     })
-
-        # # check if request returns 409 status code
-        # if create_client_request.status_code == 409:
-        #     while create_client_request.status_code == 409:
-        #         get_clients_request = requests.get(
-        #             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-        #             headers={
-        #                 "Authorization": f"Bearer {access_token}",
-        #                 "Content-Type": "application/json"
-        #             }
-        #         )
-
-        #         get_clients_request.raise_for_status()
-
-        #         clients = get_clients_request.json()
-        #         clientIds = [client["clientId"] for client in clients]
-
-        #         new_clientIDNumber = get_max_frost(clientIds)
-        #         new_clientId = f"frost_{new_clientIDNumber}"
-        #         print(new_clientId, flush=True)
-
-        #         create_client_request = requests.post(
-        #               f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-        #             json={
-        #                 "clientId": new_clientId,
-        #                 "enabled": True,
-        #                 # This is the URL of the Keycloak
-        #                 "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
-        #                 "webOrigins": ["*"],
-        #                 "protocol": "openid-connect",
-        #                 "bearerOnly": False
-        #             },
-        #             headers={
-        #                 "Authorization": f"Bearer {access_token}",
-        #                 "Content-Type": "application/json"
-        #             })
-
-        # create_client_request.raise_for_status()
-
-        # # Step 6: Get the client id of the new client
-        # get_client_request = requests.get(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId}",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # get_client_request.raise_for_status()
-        # client_id = get_client_request.json()[0]["id"]
-
-        # # STEP 7: Create role for the new client
-        # create_role_admin_request = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
-        #     json={
-        #         "name": "admin"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     })
-
-        # create_role_admin_request.raise_for_status()
-
-        # create_role_read_request = requests.post(
-        #      f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
-        #     json={
-        #         "name": "read"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     })
-
-        # create_role_read_request.raise_for_status()
-
-        # create_role_create_request = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
-        #     json={
-        #         "name": "create"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     })
-
-        # create_role_create_request.raise_for_status()
-
-        # create_role_delete_request = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
-        #     json={
-        #         "name": "delete"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     })
-
-        # create_role_delete_request.raise_for_status()
-
-        # # Step 8 : Get the user id of the new user
-
-        # get_user_request = requests.get(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users?username={email}",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # get_user_request.raise_for_status()
-
-        # user_id = get_user_request.json()[0]["id"]
-
-        # # Step 9: GET Role ID where role name is admin, read, create, delete for the new client
-
-        # get_role_new_client_request = requests.get(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # get_role_new_client_request.raise_for_status()
-
-        # role_mapping_request = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id}",
-        #     json=get_role_new_client_request.json(),
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # role_mapping_request.raise_for_status()
-
-        # # Step 10 : GET CLIENT Secret of the new client
-
-        # get_client_secret_request = requests.get(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # get_client_secret_request.raise_for_status()
-        # client_secret = get_client_secret_request.json()["value"]
-
-        # # Step 11 : Generate new YML Template
-
-        # PORT = 6000
-        # SECONDPORT = 1890
-
-        # clientPORT = PORT+new_clientIDNumber
-        # internalPORT = SECONDPORT+new_clientIDNumber
-
-        # new_yml_template = generateYML(
-        #     new_clientId, clientPORT, internalPORT, client_secret)
-
-        # # store the new yml file in yml_files folder
-
-        # print(new_yml_template, flush=True)
-
-        # file_path = os.path.join(
-        #     os.getcwd(), "yml_files", f"{new_clientId}.yml")
-        # os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        # with open(file_path, "w") as f:
-        #     f.write(new_yml_template)
-
-        # # Step 12 : Run the new yml file using docker-compose
-
-        # print(new_clientId, flush=True)
-
-        # subprocess_run_frost = subprocess.run(
-        # ["sudo","docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
-
-
-        # print(subprocess_run_frost, flush=True)
-
-        # # Check if any error occurs when running the new yml file
-        # if subprocess_run_frost.returncode != 0:
-        #     return jsonify(success=False, error="Error when running the new yml file"), 500
-
-
-        # # Step 13 : Create a new node-red container for the new client
-        
-        # PORT_DEFAULT = 20000
-        # new_node_red_port = PORT_DEFAULT+new_clientIDNumber
-        # node_red_name = f"node_red_{new_clientIDNumber}"
-        # node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
-
-        # command_create_node_red_instance = f"sudo docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
-        # result_command_create_new_node_instance = subprocess.run(command_create_node_red_instance, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        # print(result_command_create_new_node_instance,flush=True)
-        # if result_command_create_new_node_instance.returncode != 0:
-        #     return jsonify(success=False, error="Error Generating New Node Red Instance"), 500
-
-        # container_node_red_id = get_container_id(node_red_name)
-
-        # print(node_red_name + "WASS ",flush=True)
-        # print(container_node_red_id + " WASSS ",flush=True)
-        # print(container_node_red_id, flush=True)
-
-        # if (not container_node_red_id):
-        #     return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
-
-
-        # # Step 14 : Install passport-keycloak-oauth2-oidc in the new node-red container
-
-
-
-        # command_node_red_dependency_installation = ["sudo","docker", "exec", container_node_red_id, "bash", "-c",
-        #                                             "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
-
-        # command_red_node = subprocess.run(
-        #     command_node_red_dependency_installation)
-        
-        # print(command_red_node,flush=True)
-        
-        # if command_red_node.returncode != 0:
-        #     return jsonify(success=False, error="Error when installing passport-keycloak-oauth2-oidc"), 500
-        # print(command_red_node, flush=True)
-
-        # # Step 15 : Create a new keycloak client in the new node-red
-
-        # # step 15.1 : Get the max client id number in the new node-red and generate the new client id
-
-        # new_clientIDNumber_node_red = new_clientIDNumber
-        # new_clientId_node_red = f"node_red_{new_clientIDNumber_node_red}"
-
-        # # Step 15.2 : Create the new client in the new node-red
-
-        # create_client_request_node_red = requests.post(
-        #       f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-        #     json={
-        #         "clientId": new_clientId_node_red,
-        #         "enabled": True,
-        #         "publicClient": False,  # Access type: confidential
-        #         # This is the URL of the Keycloak
-        #         "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
-        #         "webOrigins": ["*"],
-        #         "protocol": "openid-connect",
-        #         "bearerOnly": False
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     })
-
-        # # Step 15.3 check if returns 409 status code
-
-        # if create_client_request_node_red.status_code == 409:
-        #     return jsonify(success=False, error="Client in Node Red already exists"), 409
-
-        # create_client_request_node_red.raise_for_status()
-
-        # # Step 15.4 : Get the client id of the new client
-
-        # get_client_request_node_red = requests.get(
-        # f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId_node_red}",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-        # get_client_request_node_red.raise_for_status()
-        # client_id_node_red = get_client_request_node_red.json()[0]["id"]
-
-        # # Step 15.5 : Create role admin, read, create, delete in the new node-red client
-
-        # create_role_admin_node_red = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
-        #     json={
-        #         "name": "admin"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # create_role_admin_node_red.raise_for_status()
-
-        # create_role_read_node_red = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
-        #     json={
-        #         "name": "read"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # create_role_read_node_red.raise_for_status()
-
-        # create_role_create_node_red = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
-        #     json={
-        #         "name": "create"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # create_role_create_node_red.raise_for_status()
-
-        # create_role_delete_node_red = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
-        #     json={
-        #         "name": "delete"
-        #     },
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # create_role_delete_node_red.raise_for_status()
-
-        # # Step 15.6 get the role id of the role admin, read, create, delete
-
-        # get_role_new_client_node_red = requests.get(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-        # get_role_new_client_node_red.raise_for_status()
-
-        # # Step 15.7 : Do the role mapping for the new user
-
-        # role_mapping_request_node_red = requests.post(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id_node_red}",
-        #     json=get_role_new_client_node_red.json(),
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # role_mapping_request_node_red.raise_for_status()
-
-
-        # # Step 15.8 : Create the secret
-
-        # get_client_node_red_secret_request = requests.get(
-        #     f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/client-secret",
-        #     headers={
-        #         "Authorization": f"Bearer {access_token}",
-        #         "Content-Type": "application/json"
-        #     }
-        # )
-
-        # get_client_node_red_secret_request.raise_for_status()
-        # node_red_client_secret = get_client_node_red_secret_request.json()["value"]
-
-
-        # print(node_red_client_secret + " SECRET OF NODE RED",flush=True)
-        # print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
-
-        # callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
-
-        # print(new_clientId_node_red + " TEST ", flush=True)
-
-        # replace_settings_file(node_red_name_storage_name,
-        #                       new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
-
-        # # Step 15.9 : Restart the node-red container
-
-        # restart_node_red_container = subprocess.run(
-        #     f"sudo docker restart {container_node_red_id}", shell=True, check=True)
-        
-        # print(restart_node_red_container,flush=True)
-
-        # if restart_node_red_container.returncode != 0:
-        #     return jsonify(success=False, error="Server Error by restarting container"), 500
-
-
-        # return jsonify(success=True, message="User created successfully")
 
     except requests.exceptions.HTTPError as err:
         print(err)
