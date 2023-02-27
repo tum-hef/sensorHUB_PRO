@@ -128,18 +128,31 @@ docker run -d --name keycloak -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PA
 10) **Fill variables in .env**
 
     KEYCLOAK_SERVER_URL=
+    
     KEYCLOAK_DOMAIN=
+    
     KEYCLOAK_CLIENT_ID=
+    
     KEYCLOAK_USERNAME=
+    
     KEYCLOAK_PASSWORD=
+    
     KEYCLOAK_REALM=
     
+    
+    
     EMAIL=
+    
     EMAIL_PASSWORD=
     
+    
     DATABASE_HOST=
+    
     DATABASE_USERNAME=
+    
     DATABASE_PASSWORD=
+    
     DATABASE_PORT=
+    
     
     SERVER_URL=
