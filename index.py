@@ -403,6 +403,12 @@ def my_page():
 
         create_user_request.raise_for_status()
 
+        # Successful creation of the keycloak user 
+        query = "UPDATE user_registered SET keycloak_user_creation = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         get_clients_request = requests.get(
              f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             headers={
@@ -476,6 +482,12 @@ def my_page():
 
         create_client_request.raise_for_status()
 
+        # Successful creation of the keycloak client 
+        query = "UPDATE user_registered SET keycloak_generate_client = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 6: Get the client id of the new client
         get_client_request = requests.get(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId}",
@@ -537,6 +549,12 @@ def my_page():
 
         create_role_delete_request.raise_for_status()
 
+        # Successful creation of the keycloak roles 
+        query = "UPDATE user_registered SET keycloak_create_roles_for_client = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 8 : Get the user id of the new user
 
         get_user_request = requests.get(
@@ -574,6 +592,12 @@ def my_page():
 
         role_mapping_request.raise_for_status()
 
+        # Successful creation of the keycloak role mapping 
+        query = "UPDATE user_registered SET keycloak_role_mapping = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 10 : GET CLIENT Secret of the new client
 
         get_client_secret_request = requests.get(
@@ -598,6 +622,12 @@ def my_page():
         new_yml_template = generateYML(
             new_clientId, clientPORT, internalPORT, client_secret)
 
+        # Successful of generating the YML file
+        query = "UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # store the new yml file in yml_files folder
 
         print(new_yml_template, flush=True)
@@ -615,7 +645,6 @@ def my_page():
         subprocess_run_frost = subprocess.run(
         ["sudo","docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
-
         print(subprocess_run_frost, flush=True)
 
         # Check if any error occurs when running the new yml file
@@ -623,6 +652,11 @@ def my_page():
             # return jsonify(success=False, error="Error when running the new yml file"), 500
             return render_template('token.html', error="Error when running the new yml file")
 
+        # Successful of executing Frost file
+        query = "UPDATE user_registered SET frost_yml_execution = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
         # Step 13 : Create a new node-red container for the new client
         
@@ -638,7 +672,13 @@ def my_page():
         if result_command_create_new_node_instance.returncode != 0:
             # return jsonify(success=False, error="Error Generating New Node Red Instance"), 500
             return render_template('token.html', error="Error Generating New Node Red Instance")
-            
+        
+        # Successful node red command execution
+        query = "UPDATE user_registered SET node_red_command_execution = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
 
         container_node_red_id = get_container_id(node_red_name)
 
@@ -668,8 +708,13 @@ def my_page():
             return render_template('token.html', error="Error when installing passport-keycloak-oauth2-oidc")
         print(command_red_node, flush=True)
 
-        # Step 15 : Create a new keycloak client in the new node-red
+        # Successful node red libary installation
+        query = "UPDATE user_registered SET node_red_install_libaries = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
+        # Step 15 : Create a new keycloak client in the new node-red
         # step 15.1 : Get the max client id number in the new node-red and generate the new client id
 
         new_clientIDNumber_node_red = new_clientIDNumber
@@ -701,6 +746,12 @@ def my_page():
             return render_template('token.html', error="Client in Node Red already exists")
 
         create_client_request_node_red.raise_for_status()
+
+        # Successful keycloak client generation for keycloak
+        query = "UPDATE user_registered SET node_red_keycloak_generate_new_client = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
         # Step 15.4 : Get the client id of the new client
 
@@ -768,6 +819,12 @@ def my_page():
 
         create_role_delete_node_red.raise_for_status()
 
+        # Successful keycloak roles generation for node red
+        query = "UPDATE user_registered SET node_red_keycloak_generate_roles = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 15.6 get the role id of the role admin, read, create, delete
 
         get_role_new_client_node_red = requests.get(
@@ -792,6 +849,11 @@ def my_page():
 
         role_mapping_request_node_red.raise_for_status()
 
+        # Successful keycloak roles mapping generation for node red
+        query = "UPDATE user_registered SET node_red_keycloak_role_mapping = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
         # Step 15.8 : Create the secret
 
@@ -817,6 +879,12 @@ def my_page():
         replace_settings_file(node_red_name_storage_name,
                               new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
 
+        # Successful settings.js update
+        query = "UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 15.9 : Restart the node-red container
 
         restart_node_red_container = subprocess.run(
@@ -827,6 +895,12 @@ def my_page():
         if restart_node_red_container.returncode != 0:
             # return jsonify(success=False, error="Server Error by restarting container"), 500
             return render_template('token.html', error="Server Error by restarting container")
+        
+        # Successful restart of node red instance
+        query = "UPDATE user_registered SET node_red_restart_container = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
         # Get current timestamp as a datetime object
         now = datetime.now(timezone(timedelta(hours=1)))
