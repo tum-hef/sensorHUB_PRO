@@ -8,6 +8,7 @@ import os
 import pymysql
 from datetime import datetime, timezone, timedelta
 import uuid
+import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 app = Flask(__name__)
@@ -330,7 +331,7 @@ def my_page():
         firstName = result[0][1]
         lastName = result[0][2]
         email = result[0][3]
-        createdAt = result[0][7]
+        createdAt = result[0][20]
         password="1"
 
         # Checking if token is valid based on the time that was created
@@ -919,8 +920,8 @@ def my_page():
         return render_template('token.html', token="Account created successfully")
     
     except requests.exceptions.HTTPError as err:
-        print(err)
 
+        print(err)
         if err.response.status_code == 409:
             errorText = err.response.json()["errorMessage"]
             # return jsonify(success=False, error=errorText), 409
@@ -930,6 +931,13 @@ def my_page():
             return render_template('token.html', error="Server Error")
     except Exception as err:
         print(err, flush=True)
+        tb = err.__traceback__
+        # get the line number of the error
+        line_num = tb.tb_lineno
+        # print the error message and line number
+        print("***********************************************",flush=True)
+        print(f"Error on line {line_num}: {err}",flush=True)
+
         # return jsonify(success=False, error=str(err)), 500
         return render_template('token.html', error=str(err))
     
@@ -1068,7 +1076,8 @@ def register():
         cursor.execute(query, (email,))
         result = cursor.fetchall()
         if len(result) > 0:
-            return jsonify(success=False, error="You are already verified and registered but not completed" ), 400
+            generate_email(status=2,token=token,firstName=firstName,expiredAt=expiredAt)
+            return jsonify(success=True, message="Email will be sent again because you are not completed"), 200
 
         query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 1"
         cursor.execute(query, (email,))
