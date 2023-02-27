@@ -1,4 +1,5 @@
 
+
 # KEYCLOAK_SERVICES
 
 The script is designed to interact with a local Keycloak server to perform various actions (Currently creating new user, client, roles, and role-mapping)
@@ -92,4 +93,53 @@ Please note that authentication via LDAP is not a recommended method, especially
 
     - imAffiliation may be either student or member
     
+    
    
+## Configuration
+
+1) **Install keycloak** 
+docker run -d --name keycloak -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak
+
+2) **Remove HTTPS (Not recommanded)**
+
+  
+
+       docker exec -it {contaierID} bash
+        cd /opt/jboss/keycloak/bin
+         ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin 
+         ./kcadm.sh update realms/master -s sslRequired=NONE
+
+3) **Create new realm**
+
+4) **Create new client**
+
+5) **Create new user**
+
+6) **Create a static password and remove Temporary password**
+
+7) **In role Mapping of the user give access**
+
+8) **Install mysql**
+
+    docker run -d -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD= YOUR_PASSWORD> mysql
+
+9) **Execute in the database "initial_queries.sql" file**
+
+10) **Fill variables in .env**
+
+    KEYCLOAK_SERVER_URL=
+    KEYCLOAK_DOMAIN=
+    KEYCLOAK_CLIENT_ID=
+    KEYCLOAK_USERNAME=
+    KEYCLOAK_PASSWORD=
+    KEYCLOAK_REALM=
+    
+    EMAIL=
+    EMAIL_PASSWORD=
+    
+    DATABASE_HOST=
+    DATABASE_USERNAME=
+    DATABASE_PASSWORD=
+    DATABASE_PORT=
+    
+    SERVER_URL=
