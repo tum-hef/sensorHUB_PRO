@@ -1,19 +1,24 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,render_template
 import requests
 from flask_cors import CORS
 import re
 import smtplib
 import subprocess
 import os
-
+import pymysql
+from datetime import datetime, timezone, timedelta
+import uuid
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app)
 
-
 def get_container_id(container_name):
-    command = f"docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
+    command = f"sudo docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
     output = subprocess.run(command, shell=True, capture_output=True)
+    if output.returncode != 0:
+        return jsonify(success=False, error="Error getting the container ID"), 500
     return output.stdout.decode().strip()
 
 
@@ -36,10 +41,10 @@ def get_max_node_red(arr):
 def generateYML(clientID, port, secondPort, clientSecret):
     yml_template = """
     version: '3'
-    name: {clientID}
     services:
       web:
         image: fraunhoferiosb/frost-server:latest
+        container_name: {clientID}
         environment:
           - serviceRootUrl=http://138.246.225.0:{port}/FROST-Server
           - http_cors_enable=true
@@ -61,6 +66,7 @@ def generateYML(clientID, port, secondPort, clientSecret):
         restart: always
       database:
         image: postgis/postgis:11-2.5-alpine
+        container_name: {clientID}_db
         environment:
           - POSTGRES_DB=sensorthings
           - POSTGRES_USER=sensorthings
@@ -86,25 +92,25 @@ def verifyTUMresponseString(response):
         return False
 
 
-def create_node_red_new_settings_file(clientID, clientSecret, callbackURL):
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
     new_file_content = f"""
     module.exports = {{
-        flowFile: 'flows.json',
+        flowFile: "flows.json",
         flowFilePretty: true,
         adminAuth: {{
             type:"strategy",
             strategy: {{
                 name: "keycloak",
-                label: 'Sign in',
+                label: "Sign in",
                 icon:"fa-lock",
                 strategy: require("passport-keycloak-oauth2-oidc").Strategy,
                 options: {{
                     clientID: "{clientID}",
-                    realm: 'master',
+                    realm: "{KEYCLOAK_REALM}",
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
-                    authServerURL: "http://tuzehez-hefiot.srv.mwn.de:8080/auth",
+                    authServerURL: "{KEYCLOAK_SERVER_URL}/auth",
                     callbackURL: "{callbackURL}",
                 }},
                 verify: function(token, tokenSecret, profile, done) {{
@@ -112,7 +118,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL):
                 }}
             }},
             users: [
-               {{ username: "node-red-user1",permissions: ["*"]}}
+               {{ username: "{email}",permissions: ["*"]}}
             ]
         }},
         uiPort: process.env.PORT || 1880,
@@ -162,42 +168,211 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL):
     return new_file_content
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL):
-    directory = "\\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\{}\\_data".format(
-        node_red_storage)
-
-    os.chdir(directory)
-
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
+    directory = "/var/lib/docker/volumes/{}/_data".format(node_red_storage)
     new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL)
+        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
 
-    with open("settings.js", "w") as f:
-        f.write(new_file_content)
+    cmd = f"echo '{new_file_content}' | sudo tee {directory}/settings.js"
+    subprocess.run(cmd, shell=True)
 
 
-@app.route("/register", methods=["POST"])
-def register():
-    firstName = request.json.get("firstName")
-    lastName = request.json.get("lastName")
-    email = request.json.get("email")
-    username = request.json.get("username")
-    password = request.json.get("password")
-
-    if not all([firstName, lastName, email, username, password]):
-        return jsonify(success=False, error="Inputs are missing"), 400
+def generate_email(status,token,firstName,expiredAt):
     try:
+        # Status 1 => User is new and send token for first time
+        # Status 2 => User is not new but token is send again
+        if status not in [1, 2]:
+            return jsonify(success=False, error="Invalid Request"), 500
+        
+        SMTP_SERVER = os.getenv("SMTP_SERVER")
+        SMTP_PORT = int(os.getenv("SMTP_PORT"))
+        SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+        SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+        SERVER_URL = os.getenv("SERVER_URL")
+
+        message = MIMEText(f"Your token is: {token}")
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "TUM-HEF Account Verification"
+        msg['From'] = SMTP_USERNAME
+        msg['To'] = "tumhefservicetest@gmail.com"
+
+        URL=f'{SERVER_URL}/validate?token={token}'
+
+        if status == 1: 
+            # Create HTML message for Status 1 
+            html = """\
+            <html>
+            <head></head>
+            <body style="text-align: center;">
+                <h2>Hi {firstname},</h2>
+                <p>Thank you for registering,</p>
+                <p>Please click <a href="{link}">here</a> to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
+                <p>Thank you,</p>
+            </body>
+            </html>
+            """
+        if status == 2: 
+            # Create HTML message for Status 2
+            html = """\
+            <html>
+            <head></head>
+            <body style="text-align: center;">
+                <h2>Hi {firstname},</h2>
+                <p>Thank you for registering, we have created a new valid link for you</p>
+                <p>Please click <a href="{link}">here</a> to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
+                <p>Thank you,</p>
+            </body>
+            </html>
+            """
+        # Replace placeholders with actual values
+        html = html.format(firstname=firstName, link=URL,expires_at=expiredAt)
+
+        # Attach HTML message to email
+        msg.attach(MIMEText(html, 'html'))
+     
+        # connect to SMTP server and send email
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string())
+
+    except Exception as err:
+        print(err, flush=True)
+        return jsonify(success=False, error=str(err)), 500
+
+def generate_success_email(firstName,email):
+    try:
+   
+        SMTP_SERVER = os.getenv("SMTP_SERVER")
+        SMTP_PORT = int(os.getenv("SMTP_PORT"))
+        SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+        SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "TUM-HEF Success"
+        msg['From'] = SMTP_USERNAME
+        msg['To'] = "tumhefservicetest@gmail.com" #email of the user
+
+        html = """\
+        <html>
+        <head></head>
+        <body style="text-align: center;">
+            <h2>Mr. {firstname}, thank you for registering!</h2>
+            <p>Your account has been successfully created.</p>
+            <p>You can access your account now.</p>
+            <p>Thank you!</p>
+        </body>
+        </html>
+        """
+        # Replace placeholders with actual values
+        html = html.format(firstname=firstName)
+
+        # Attach HTML message to email
+        msg.attach(MIMEText(html, 'html'))
+     
+        # connect to SMTP server and send email
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string()) #Here should be the user's email
+
+    except Exception as err:
+        print(err, flush=True)
+        return jsonify(success=False, error=str(err)), 500
+
+
+@app.route('/validate')
+def my_page():
+    try:
+        token = request.args.get('token')
+        KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+        KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+        KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+        KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+        KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+        KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+        DATABASE_HOST=os.getenv("DATABASE_HOST")
+        DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
+        DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
+        DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+        DATABASE_NAME=os.getenv("DATABASE_NAME")
+
+        # Check if there is no Token passed in the URL as Query Parameter
+        if token is None:
+            error = 'Token is not set'
+            return render_template('token.html', error=error)
+        
+        # Try to connect to the database
+        try:
+            db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+        except pymysql.err.OperationalError as e:
+            print(e,flush=True)
+            return render_template('token.html', error="Failed to connect to the database")
+
+        if db is None:
+            return render_template('token.html', error="Failed to connect to the database")
+        
+        cursor = db.cursor()
+
+        # Query to check if token is valid
+        query = "SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        result = cursor.fetchall()
+
+        print(result,flush=True)
+
+        # Check if token is invalid or user's registration is already completed 
+        if len(result) == 0:
+            return render_template('token.html', error="Token is Invalid or you have already created an account.")
+        
+        firstName = result[0][1]
+        lastName = result[0][2]
+        email = result[0][3]
+        createdAt = result[0][7]
+        password="1"
+
+        # Checking if token is valid based on the time that was created
+
+        # Set the timezone to Munich
+        munich_tz = timezone(timedelta(hours=1))
+
+        # Get the current time in Munich
+        now = datetime.now(munich_tz)
+
+        # Convert createdAt to a UTC datetime object and replace the timezone with UTC
+        created_at = createdAt.replace(tzinfo=munich_tz).astimezone(timezone.utc)
+
+        # Convert the createdAt datetime to Munich timezone
+        created_at_munich = created_at.astimezone(munich_tz)
+
+        # Calculate the time difference between createdAt and now
+        time_diff = now - created_at_munich
+
+        # Check if the time difference is more than 24 hours
+        if time_diff > timedelta(hours=24):
+            print("Error: createdAt is more than 24 hours ago.",flush=True)
+            return render_template('token.html', error="Token is no more valid, try to register again in order to generate a new one.")
+
+        # Verifing the user
+        query = "UPDATE user_registered SET isVerified = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+        
         # Step 1: Get access token
         token_request = requests.post(
-            "http://localhost:8080/auth/realms/keycloak-react-auth/protocol/openid-connect/token",
-            data={
-                "client_id": "react",
-                "username": "parid",
-                "password": "1",
-                "grant_type": "password",
-            },
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
+        f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+        data={
+            "client_id": KEYCLOAK_CLIENT_ID,
+            "username": KEYCLOAK_USERNAME,
+            "password": KEYCLOAK_PASSWORD,
+            "grant_type": "password",
+        },
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
         )
 
         token_request.raise_for_status()
@@ -205,7 +380,7 @@ def register():
 
         # Step 2: Create user
         create_user_request = requests.post(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/users",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users",
             json={
                 "firstName": firstName,
                 "lastName": lastName,
@@ -228,27 +403,14 @@ def register():
 
         create_user_request.raise_for_status()
 
-        # Step 3: Send email
-        # create an SMTP object
-        # server = smtplib.SMTP('smtp.gmail.com', 587)
-
-        # # start the encryption
-        # server.starttls()
-
-        # # login to your email account
-        # server.login("your_email@gmail.com", "your_password")
-
-        # # send the email
-        # msg = "Hello, this is a test email."
-        # server.sendmail("your_email@gmail.com", "recipient_email@example.com", msg)
-
-        # # end the SMTP session
-        # server.quit()
-
-        # Step 4: GET ALL THE CLIENTS and generate new client id
+        # Successful creation of the keycloak user 
+        query = "UPDATE user_registered SET keycloak_user_creation = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
         get_clients_request = requests.get(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -266,13 +428,13 @@ def register():
         # Step 5: Generate new client
 
         create_client_request = requests.post(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             json={
                 "clientId": new_clientId,
                 "enabled": True,
                 "publicClient": False,  # Access type: confidential
                 # This is the URL of the Keycloak
-                "redirectUris": ["http://localhost:8080/*"],
+                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
                 "webOrigins": ["*"],
                 "protocol": "openid-connect",
                 "bearerOnly": False
@@ -286,7 +448,7 @@ def register():
         if create_client_request.status_code == 409:
             while create_client_request.status_code == 409:
                 get_clients_request = requests.get(
-                    "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+                    f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
                     headers={
                         "Authorization": f"Bearer {access_token}",
                         "Content-Type": "application/json"
@@ -303,12 +465,12 @@ def register():
                 print(new_clientId, flush=True)
 
                 create_client_request = requests.post(
-                    "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+                      f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
                     json={
                         "clientId": new_clientId,
                         "enabled": True,
                         # This is the URL of the Keycloak
-                        "redirectUris": ["http://localhost:8080/*"],
+                        "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
                         "webOrigins": ["*"],
                         "protocol": "openid-connect",
                         "bearerOnly": False
@@ -320,9 +482,15 @@ def register():
 
         create_client_request.raise_for_status()
 
+        # Successful creation of the keycloak client 
+        query = "UPDATE user_registered SET keycloak_generate_client = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 6: Get the client id of the new client
         get_client_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients?clientId={new_clientId}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -334,7 +502,7 @@ def register():
 
         # STEP 7: Create role for the new client
         create_role_admin_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "admin"
             },
@@ -346,7 +514,7 @@ def register():
         create_role_admin_request.raise_for_status()
 
         create_role_read_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "read"
             },
@@ -358,7 +526,7 @@ def register():
         create_role_read_request.raise_for_status()
 
         create_role_create_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "create"
             },
@@ -370,7 +538,7 @@ def register():
         create_role_create_request.raise_for_status()
 
         create_role_delete_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "delete"
             },
@@ -381,10 +549,16 @@ def register():
 
         create_role_delete_request.raise_for_status()
 
+        # Successful creation of the keycloak roles 
+        query = "UPDATE user_registered SET keycloak_create_roles_for_client = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 8 : Get the user id of the new user
 
         get_user_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users?username={email}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users?username={email}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -398,7 +572,7 @@ def register():
         # Step 9: GET Role ID where role name is admin, read, create, delete for the new client
 
         get_role_new_client_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -408,7 +582,7 @@ def register():
         get_role_new_client_request.raise_for_status()
 
         role_mapping_request = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id}",
             json=get_role_new_client_request.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -418,10 +592,16 @@ def register():
 
         role_mapping_request.raise_for_status()
 
+        # Successful creation of the keycloak role mapping 
+        query = "UPDATE user_registered SET keycloak_role_mapping = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # Step 10 : GET CLIENT Secret of the new client
 
         get_client_secret_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -442,6 +622,12 @@ def register():
         new_yml_template = generateYML(
             new_clientId, clientPORT, internalPORT, client_secret)
 
+        # Successful of generating the YML file
+        query = "UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
         # store the new yml file in yml_files folder
 
         print(new_yml_template, flush=True)
@@ -454,71 +640,96 @@ def register():
 
         # Step 12 : Run the new yml file using docker-compose
 
+        print(new_clientId, flush=True)
+
         subprocess_run_frost = subprocess.run(
-            ["docker-compose", "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        ["sudo","docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
         print(subprocess_run_frost, flush=True)
 
         # Check if any error occurs when running the new yml file
         if subprocess_run_frost.returncode != 0:
-            return jsonify(success=False, error="Error when running the new yml file"), 500
+            # return jsonify(success=False, error="Error when running the new yml file"), 500
+            return render_template('token.html', error="Error when running the new yml file")
+
+        # Successful of executing Frost file
+        query = "UPDATE user_registered SET frost_yml_execution = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
         # Step 13 : Create a new node-red container for the new client
-
+        
         PORT_DEFAULT = 20000
         new_node_red_port = PORT_DEFAULT+new_clientIDNumber
         node_red_name = f"node_red_{new_clientIDNumber}"
         node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
 
-        command_create_node_red_instance = f"docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
-        os.system(command_create_node_red_instance)
+        command_create_node_red_instance = f"sudo docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
+        result_command_create_new_node_instance = subprocess.run(command_create_node_red_instance, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        print(result_command_create_new_node_instance,flush=True)
+        if result_command_create_new_node_instance.returncode != 0:
+            # return jsonify(success=False, error="Error Generating New Node Red Instance"), 500
+            return render_template('token.html', error="Error Generating New Node Red Instance")
+        
+        # Successful node red command execution
+        query = "UPDATE user_registered SET node_red_command_execution = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
 
         container_node_red_id = get_container_id(node_red_name)
-        container_node_red_id = container_node_red_id[1:-1]
+
+        print(node_red_name + "WASS ",flush=True)
+        print(container_node_red_id + " WASSS ",flush=True)
         print(container_node_red_id, flush=True)
 
         if (not container_node_red_id):
-            return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
+            # return jsonify(success=False, error="Error when running the new node-red container, container ID"), 500
+            return render_template('token.html', error="Error when running the new node-red container, container ID")
 
-        # Step 14 : Create new node-red container and specify the data_storage-directory accordingly
 
-        # command_node_red_creating_node_red_container_specifing_data_storage = ["docker", "run", "-d", "--restart", "always", "-p",
-        #                                                                        f"{new_node_red_port}:1880", "-v", f"{node_red_name_storage_name}:/data", "--name", f"{node_red_name}", "nodered/node-red"]
+        # Step 14 : Install passport-keycloak-oauth2-oidc in the new node-red container
 
-        # command_red_node_specifying_data_storage = subprocess.run(
-        #     command_node_red_creating_node_red_container_specifing_data_storage)
-        # if command_red_node_specifying_data_storage.returncode != 0:
-        #     return jsonify(success=False, error="Error when running the new node-red container"), 500
-        # print(command_red_node_specifying_data_storage, flush=True)
 
-        # Step 15 : Install passport-keycloak-oauth2-oidc in the new node-red container
 
-        command_node_red_dependency_installation = ["docker", "exec", container_node_red_id, "bash", "-c",
+        command_node_red_dependency_installation = ["sudo","docker", "exec", container_node_red_id, "bash", "-c",
                                                     "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
 
         command_red_node = subprocess.run(
             command_node_red_dependency_installation)
+        
+        print(command_red_node,flush=True)
+        
         if command_red_node.returncode != 0:
-            return jsonify(success=False, error="Error when installing passport-keycloak-oauth2-oidc"), 500
+            # return jsonify(success=False, error="Error when installing passport-keycloak-oauth2-oidc"), 500
+            return render_template('token.html', error="Error when installing passport-keycloak-oauth2-oidc")
         print(command_red_node, flush=True)
 
-        # Step 16 : Create a new keycloak client in the new node-red
+        # Successful node red libary installation
+        query = "UPDATE user_registered SET node_red_install_libaries = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
-        # step 16.1 : Get the max client id number in the new node-red and generate the new client id
+        # Step 15 : Create a new keycloak client in the new node-red
+        # step 15.1 : Get the max client id number in the new node-red and generate the new client id
 
         new_clientIDNumber_node_red = new_clientIDNumber
         new_clientId_node_red = f"node_red_{new_clientIDNumber_node_red}"
 
-        # Step 16.2 : Create the new client in the new node-red
+        # Step 15.2 : Create the new client in the new node-red
 
         create_client_request_node_red = requests.post(
-            "http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients",
+              f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             json={
                 "clientId": new_clientId_node_red,
                 "enabled": True,
                 "publicClient": False,  # Access type: confidential
                 # This is the URL of the Keycloak
-                "redirectUris": ["http://localhost:8080/*"],
+                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
                 "webOrigins": ["*"],
                 "protocol": "openid-connect",
                 "bearerOnly": False
@@ -528,17 +739,24 @@ def register():
                 "Content-Type": "application/json"
             })
 
-        # Step 16.3 check if returns 409 status code
+        # Step 15.3 check if returns 409 status code
 
         if create_client_request_node_red.status_code == 409:
-            return jsonify(success=False, error="Client in Node Red already exists"), 409
+            # return jsonify(success=False, error="Client in Node Red already exists"), 409
+            return render_template('token.html', error="Client in Node Red already exists")
 
         create_client_request_node_red.raise_for_status()
 
-        # Step 16.4 : Get the client id of the new client
+        # Successful keycloak client generation for keycloak
+        query = "UPDATE user_registered SET node_red_keycloak_generate_new_client = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
+        # Step 15.4 : Get the client id of the new client
 
         get_client_request_node_red = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients?clientId={new_clientId_node_red}",
+        f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId_node_red}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -547,10 +765,10 @@ def register():
         get_client_request_node_red.raise_for_status()
         client_id_node_red = get_client_request_node_red.json()[0]["id"]
 
-        # Step 16.5 : Create role admin, read, create, delete in the new node-red client
+        # Step 15.5 : Create role admin, read, create, delete in the new node-red client
 
         create_role_admin_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "admin"
             },
@@ -563,7 +781,7 @@ def register():
         create_role_admin_node_red.raise_for_status()
 
         create_role_read_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "read"
             },
@@ -576,7 +794,7 @@ def register():
         create_role_read_node_red.raise_for_status()
 
         create_role_create_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "create"
             },
@@ -589,7 +807,7 @@ def register():
         create_role_create_node_red.raise_for_status()
 
         create_role_delete_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "delete"
             },
@@ -601,10 +819,16 @@ def register():
 
         create_role_delete_node_red.raise_for_status()
 
-        # Step 16.6 get the role id of the role admin, read, create, delete
+        # Successful keycloak roles generation for node red
+        query = "UPDATE user_registered SET node_red_keycloak_generate_roles = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
+        # Step 15.6 get the role id of the role admin, read, create, delete
 
         get_role_new_client_node_red = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -612,10 +836,10 @@ def register():
         )
         get_role_new_client_node_red.raise_for_status()
 
-        # Step 16.7 : Do the role mapping for the new user
+        # Step 15.7 : Do the role mapping for the new user
 
         role_mapping_request_node_red = requests.post(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/users/{user_id}/role-mappings/clients/{client_id_node_red}",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id_node_red}",
             json=get_role_new_client_node_red.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -625,14 +849,16 @@ def register():
 
         role_mapping_request_node_red.raise_for_status()
 
-    # call the function with the correct path to the folder
-        # replace_settings_js(
-        #     '\\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\node_red_storage_1\\_data')
+        # Successful keycloak roles mapping generation for node red
+        query = "UPDATE user_registered SET node_red_keycloak_role_mapping = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
-        # Step 16.8 : Create the secret
+        # Step 15.8 : Create the secret
 
         get_client_node_red_secret_request = requests.get(
-            f"http://localhost:8080/auth/admin/realms/keycloak-react-auth/clients/{client_id}/client-secret",
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -640,27 +866,228 @@ def register():
         )
 
         get_client_node_red_secret_request.raise_for_status()
-        node_red_client_secret = get_client_secret_request.json()["value"]
+        node_red_client_secret = get_client_node_red_secret_request.json()["value"]
+
+
+        print(node_red_client_secret + " SECRET OF NODE RED",flush=True)
+        print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
+
+        callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
+
+        print(new_clientId_node_red + " TEST ", flush=True)
 
         replace_settings_file(node_red_name_storage_name,
-                              client_id_node_red, node_red_client_secret, "callbackURL")
+                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
 
-        # Step 16.9 : Restart the node-red container
+        # Successful settings.js update
+        query = "UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
+        # Step 15.9 : Restart the node-red container
 
         restart_node_red_container = subprocess.run(
-            f"docker restart {container_node_red_id}", shell=True, check=True)
+            f"sudo docker restart {container_node_red_id}", shell=True, check=True)
+        
+        print(restart_node_red_container,flush=True)
 
         if restart_node_red_container.returncode != 0:
-            return jsonify(success=False, error="Server Error by restarting container"), 500
+            # return jsonify(success=False, error="Server Error by restarting container"), 500
+            return render_template('token.html', error="Server Error by restarting container")
+        
+        # Successful restart of node red instance
+        query = "UPDATE user_registered SET node_red_restart_container = 1 WHERE token = %s;"
+        print(query,flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
 
+        # Get current timestamp as a datetime object
+        now = datetime.now(timezone(timedelta(hours=1)))
+
+        # Making isCompleted true
+        query = "UPDATE user_registered SET isCompleted = 1, completedAt = %s WHERE token = %s;"
+        print(query, flush=True)
+
+        # Execute the query, passing the current timestamp as a datetime object
+        cursor.execute(query, (now, token))
+        db.commit()
+
+        # Send confirmation mail
+        generate_success_email(firstName,email)
+
+        return render_template('token.html', token="Account created successfully")
+    
+    except requests.exceptions.HTTPError as err:
+        print(err)
+
+        if err.response.status_code == 409:
+            errorText = err.response.json()["errorMessage"]
+            # return jsonify(success=False, error=errorText), 409
+            return render_template('token.html', error=errorText)
+        else:
+            # return jsonify(success=False, error="Server Error"), 500
+            return render_template('token.html', error="Server Error")
+    except Exception as err:
+        print(err, flush=True)
+        # return jsonify(success=False, error=str(err)), 500
+        return render_template('token.html', error=str(err))
+    
+
+    token = request.form.get('token')
+
+    if not token:
+        return jsonify(success=False,error="Token not obtained"),500
+
+    KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+    KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+    KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+    KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+    KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+    KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+    DATABASE_HOST=os.getenv("DATABASE_HOST")
+    DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
+    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+    DATABASE_NAME=os.getenv("DATABASE_NAME")
+
+    if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, KEYCLOAK_DOMAIN, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_NAME]):
+        return jsonify(success=False, error="One or more .env variable is missing"), 500
+
+    # Try to connect to the database
+    try:
+        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+    except pymysql.err.OperationalError as e:
+        print(e,flush=True)
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    # Check if the connection to the database was successful
+    if db is None:
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    cursor = db.cursor()
+
+    print(KEYCLOAK_SERVER_URL,flush=True)
+    print(KEYCLOAK_CLIENT_ID,flush=True)
+    print(KEYCLOAK_USERNAME,flush=True)
+    print(KEYCLOAK_PASSWORD,flush=True)
+    print(KEYCLOAK_REALM,flush=True)
+    print(KEYCLOAK_DOMAIN,flush=True)
+    return 'Token processed successfully'
+
+@app.route("/register", methods=["POST"])
+def register():
+    KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+    KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+    KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+    KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+    KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+    KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+
+    DATABASE_HOST=os.getenv("DATABASE_HOST")
+    DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
+    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+    DATABASE_NAME=os.getenv("DATABASE_NAME")
+
+    SMTP_SERVER = os.getenv("SMTP_SERVER")
+    SMTP_PORT = int(os.getenv("SMTP_PORT"))
+    SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+    if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, KEYCLOAK_DOMAIN, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_NAME,
+   SMTP_SERVER, SMTP_PORT,SMTP_USERNAME,SMTP_PASSWORD]):
+        return jsonify(success=False, error="One or more .env variable is missing"), 500
+
+    # Try to connect to the database
+    try:
+        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+    except pymysql.err.OperationalError as e:
+        print(e,flush=True)
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    # Check if the connection to the database was successful
+    if db is None:
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    cursor = db.cursor()
+
+    firstName = request.json.get("firstName")
+    lastName = request.json.get("lastName")
+    email = request.json.get("email")
+    username = request.json.get("username")
+    password = request.json.get("password")
+
+    if not all([firstName, lastName, email, username, password]):
+        return jsonify(success=False, error="Inputs are missing"), 400
+    try:
+        commandTUM = ['ldapsearch', '-H', 'ldaps://iauth.tum.de/', '-D', 'cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de', '-b', 'ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de', '-x', '-w', 'HEF@sensorservice2023', f'(&(imAffiliation=member)(imEmailAdressen={email}))']
+
+        resultcommandTUM = subprocess.run(commandTUM, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        print(resultcommandTUM.stdout)
+        print(resultcommandTUM.stderr)
+
+        if resultcommandTUM.returncode != 0:
+            print("Error:", resultcommandTUM.stderr )
+            return jsonify(success=False, error=resultcommandTUM.stderr), 500
+
+        tumVerificationResult = verifyTUMresponseString(resultcommandTUM.stdout)
+
+        # if(tumVerificationResult is False):
+        #     return jsonify(success=False, error="Your Email is Invalid or does not exist in TUM Database"), 403
+
+        # Get current timestamp
+        now_utc2 = datetime.now(timezone(timedelta(hours=1)))
+        createdAt = now_utc2.strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Calculate expiration timestamp (24 hours after createdAt)
+        expiration = now_utc2 + timedelta(hours=24)
+        expiredAt = expiration.strftime('%d %B %Y %H:%M')
+
+        # Generate Token
+        token = str(uuid.uuid4())
+
+        query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 0 AND isCompleted = 0"
+        cursor.execute(query, (email,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            # Update token and the time createdAt
+            query = "UPDATE user_registered SET token = %s, createdAt = %s WHERE email = %s"
+            try:
+                cursor.execute(query, (token, createdAt, email))
+                db.commit()
+            except Exception as e:
+                print(e)
+                return jsonify(success=False, error="Failed to update data in database"), 500
+            # Send email
+            generate_email(status=2,token=token,firstName=firstName,expiredAt=expiredAt)
+            return jsonify(success=True, message="Email will be sent again because you are already registered" ), 200
+
+        query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 0"
+        cursor.execute(query, (email,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            return jsonify(success=False, error="You are already verified and registered but not completed" ), 400
+
+        query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 1"
+        cursor.execute(query, (email,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            return jsonify(success=False, error="You are already verified and registered in our system"), 400
+
+        query = "INSERT INTO user_registered (firstName, lastName, email, token, createdAt) VALUES (%s, %s, %s, %s, %s)"
         try:
-            subprocess.run(
-                f"cd \\\\wsl$\\docker-desktop-data\\data\\docker\\volumes\\{node_red_name_storage_name}", shell=True, check=True)
-            subprocess.run("dir", shell=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(e.stderr)
-
-        return jsonify(success=True, message="User created successfully")
+            cursor.execute(query, (firstName, lastName, email, token,createdAt))
+            db.commit()
+        except Exception as e:
+            print(e)
+            return jsonify(success=False, error="Failed to insert data into database"), 500
+        
+        # Send email
+        generate_email(status=1,token=token,firstName=firstName,expiredAt=expiredAt)
+        
+        return jsonify(success=True,message="Email Send Successfully"),200
 
     except requests.exceptions.HTTPError as err:
         print(err)
