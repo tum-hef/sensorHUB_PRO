@@ -91,5 +91,8 @@ Please note that authentication via LDAP is not a recommended method, especially
 ```ldapsearch -H "ldaps://iauth.tum.de/" -D "cn=LDAP-USERNAME-HERE,ou=bindDNs,ou=iauth,dc=tum,dc=de" -b "ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de" -W "(&(imAffiliation=member)(imEmailAdressen=david.gackstetter@tum.de))"```
 
     - imAffiliation may be either student or member
+- Automate the ldapsearch by providing password with the request by adding -x and -w (instead of -W) flags together with the password:
+
+```ldapsearch -H "ldaps://iauth.tum.de/" -D "cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de" -b "ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de" -x -w <enter_password_here_without_quotation_marks> "(&(imAffiliation=member)(imEmailAdressen=david.gackstetter@tum.de))"```
     
    
