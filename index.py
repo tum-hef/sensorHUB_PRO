@@ -39,7 +39,7 @@ def get_max_node_red(arr):
     return int(max_num.split("_")[1]) + 1
 
 
-def generateYML(clientID, port, secondPort, clientSecret):
+def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
     yml_template = """
     version: '3'
     services:
@@ -47,7 +47,7 @@ def generateYML(clientID, port, secondPort, clientSecret):
         image: fraunhoferiosb/frost-server:latest
         container_name: {clientID}
         environment:
-          - serviceRootUrl=http://138.246.225.0:{port}/FROST-Server
+          - serviceRootUrl=http://138.246.236.112:{port}/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -57,7 +57,7 @@ def generateYML(clientID, port, secondPort, clientSecret):
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl=http://tuzehez-hefiot.srv.mwn.de:8080/auth/realms/master/clients-registrations/install/{clientID}
+          - auth.keycloakConfigUrl=http://138.246.236.112:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
@@ -78,7 +78,7 @@ def generateYML(clientID, port, secondPort, clientSecret):
     volumes:
         postgis_volume:
     """
-    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret)
+    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret,KEYCLOAK_REALM=KEYCLOAK_REALM)
 
 
 def verifyTUMresponseString(response):
@@ -111,7 +111,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLO
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
-                    authServerURL: "{KEYCLOAK_SERVER_URL}/auth",
+                    authServerURL: "138.246.236.112:8080/auth",
                     callbackURL: "{callbackURL}",
                 }},
                 verify: function(token, tokenSecret, profile, done) {{
@@ -621,7 +621,7 @@ def my_page():
         internalPORT = SECONDPORT+new_clientIDNumber
 
         new_yml_template = generateYML(
-            new_clientId, clientPORT, internalPORT, client_secret)
+            new_clientId, clientPORT, internalPORT, client_secret,KEYCLOAK_REALM)
 
         # Successful of generating the YML file
         query = "UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;"
@@ -873,7 +873,8 @@ def my_page():
         print(node_red_client_secret + " SECRET OF NODE RED",flush=True)
         print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
 
-        callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
+        # callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
+        callbackURL=f"138.246.236.112:{new_node_red_port}/auth/strategy/callback"
 
         print(new_clientId_node_red + " TEST ", flush=True)
 
@@ -931,12 +932,19 @@ def my_page():
             return render_template('token.html', error="Server Error")
     except Exception as err:
         print(err, flush=True)
-        tb = err.__traceback__
-        # get the line number of the error
-        line_num = tb.tb_lineno
-        # print the error message and line number
+        tb = traceback.format_exception(type(err), err, err.__traceback__)
+        error_message = tb[-1].strip()  # Get the last line of the traceback
+        line_number = tb[-2].split(", ")[1].strip()  # Get the line number from the second-to-last line of the traceback
         print("***********************************************",flush=True)
-        print(f"Error on line {line_num}: {err}",flush=True)
+        print(error_message,flush=True)
+        print("***********************************************",flush=True)
+        print(line_number,flush=True)
+        
+        # tb = err.__traceback__
+        # # get the line number of the error
+        # line_num = tb.tb_lineno
+        # # print the error message and line number
+        # print(f"Error on line {line_num}: {err}",flush=True)
 
         # return jsonify(success=False, error=str(err)), 500
         return render_template('token.html', error=str(err))
