@@ -24,7 +24,7 @@ def get_container_id(container_name):
 
 
 def get_max_frost(arr):
-    frost_nums = list(filter(lambda x: x.startswith("frost_"), arr))
+    frost_nums = [x for x in arr if x.startswith("frost_") and x[6:].isdigit()]
     if not frost_nums:
         return 0
     max_num = max(frost_nums, key=lambda x: int(x.split("_")[1]))
@@ -32,11 +32,12 @@ def get_max_frost(arr):
 
 
 def get_max_node_red(arr):
-    frost_nums = list(filter(lambda x: x.startswith("node_red_"), arr))
-    if not frost_nums:
+    node_red_nums = [x for x in arr if x.startswith("node_red_") and x[10:].isdigit()]
+    if not node_red_nums:
         return 0
-    max_num = max(frost_nums, key=lambda x: int(x.split("_")[1]))
+    max_num = max(node_red_nums, key=lambda x: int(x.split("_")[1]))
     return int(max_num.split("_")[1]) + 1
+
 
 
 def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
@@ -47,7 +48,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
         image: fraunhoferiosb/frost-server:latest
         container_name: {clientID}
         environment:
-          - serviceRootUrl=http://138.246.236.112:{port}/FROST-Server
+          - serviceRootUrl=http://tuzehez-hefiot.srv.mwn.de:{port}/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -57,7 +58,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl=http://138.246.236.112:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
+          - auth.keycloakConfigUrl=http://tuzehez-hefiot.srv.mwn.de:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
@@ -93,7 +94,7 @@ def verifyTUMresponseString(response):
         return False
 
 
-def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN):
     new_file_content = f"""
     module.exports = {{
         flowFile: "flows.json",
@@ -111,7 +112,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLO
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
-                    authServerURL: "138.246.236.112:8080/auth",
+                    authServerURL: "{KEYCLOAK_DOMAIN}:8080/auth",
                     callbackURL: "{callbackURL}",
                 }},
                 verify: function(token, tokenSecret, profile, done) {{
@@ -169,10 +170,10 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLO
     return new_file_content
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN):
     directory = "/var/lib/docker/volumes/{}/_data".format(node_red_storage)
     new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
+        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN)
 
     cmd = f"echo '{new_file_content}' | sudo tee {directory}/settings.js"
     subprocess.run(cmd, shell=True)
@@ -874,12 +875,12 @@ def my_page():
         print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
 
         # callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
-        callbackURL=f"138.246.236.112:{new_node_red_port}/auth/strategy/callback"
+        callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
 
         print(new_clientId_node_red + " TEST ", flush=True)
 
         replace_settings_file(node_red_name_storage_name,
-                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
+                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN)
 
         # Successful settings.js update
         query = "UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;"
