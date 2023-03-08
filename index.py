@@ -40,7 +40,7 @@ def get_max_node_red(arr):
 
 
 
-def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
+def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM,ROOT_URL):
     yml_template = """
     version: '3'
     services:
@@ -48,7 +48,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
         image: fraunhoferiosb/frost-server:latest
         container_name: {clientID}
         environment:
-          - serviceRootUrl=http://tuzehez-hefiot.srv.mwn.de:{port}/FROST-Server
+          - serviceRootUrl={ROOT_URL}:{port}/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -58,7 +58,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl=http://tuzehez-hefiot.srv.mwn.de:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
+          - auth.keycloakConfigUrl={ROOT_URL}:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
@@ -79,7 +79,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM):
     volumes:
         postgis_volume:
     """
-    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret,KEYCLOAK_REALM=KEYCLOAK_REALM)
+    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret,KEYCLOAK_REALM=KEYCLOAK_REALM,ROOT_URL=ROOT_URL)
 
 
 def verifyTUMresponseString(response):
@@ -94,7 +94,7 @@ def verifyTUMresponseString(response):
         return False
 
 
-def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN):
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL):
     new_file_content = f"""
     module.exports = {{
         flowFile: "flows.json",
@@ -112,7 +112,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLO
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
-                    authServerURL: "{KEYCLOAK_DOMAIN}:8080/auth",
+                    authServerURL: "{ROOT_URL}:8080/auth",
                     callbackURL: "{callbackURL}",
                 }},
                 verify: function(token, tokenSecret, profile, done) {{
@@ -170,10 +170,10 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLO
     return new_file_content
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN):
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL):
     directory = "/var/lib/docker/volumes/{}/_data".format(node_red_storage)
     new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN)
+        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL)
 
     cmd = f"echo '{new_file_content}' | sudo tee {directory}/settings.js"
     subprocess.run(cmd, shell=True)
@@ -294,11 +294,14 @@ def my_page():
         KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
         KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
         KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+
         DATABASE_HOST=os.getenv("DATABASE_HOST")
         DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
         DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
         DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
         DATABASE_NAME=os.getenv("DATABASE_NAME")
+
+        ROOT_URL=os.getenv("ROOT_URL")
 
         # Check if there is no Token passed in the URL as Query Parameter
         if token is None:
@@ -622,7 +625,7 @@ def my_page():
         internalPORT = SECONDPORT+new_clientIDNumber
 
         new_yml_template = generateYML(
-            new_clientId, clientPORT, internalPORT, client_secret,KEYCLOAK_REALM)
+            new_clientId, clientPORT, internalPORT, client_secret,KEYCLOAK_REALM,ROOT_URL)
 
         # Successful of generating the YML file
         query = "UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;"
@@ -875,12 +878,12 @@ def my_page():
         print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
 
         # callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
-        callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
+        callbackURL=f"{ROOT_URL}:{new_node_red_port}/auth/strategy/callback"
 
         print(new_clientId_node_red + " TEST ", flush=True)
 
         replace_settings_file(node_red_name_storage_name,
-                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,KEYCLOAK_DOMAIN)
+                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL)
 
         # Successful settings.js update
         query = "UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;"
