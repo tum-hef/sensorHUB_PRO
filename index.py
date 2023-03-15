@@ -45,10 +45,10 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM,ROOT_URL
     version: '3'
     services:
       web:
-        image: fraunhoferiosb/frost-server:latest
+        image: fraunhoferiosb/frost-server:2.0
         container_name: {clientID}
         environment:
-          - serviceRootUrl={ROOT_URL}:{port}/FROST-Server
+          - serviceRootUrl=http://{ROOT_URL}:{port}/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -58,7 +58,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM,ROOT_URL
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl={ROOT_URL}:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
+          - auth.keycloakConfigUrl=http://{ROOT_URL}:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
@@ -654,7 +654,6 @@ def my_page():
 
         # Check if any error occurs when running the new yml file
         if subprocess_run_frost.returncode != 0:
-            # return jsonify(success=False, error="Error when running the new yml file"), 500
             return render_template('token.html', error="Error when running the new yml file")
 
         # Successful of executing Frost file
@@ -1124,4 +1123,4 @@ def register():
 
 
 if __name__ == '__main__':
-    app.run(port=4500)
+    app.run(host="0.0.0.0",port="4500")
