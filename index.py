@@ -8,6 +8,7 @@ import os
 import pymysql
 from datetime import datetime, timezone, timedelta
 import uuid
+import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 app = Flask(__name__)
@@ -23,7 +24,7 @@ def get_container_id(container_name):
 
 
 def get_max_frost(arr):
-    frost_nums = list(filter(lambda x: x.startswith("frost_"), arr))
+    frost_nums = [x for x in arr if x.startswith("frost_") and x[6:].isdigit()]
     if not frost_nums:
         return 0
     max_num = max(frost_nums, key=lambda x: int(x.split("_")[1]))
@@ -31,22 +32,23 @@ def get_max_frost(arr):
 
 
 def get_max_node_red(arr):
-    frost_nums = list(filter(lambda x: x.startswith("node_red_"), arr))
-    if not frost_nums:
+    node_red_nums = [x for x in arr if x.startswith("node_red_") and x[10:].isdigit()]
+    if not node_red_nums:
         return 0
-    max_num = max(frost_nums, key=lambda x: int(x.split("_")[1]))
+    max_num = max(node_red_nums, key=lambda x: int(x.split("_")[1]))
     return int(max_num.split("_")[1]) + 1
 
 
-def generateYML(clientID, port, secondPort, clientSecret):
+
+def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM,ROOT_URL):
     yml_template = """
     version: '3'
     services:
       web:
-        image: fraunhoferiosb/frost-server:latest
+        image: fraunhoferiosb/frost-server:2.0
         container_name: {clientID}
         environment:
-          - serviceRootUrl=http://138.246.225.0:{port}/FROST-Server
+          - serviceRootUrl=http://{ROOT_URL}:{port}/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -56,7 +58,7 @@ def generateYML(clientID, port, secondPort, clientSecret):
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl=http://tuzehez-hefiot.srv.mwn.de:8080/auth/realms/master/clients-registrations/install/{clientID}
+          - auth.keycloakConfigUrl=http://{ROOT_URL}:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
@@ -77,7 +79,7 @@ def generateYML(clientID, port, secondPort, clientSecret):
     volumes:
         postgis_volume:
     """
-    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret)
+    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret,KEYCLOAK_REALM=KEYCLOAK_REALM,ROOT_URL=ROOT_URL)
 
 
 def verifyTUMresponseString(response):
@@ -92,7 +94,7 @@ def verifyTUMresponseString(response):
         return False
 
 
-def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL):
     new_file_content = f"""
     module.exports = {{
         flowFile: "flows.json",
@@ -110,7 +112,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLO
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
-                    authServerURL: "{KEYCLOAK_SERVER_URL}/auth",
+                    authServerURL: "{ROOT_URL}:8080/auth",
                     callbackURL: "{callbackURL}",
                 }},
                 verify: function(token, tokenSecret, profile, done) {{
@@ -168,10 +170,10 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL,KEYCLO
     return new_file_content
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email):
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL):
     directory = "/var/lib/docker/volumes/{}/_data".format(node_red_storage)
     new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
+        clientID, clientSecret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL)
 
     cmd = f"echo '{new_file_content}' | sudo tee {directory}/settings.js"
     subprocess.run(cmd, shell=True)
@@ -292,11 +294,14 @@ def my_page():
         KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
         KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
         KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+
         DATABASE_HOST=os.getenv("DATABASE_HOST")
         DATABASE_USERNAME=os.getenv("DATABASE_USERNAME")
         DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
         DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
         DATABASE_NAME=os.getenv("DATABASE_NAME")
+
+        ROOT_URL=os.getenv("ROOT_URL")
 
         # Check if there is no Token passed in the URL as Query Parameter
         if token is None:
@@ -330,7 +335,7 @@ def my_page():
         firstName = result[0][1]
         lastName = result[0][2]
         email = result[0][3]
-        createdAt = result[0][7]
+        createdAt = result[0][20]
         password="1"
 
         # Checking if token is valid based on the time that was created
@@ -620,7 +625,7 @@ def my_page():
         internalPORT = SECONDPORT+new_clientIDNumber
 
         new_yml_template = generateYML(
-            new_clientId, clientPORT, internalPORT, client_secret)
+            new_clientId, clientPORT, internalPORT, client_secret,KEYCLOAK_REALM,ROOT_URL)
 
         # Successful of generating the YML file
         query = "UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;"
@@ -649,7 +654,6 @@ def my_page():
 
         # Check if any error occurs when running the new yml file
         if subprocess_run_frost.returncode != 0:
-            # return jsonify(success=False, error="Error when running the new yml file"), 500
             return render_template('token.html', error="Error when running the new yml file")
 
         # Successful of executing Frost file
@@ -872,12 +876,13 @@ def my_page():
         print(node_red_client_secret + " SECRET OF NODE RED",flush=True)
         print(client_id_node_red + " ID OF RED NODE CLIENT",flush=True)
 
-        callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
+        # callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
+        callbackURL=f"{ROOT_URL}:{new_node_red_port}/auth/strategy/callback"
 
         print(new_clientId_node_red + " TEST ", flush=True)
 
         replace_settings_file(node_red_name_storage_name,
-                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email)
+                              new_clientId_node_red, node_red_client_secret, callbackURL,KEYCLOAK_SERVER_URL,KEYCLOAK_REALM,email,ROOT_URL)
 
         # Successful settings.js update
         query = "UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;"
@@ -919,8 +924,8 @@ def my_page():
         return render_template('token.html', token="Account created successfully")
     
     except requests.exceptions.HTTPError as err:
-        print(err)
 
+        print(err)
         if err.response.status_code == 409:
             errorText = err.response.json()["errorMessage"]
             # return jsonify(success=False, error=errorText), 409
@@ -930,6 +935,20 @@ def my_page():
             return render_template('token.html', error="Server Error")
     except Exception as err:
         print(err, flush=True)
+        tb = traceback.format_exception(type(err), err, err.__traceback__)
+        error_message = tb[-1].strip()  # Get the last line of the traceback
+        line_number = tb[-2].split(", ")[1].strip()  # Get the line number from the second-to-last line of the traceback
+        print("***********************************************",flush=True)
+        print(error_message,flush=True)
+        print("***********************************************",flush=True)
+        print(line_number,flush=True)
+        
+        # tb = err.__traceback__
+        # # get the line number of the error
+        # line_num = tb.tb_lineno
+        # # print the error message and line number
+        # print(f"Error on line {line_num}: {err}",flush=True)
+
         # return jsonify(success=False, error=str(err)), 500
         return render_template('token.html', error=str(err))
     
@@ -1068,7 +1087,8 @@ def register():
         cursor.execute(query, (email,))
         result = cursor.fetchall()
         if len(result) > 0:
-            return jsonify(success=False, error="You are already verified and registered but not completed" ), 400
+            generate_email(status=2,token=token,firstName=firstName,expiredAt=expiredAt)
+            return jsonify(success=True, message="Email will be sent again because you are not completed"), 200
 
         query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 1"
         cursor.execute(query, (email,))
@@ -1103,4 +1123,4 @@ def register():
 
 
 if __name__ == '__main__':
-    app.run(port=4500)
+    app.run(host="0.0.0.0",port="4500")
