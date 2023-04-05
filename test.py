@@ -1,19 +1,12 @@
-from flask import Flask, request, jsonify,render_template
 import requests
-from flask_cors import CORS
-import re
-import smtplib
+
 import subprocess
 import os
-import pymysql
-from datetime import datetime, timezone, timedelta
-import uuid
+
 import traceback
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-app = Flask(__name__)
-app.config['DEBUG'] = True
-CORS(app)
+
+'''app = Flask(__name__)
+app.config['DEBUG'] = True'''
 
 def get_container_id(container_name):
     command = f"sudo docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
@@ -48,7 +41,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM,ROOT_URL
         image: fraunhoferiosb/frost-server:2.0
         container_name: {clientID}
         environment:
-          - serviceRootUrl=http://{ROOT_URL}:{port}/FROST-Server
+          - serviceRootUrl={ROOT_URL}:{port}/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -58,7 +51,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM,ROOT_URL
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl=http://{ROOT_URL}:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
+          - auth.keycloakConfigUrl={ROOT_URL}:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
@@ -81,7 +74,7 @@ def generateYML(clientID, port, secondPort, clientSecret,KEYCLOAK_REALM,ROOT_URL
     """
     return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret,KEYCLOAK_REALM=KEYCLOAK_REALM,ROOT_URL=ROOT_URL)
 
-@app.route('/test', methods=['POST']) 
+#@app.route('/test', methods=['POST']) 
 def my_page():
     try:
         KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
@@ -92,12 +85,6 @@ def my_page():
         KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
 
         ROOT_URL=os.getenv("ROOT_URL")
-
-        req_data = request.get_json()
-        firstName = req_data['firstName']
-        lastName = req_data['lastName']
-        email = req_data['email']
-        password=req_data['password']
 
         # return jsonify(req_data)
 
@@ -119,7 +106,7 @@ def my_page():
         access_token = token_request.json()["access_token"]
 
         # Step 2: Create user
-        create_user_request = requests.post(
+        '''create_user_request = requests.post(
              f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users",
             json={
                 "firstName": firstName,
@@ -154,10 +141,18 @@ def my_page():
         get_clients_request.raise_for_status()
 
         clients = get_clients_request.json()
-        clientIds = [client["clientId"] for client in clients]
+        clientIds = [client["clientId"] for client in clients]'''
+        
         # Generate new client id
-        new_clientIDNumber = get_max_frost(clientIds)
+        #new_clientIDNumber = get_max_frost(clientIds)
+        new_clientIDNumber = 19
         new_clientId = f"frost_{new_clientIDNumber}"
+
+        PORT = 6000
+        SECONDPORT = 1890
+
+        clientPORT = PORT+new_clientIDNumber
+        internalPORT = SECONDPORT+new_clientIDNumber
 
         # Step 5: Generate new client
         create_client_request = requests.post(
@@ -165,12 +160,15 @@ def my_page():
             json={
                 "clientId": new_clientId,
                 "enabled": True,
+                "serviceAccountsEnabled":True,
                 "publicClient": False,  # Access type: confidential
-                # This is the URL of the Keycloak
-                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
-                "webOrigins": ["*"],
+                "authorizationServicesEnabled":True,
+                "redirectUris": [f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server/*"],
+                "webOrigins": [f"{KEYCLOAK_DOMAIN}:{clientPORT}"],
                 "protocol": "openid-connect",
-                "bearerOnly": False
+                "bearerOnly": False,
+                "adminUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server",
+                "rootUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server"
             },
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -197,16 +195,23 @@ def my_page():
                 new_clientId = f"frost_{new_clientIDNumber}"
                 print(new_clientId, flush=True)
 
+                clientPORT = PORT+new_clientIDNumber
+                internalPORT = SECONDPORT+new_clientIDNumber
+
                 create_client_request = requests.post(
                       f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
                     json={
                         "clientId": new_clientId,
                         "enabled": True,
-                        # This is the URL of the Keycloak
-                        "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
-                        "webOrigins": ["*"],
+                        "serviceAccountsEnabled":True,
+                        "publicClient": False,  # Access type: confidential
+                        "authorizationServicesEnabled":True,
+                        "redirectUris": [f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server/*"],
+                        "webOrigins": [f"{KEYCLOAK_DOMAIN}:{clientPORT}"],
                         "protocol": "openid-connect",
-                        "bearerOnly": False
+                        "bearerOnly": False,
+                        "adminUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server",
+                        "rootUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server"
                     },
                     headers={
                         "Authorization": f"Bearer {access_token}",
@@ -278,7 +283,7 @@ def my_page():
 
 
         # Step 8 : Get the user id of the new user
-
+        email = 'sta-user'
         get_user_request = requests.get(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users?username={email}",
             headers={
@@ -330,12 +335,6 @@ def my_page():
 
         # Step 11 : Generate new YML Template
 
-        PORT = 6000
-        SECONDPORT = 1890
-
-        clientPORT = PORT+new_clientIDNumber
-        internalPORT = SECONDPORT+new_clientIDNumber
-
         new_yml_template = generateYML(
             new_clientId, clientPORT, internalPORT, client_secret,KEYCLOAK_REALM,ROOT_URL)
 
@@ -354,16 +353,19 @@ def my_page():
         print(new_clientId, flush=True)
 
         subprocess_run_frost = subprocess.run(
-        ["sudo","docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        ["docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+        #["sudo","docker-compose","-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
         print(subprocess_run_frost, flush=True)
 
         # Check if any error occurs when running the new yml file
-        if subprocess_run_frost.returncode != 0:
-            return render_template('token.html', error="Error when running the new yml file")
+        '''if subprocess_run_frost.returncode != 0:
+            return render_template('token.html', error="Error when running the new yml file")'''
+
+        #return jsonify(success=True, msg="Success"),200
 
         
-        return jsonify(success=True, msg="Success"),200
+       
     
     except requests.exceptions.HTTPError as err:
 
@@ -395,4 +397,5 @@ def my_page():
         # return render_template('token.html', error=str(err))
     
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port="4500")
+    my_page()
+    #app.run(host="0.0.0.0",port="4500")
