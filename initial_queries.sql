@@ -25,4 +25,11 @@ CREATE TABLE user_registered (
   completedAt timestamp DEFAULT NULL
 );
 
+CREATE TABLE services (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  frostId INT NOT NULL,
+  nodeRedId INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES user_registered(ID)
+);
 
