@@ -298,7 +298,6 @@ def my_page():
         KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
         KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
         KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-        KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
 
         DATABASE_HOST = os.getenv("DATABASE_HOST")
         DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
@@ -313,7 +312,6 @@ def my_page():
             error = 'Token is not set'
             return render_template('token.html', error=error)
 
-        print("TEST", flush=True)
 
         # Try to connect to the database
         try:
@@ -455,12 +453,12 @@ def my_page():
                 "serviceAccountsEnabled": True,
                 "publicClient": False,  # Access type: confidential
                 "authorizationServicesEnabled": True,
-                "redirectUris": [f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server/*"],
-                "webOrigins": [f"{KEYCLOAK_DOMAIN}:{clientPORT}"],
+                "redirectUris": [f"{ROOT_URL}:{clientPORT}/FROST-Server/*"],
+                "webOrigins": [f"{ROOT_URL}:{clientPORT}"],
                 "protocol": "openid-connect",
                 "bearerOnly": False,
-                "adminUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server",
-                "rootUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server"
+                "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
+                "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server"
             },
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -498,12 +496,12 @@ def my_page():
                         "serviceAccountsEnabled": True,
                         "publicClient": False,  # Access type: confidential
                         "authorizationServicesEnabled": True,
-                        "redirectUris": [f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server/*"],
-                        "webOrigins": [f"{KEYCLOAK_DOMAIN}:{clientPORT}"],
+                        "redirectUris": [f"{ROOT_URL}:{clientPORT}/FROST-Server/*"],
+                        "webOrigins": [f"{ROOT_URL}:{clientPORT}"],
                         "protocol": "openid-connect",
                         "bearerOnly": False,
-                        "adminUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server",
-                        "rootUrl": f"{KEYCLOAK_DOMAIN}:{clientPORT}/FROST-Server"
+                        "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
+                        "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server"
                     },
                     headers={
                         "Authorization": f"Bearer {access_token}",
@@ -744,7 +742,7 @@ def my_page():
 
         # Step 15.2 : Create the new client in the new node-red
 
-        print(f"{KEYCLOAK_DOMAIN} {new_node_red_port} DOMAIN PRINT", flush=True)
+        print(f"{ROOT_URL} {new_node_red_port} DOMAIN PRINT", flush=True)
 
         create_client_request_node_red = requests.post(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
@@ -758,10 +756,10 @@ def my_page():
                 "bearerOnly": False,
                 "serviceAccountsEnabled": True,
                 "authorizationServicesEnabled": True,
-                "redirectUris": [f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/*"],
-                "webOrigins": [f"{KEYCLOAK_DOMAIN}:{new_node_red_port}"],
-                "adminUrl": f"{KEYCLOAK_DOMAIN}:{new_node_red_port}",
-                "rootUrl": f"{KEYCLOAK_DOMAIN}:{new_node_red_port}",
+                "redirectUris": [f"{ROOT_URL}:{new_node_red_port}/*"],
+                "webOrigins": [f"{ROOT_URL}:{new_node_red_port}"],
+                "adminUrl": f"{ROOT_URL}:{new_node_red_port}",
+                "rootUrl": f"{ROOT_URL}:{new_node_red_port}",
             },
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -901,7 +899,6 @@ def my_page():
         print(node_red_client_secret + " SECRET OF NODE RED", flush=True)
         print(client_id_node_red + " ID OF RED NODE CLIENT", flush=True)
 
-        # callbackURL=f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/auth/strategy/callback"
         callbackURL = f"{ROOT_URL}:{new_node_red_port}/auth/strategy/callback"
 
         print(new_clientId_node_red + " TEST ", flush=True)
@@ -977,47 +974,7 @@ def my_page():
         # return jsonify(success=False, error=str(err)), 500
         return render_template('token.html', error=str(err))
 
-    # token = request.form.get('token')
-
-    # if not token:
-    #     return jsonify(success=False, error="Token not obtained"), 500
-
-    # KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
-    # KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
-    # KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
-    # KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
-    # KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-    # KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
-    # DATABASE_HOST = os.getenv("DATABASE_HOST")
-    # DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
-    # DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
-    # DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
-    # DATABASE_NAME = os.getenv("DATABASE_NAME")
-
-    # if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, KEYCLOAK_DOMAIN, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_NAME]):
-    #     return jsonify(success=False, error="One or more .env variable is missing"), 500
-
-    # # Try to connect to the database
-    # try:
-    #     db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
-    #                          user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
-    # except pymysql.err.OperationalError as e:
-    #     print(e, flush=True)
-    #     return jsonify(success=False, error="Failed to connect to the database"), 500
-
-    # # Check if the connection to the database was successful
-    # if db is None:
-    #     return jsonify(success=False, error="Failed to connect to the database"), 500
-
-    # cursor = db.cursor()
-
-    # print(KEYCLOAK_SERVER_URL, flush=True)
-    # print(KEYCLOAK_CLIENT_ID, flush=True)
-    # print(KEYCLOAK_USERNAME, flush=True)
-    # print(KEYCLOAK_PASSWORD, flush=True)
-    # print(KEYCLOAK_REALM, flush=True)
-    # print(KEYCLOAK_DOMAIN, flush=True)
-    # return 'Token processed successfully'
+   
 
 
 @app.route("/register", methods=["POST"])
@@ -1028,7 +985,7 @@ def register():
         KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
         KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
         KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-        KEYCLOAK_DOMAIN = os.getenv("KEYCLOAK_DOMAIN")
+
 
         DATABASE_HOST = os.getenv("DATABASE_HOST")
         DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
@@ -1041,7 +998,7 @@ def register():
         SMTP_USERNAME = os.getenv("SMTP_USERNAME")
         SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
-        if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, KEYCLOAK_DOMAIN, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_NAME,
+        if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_NAME,
                     SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD]):
             return jsonify(success=False, error="One or more .env variable is missing"), 500
 
