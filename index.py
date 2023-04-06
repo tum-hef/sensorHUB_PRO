@@ -681,7 +681,7 @@ def my_page():
         cursor.execute(query, (token,))
         db.commit()
 
-        return render_template('token.html', token="Account created successfully")
+        # return render_template('token.html', token="Account created successfully")
 
         # Step 13 : Create a new node-red container for the new client
 
@@ -744,6 +744,8 @@ def my_page():
 
         # Step 15.2 : Create the new client in the new node-red
 
+        print(f"{KEYCLOAK_DOMAIN} {new_node_red_port} DOMAIN PRINT", flush=True)
+
         create_client_request_node_red = requests.post(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
             json={
@@ -751,10 +753,15 @@ def my_page():
                 "enabled": True,
                 "publicClient": False,  # Access type: confidential
                 # This is the URL of the Keycloak
-                "redirectUris": [f"{KEYCLOAK_SERVER_URL}/*"],
                 "webOrigins": ["*"],
                 "protocol": "openid-connect",
-                "bearerOnly": False
+                "bearerOnly": False,
+                "serviceAccountsEnabled": True,
+                "authorizationServicesEnabled": True,
+                "redirectUris": [f"{KEYCLOAK_DOMAIN}:{new_node_red_port}/*"],
+                "webOrigins": [f"{KEYCLOAK_DOMAIN}:{new_node_red_port}"],
+                "adminUrl": f"{KEYCLOAK_DOMAIN}:{new_node_red_port}",
+                "rootUrl": f"{KEYCLOAK_DOMAIN}:{new_node_red_port}",
             },
             headers={
                 "Authorization": f"Bearer {access_token}",
