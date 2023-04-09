@@ -850,15 +850,36 @@ def my_page():
         cursor.execute(query, (token,))
         db.commit()
 
-        return render_template('token.html', token="Account created successfully")
-
         # return render_template('token.html', token="Account created successfully")
 
         # Step 13 : Create a new node-red container for the new client
 
-        new_node_red_port = PORT_DEFAULT_NODE_RED+new_clientIDNumber
-        node_red_name = f"node_red_{new_clientIDNumber}"
-        node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
+        node_red_port_check = check_column_data_exists(
+            "node_red_port", cursor=cursor, db=db)
+
+        if (node_red_port_check):
+            new_node_red_port = get_max_column_value(
+                "node_red_port", cursor, db) + 1
+            collision_exist = check_variable_exists_in_ports(
+                new_node_red_port, cursor, db)
+            while (collision_exist):
+                new_node_red_port += 1
+                collision_exist = check_variable_exists_in_ports(
+                    new_node_red_port, cursor, db)
+            update_service_column(
+                service_id, "node_red_port", new_node_red_port, cursor, db)
+        else:
+            new_node_red_port = PORT_DEFAULT_NODE_RED + service_id
+            update_service_column(
+                service_id, "node_red_port", new_node_red_port, cursor, db)
+        
+            
+
+
+        # new_node_red_port = PORT_DEFAULT_NODE_RED+new_clientIDNumber
+        new_node_red_port = new_node_red_port
+        node_red_name = f"node_red_{service_id}"
+        node_red_name_storage_name = f"node_red_storage_{service_id}"
 
         command_create_node_red_instance = f"sudo docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
         result_command_create_new_node_instance = subprocess.run(
@@ -909,7 +930,7 @@ def my_page():
         # Step 15 : Create a new keycloak client in the new node-red
         # step 15.1 : Get the max client id number in the new node-red and generate the new client id
 
-        new_clientIDNumber_node_red = new_clientIDNumber
+        new_clientIDNumber_node_red = service_id
         new_clientId_node_red = f"node_red_{new_clientIDNumber_node_red}"
 
         # Step 15.2 : Create the new client in the new node-red
@@ -1111,6 +1132,10 @@ def my_page():
         # Execute the query, passing the current timestamp as a datetime object
         cursor.execute(query, (now, token))
         db.commit()
+
+        # Closing the connection
+        cursor.close()
+        db.close()
 
         # Send confirmation mail
         generate_success_email(firstName, email)
