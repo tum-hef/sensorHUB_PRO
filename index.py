@@ -872,9 +872,6 @@ def my_page():
             new_node_red_port = PORT_DEFAULT_NODE_RED + service_id
             update_service_column(
                 service_id, "node_red_port", new_node_red_port, cursor, db)
-        
-            
-
 
         # new_node_red_port = PORT_DEFAULT_NODE_RED+new_clientIDNumber
         new_node_red_port = new_node_red_port
@@ -1238,7 +1235,7 @@ def register():
         #     return jsonify(success=False, error="Your Email is Invalid or does not exist in TUM Database"), 403
 
         # Get current timestamp
-        now_utc2 = datetime.now(timezone(timedelta(hours=1)))
+        now_utc2 = datetime.now(timezone(timedelta(hours=2)))
         createdAt = now_utc2.strftime('%Y-%m-%d %H:%M:%S')
 
         # Calculate expiration timestamp (24 hours after createdAt)
