@@ -16,6 +16,69 @@ app.config['DEBUG'] = True
 CORS(app)
 
 
+def update_service_column(service_id, column_name, new_value, cursor, db):
+    try:
+        # Execute the query to update the specified column for the given service_id
+        query = f"UPDATE services SET {column_name} = %s WHERE id = %s;"
+        cursor.execute(query, (new_value, service_id))
+        db.commit()
+
+        # If the update was successful, return True; otherwise return False
+        if cursor.rowcount > 0:
+            return True
+        else:
+            return False
+    except pymysql.Error as error:
+        print("Error:", error)
+
+
+def get_max_column_value(column_name, cursor, db):
+    try:
+        # Execute the query to retrieve the maximum value of the column
+        query = f"SELECT MAX({column_name}) FROM services;"
+        cursor.execute(query)
+
+        # Get the maximum value from the query result
+        max_value = cursor.fetchone()[0]
+
+        # Return the maximum value
+        return max_value
+
+    except pymysql.Error as error:
+        print("Error:", error)
+
+
+def check_variable_exists_in_ports(variable, cursor, db):
+    try:
+        # Execute the query to check if the variable exists in any of the three columns
+        query = f"SELECT * FROM services WHERE frost_port_one = %s OR frost_port_two = %s OR node_red_port = %s LIMIT 1;"
+        cursor.execute(query, (variable, variable, variable))
+
+        # If the variable exists in any of the three columns, return True; otherwise return False
+        if cursor.fetchone():
+            return True
+        else:
+            return False
+    except pymysql.Error as error:
+        print("Error:", error)
+
+
+def check_column_data_exists(column_name, cursor, db):
+    try:
+        # Execute the query to check if any data exists in the specified column
+        query = f"SELECT {column_name} FROM services WHERE {column_name} IS NOT NULL LIMIT 1;"
+
+        cursor.execute(query)
+
+        # If any data exists in the column, return True; otherwise return False
+        if cursor.fetchone():
+            return True
+        else:
+            return False
+    except pymysql.Error as error:
+        print("Error:", error)
+
+
 def get_container_id(container_name):
     command = f"sudo docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
     output = subprocess.run(command, shell=True, capture_output=True)
@@ -312,7 +375,6 @@ def my_page():
             error = 'Token is not set'
             return render_template('token.html', error=error)
 
-
         # Try to connect to the database
         try:
             db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
@@ -428,22 +490,131 @@ def my_page():
                 "Content-Type": "application/json"
             }
         )
-
         get_clients_request.raise_for_status()
 
-        clients = get_clients_request.json()
-        clientIds = [client["clientId"] for client in clients]
-        # Generate new client id
-        new_clientIDNumber = get_max_frost(clientIds)
-        new_clientId = f"frost_{new_clientIDNumber}"
+        # Get ID of the new user
+        query = "SELECT id FROM user_registered where email = %s;"
+        print(query, flush=True)
+        cursor.execute(query, (email,))
+        db.commit()
+
+        # Retrieve the user ID value from the cursor
+        result = cursor.fetchone()
+        user_id = result[0]
+
+        # Print the user ID value
+        print("User ID:", user_id, flush=True)
+
+        query = "INSERT INTO services (user_id) VALUES (%s);"
+
+        cursor.execute(query, (user_id,))
+        db.commit()
+        print("Data inserted successfully into service table for user ID:", user_id)
+
+        # Select the id column from the service table where the user_id matches the specified user_id
+        query = "SELECT id FROM services WHERE user_id = %s;"
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+        service_id = result[0]
+
+        print(service_id, flush=True)
+
+        FORST_DEFAULT_PORT = 6000
+        FROST_SECOND_DEFAULT_PORT = 1890
+
+        PORT_DEFAULT_NODE_RED = 20000
+
+        # clientPORT = FORST_DEFAULT_PORT+new_clientIDNumber
+        # internalPORT = FROST_SECOND_DEFAULT_PORT+new_clientIDNumber
+
+        frost_port_one_check = check_column_data_exists(
+            "frost_port_one", cursor=cursor, db=db)
+
+        print("TEST1", flush=True)
+        print(frost_port_one_check, flush=True)
+
+        if frost_port_one_check:
+            print("TEST2", flush=True)
+            new_frost_port_one = get_max_column_value(
+                "frost_port_one", cursor, db) + 1
+            collision_exist = check_variable_exists_in_ports(
+                new_frost_port_one, cursor, db)
+            print("TEST3", flush=True)
+            while (collision_exist):
+                new_frost_port_one += 1
+                collision_exist = collision_exist = check_variable_exists_in_ports(
+                    new_frost_port_one, cursor, db)
+                print("TEST4", flush=True)
+
+            clientPORT = new_frost_port_one
+            update_service_column(
+                service_id, "frost_port_one", clientPORT, cursor, db)
+            print("TEST5", flush=True)
+
+            # Port Frost two check
+            frost_port_two_check = check_column_data_exists(
+                "frost_port_two", cursor=cursor, db=db)
+            print("TEST6", flush=True)
+
+            if frost_port_two_check:
+                print("TEST7", flush=True)
+                new_frost_port_two = get_max_column_value(
+                    "frost_port_two", cursor, db) + 1
+                collision_exist = check_variable_exists_in_ports(
+                    new_frost_port_two, cursor, db)
+
+                while (collision_exist):
+                    print("TEST8", flush=True)
+                    new_frost_port_two += 1
+                    collision_exist = collision_exist = check_variable_exists_in_ports(
+                        new_frost_port_two, cursor, db)
+                    print("TEST9", flush=True)
+
+                internalPORT = new_frost_port_two
+                update_service_column(
+                    service_id, "frost_port_two", internalPORT, cursor, db)
+                print("TEST10", flush=True)
+
+            else:
+                print("TEST11", flush=True)
+                new_frost_port_two = FROST_SECOND_DEFAULT_PORT + service_id
+                internalPORT = new_frost_port_two
+                update_service_column(
+                    service_id, "frost_port_two", internalPORT, cursor, db)
+
+        else:
+            print("TEST12", flush=True)
+            new_frost_port_one = FORST_DEFAULT_PORT + service_id
+            clientPORT = new_frost_port_one
+            print("TEST12", flush=True)
+
+            update_service_column(
+                service_id, "frost_port_one", clientPORT, cursor, db)
+
+            print("TEST13", flush=True)
+
+            new_frost_port_two = FROST_SECOND_DEFAULT_PORT + service_id
+            internalPORT = new_frost_port_two
+            print("TEST14", flush=True)
+            update_service_column(
+                service_id, "frost_port_two", internalPORT, cursor, db)
+            print("TEST15", flush=True)
+
+        print(clientPORT, flush=True)
+        print(internalPORT, flush=True)
+
+        # Insert port in database
+
+        # Fetching the next Frost clientID
+        # clients = get_clients_request.json()
+        # clientIds = [client["clientId"] for client in clients]
+        # # Generate new client id
+        # new_clientIDNumber = get_max_frost(clientIds)
+        # new_clientId = f"frost_{new_clientIDNumber}"
 
         # Step 5: Generate new client
 
-        PORT = 6000
-        SECONDPORT = 1890
-
-        clientPORT = PORT+new_clientIDNumber
-        internalPORT = SECONDPORT+new_clientIDNumber
+        new_clientId = f"frost_{clientPORT}"
 
         create_client_request = requests.post(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
@@ -466,47 +637,47 @@ def my_page():
             })
 
         # check if request returns 409 status code
-        if create_client_request.status_code == 409:
-            while create_client_request.status_code == 409:
-                get_clients_request = requests.get(
-                    f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-                    headers={
-                        "Authorization": f"Bearer {access_token}",
-                        "Content-Type": "application/json"
-                    }
-                )
+        # if create_client_request.status_code == 409:
+        #     while create_client_request.status_code == 409:
+        #         get_clients_request = requests.get(
+        #             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+        #             headers={
+        #                 "Authorization": f"Bearer {access_token}",
+        #                 "Content-Type": "application/json"
+        #             }
+        #         )
 
-                get_clients_request.raise_for_status()
+        #         get_clients_request.raise_for_status()
 
-                clients = get_clients_request.json()
-                clientIds = [client["clientId"] for client in clients]
+        #         clients = get_clients_request.json()
+        #         clientIds = [client["clientId"] for client in clients]
 
-                new_clientIDNumber = get_max_frost(clientIds)
-                new_clientId = f"frost_{new_clientIDNumber}"
-                print(new_clientId, flush=True)
+        #         new_clientIDNumber = get_max_frost(clientIds)
+        #         new_clientId = f"frost_{new_clientIDNumber}"
+        #         print(new_clientId, flush=True)
 
-                clientPORT = PORT+new_clientIDNumber
-                internalPORT = SECONDPORT+new_clientIDNumber
+        #         clientPORT = FORST_DEFAULT_PORT+new_clientIDNumber
+        #         internalPORT = FROST_SECOND_DEFAULT_PORT+new_clientIDNumber
 
-                create_client_request = requests.post(
-                    f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-                    json={
-                        "clientId": new_clientId,
-                        "enabled": True,
-                        "serviceAccountsEnabled": True,
-                        "publicClient": False,  # Access type: confidential
-                        "authorizationServicesEnabled": True,
-                        "redirectUris": [f"{ROOT_URL}:{clientPORT}/FROST-Server/*"],
-                        "webOrigins": [f"{ROOT_URL}:{clientPORT}"],
-                        "protocol": "openid-connect",
-                        "bearerOnly": False,
-                        "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
-                        "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server"
-                    },
-                    headers={
-                        "Authorization": f"Bearer {access_token}",
-                        "Content-Type": "application/json"
-                    })
+        #         create_client_request = requests.post(
+        #             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+        #             json={
+        #                 "clientId": new_clientId,
+        #                 "enabled": True,
+        #                 "serviceAccountsEnabled": True,
+        #                 "publicClient": False,  # Access type: confidential
+        #                 "authorizationServicesEnabled": True,
+        #                 "redirectUris": [f"{ROOT_URL}:{clientPORT}/FROST-Server/*"],
+        #                 "webOrigins": [f"{ROOT_URL}:{clientPORT}"],
+        #                 "protocol": "openid-connect",
+        #                 "bearerOnly": False,
+        #                 "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
+        #                 "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server"
+        #             },
+        #             headers={
+        #                 "Authorization": f"Bearer {access_token}",
+        #                 "Content-Type": "application/json"
+        #             })
 
         create_client_request.raise_for_status()
 
@@ -679,12 +850,13 @@ def my_page():
         cursor.execute(query, (token,))
         db.commit()
 
+        return render_template('token.html', token="Account created successfully")
+
         # return render_template('token.html', token="Account created successfully")
 
         # Step 13 : Create a new node-red container for the new client
 
-        PORT_DEFAULT = 20000
-        new_node_red_port = PORT_DEFAULT+new_clientIDNumber
+        new_node_red_port = PORT_DEFAULT_NODE_RED+new_clientIDNumber
         node_red_name = f"node_red_{new_clientIDNumber}"
         node_red_name_storage_name = f"node_red_storage_{new_clientIDNumber}"
 
@@ -974,8 +1146,6 @@ def my_page():
         # return jsonify(success=False, error=str(err)), 500
         return render_template('token.html', error=str(err))
 
-   
-
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -985,7 +1155,6 @@ def register():
         KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
         KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
         KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-
 
         DATABASE_HOST = os.getenv("DATABASE_HOST")
         DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")

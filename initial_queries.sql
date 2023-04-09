@@ -28,8 +28,9 @@ CREATE TABLE user_registered (
 CREATE TABLE services (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
-  frostId INT NOT NULL,
-  nodeRedId INT NOT NULL,
+  frost_port_one INT,
+  frost_port_two INT,
+  node_red_port INT,
+  node_red_storage varchar(255),
   FOREIGN KEY (user_id) REFERENCES user_registered(ID)
 );
-
