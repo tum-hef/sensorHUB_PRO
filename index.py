@@ -352,7 +352,47 @@ def generate_success_email(firstName, email):
         return jsonify(success=False, error=str(err)), 500
 
 
-@app.route('/validate')
+@app.route("/node-red", methods=["GET"])
+def node_red():
+    email = request.args.get("email")
+    if not email:
+        # email parameter not received, handle the error here
+        return jsonify({"success": False, "message": "Email parameter not received"})
+    if "@" not in email or "." not in email:
+        # email parameter not in correct format, handle the error here
+        return jsonify({"success": False, "message": "Email parameter not in correct format"})
+
+    DATABASE_HOST = os.getenv("DATABASE_HOST")
+    DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+    DATABASE_NAME = os.getenv("DATABASE_NAME")
+    # Try to connect to the database
+    db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
+                         user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+
+    # Check if the connection to the database was successful
+    if db is None:
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    cursor = db.cursor()
+
+    # Query to get the node_red_port based on email
+    query = "SELECT s.node_red_port FROM services s JOIN user_registered ur ON ur.id = s.user_id WHERE ur.email = %s LIMIT 1"
+    cursor.execute(query, (email,))
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        return jsonify({"success": False, "message": "Does Not Exist"}), 404
+
+    PORT = result[0][0]
+    if PORT is None:
+        return jsonify(success=False, error="Error occurred "), 500
+
+    return jsonify({"success": True, "PORT": PORT})
+
+
+@app.route('/validate', methods=["GET"])
 def my_page():
     try:
         token = request.args.get('token')
@@ -869,7 +909,7 @@ def my_page():
             update_service_column(
                 service_id, "node_red_port", new_node_red_port, cursor, db)
         else:
-            new_node_red_port = PORT_DEFAULT_NODE_RED + service_id
+            new_node_red_port = PORT_DEFAULT_NODE_RED
             update_service_column(
                 service_id, "node_red_port", new_node_red_port, cursor, db)
 
@@ -1206,10 +1246,9 @@ def register():
         firstName = request.json.get("firstName")
         lastName = request.json.get("lastName")
         email = request.json.get("email")
-        username = request.json.get("username")
         password = request.json.get("password")
 
-        if not all([firstName, lastName, email, username, password]):
+        if not all([firstName, lastName, email, password]):
             return jsonify(success=False, error="Inputs are missing"), 400
         commandTUM = ['ldapsearch', '-H', 'ldaps://iauth.tum.de/', '-D', 'cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de', '-b',
                       'ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de', '-x', '-w', 'HEF@sensorservice2023', f'(&(imAffiliation=member)(imEmailAdressen={email}))']
