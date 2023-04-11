@@ -31,6 +31,5 @@ CREATE TABLE services (
   frost_port_one INT,
   frost_port_two INT,
   node_red_port INT,
-  node_red_storage varchar(255),
   FOREIGN KEY (user_id) REFERENCES user_registered(ID)
 );
