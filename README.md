@@ -123,42 +123,34 @@ docker run -d --name keycloak -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PA
 7) **In role Mapping of the user give access**
 
 8) **Install mysql**
-
-    docker run -d -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD= YOUR_PASSWORD> mysql
+```docker run -d -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD= YOUR_PASSWORD> mysql ```
 
 9) **Execute in the database "initial_queries.sql" file**
 
 10) **Fill variables in .env**
 
-    KEYCLOAK_SERVER_URL=
-    
-    KEYCLOAK_DOMAIN=
-    
-    KEYCLOAK_CLIENT_ID=
-    
-    KEYCLOAK_USERNAME=
-    
-    KEYCLOAK_PASSWORD=
-    
-    KEYCLOAK_REALM=
-    
-    
-    
-    EMAIL=
-    
-    EMAIL_PASSWORD=
-    
-    
-    DATABASE_HOST=
-    
-    DATABASE_USERNAME=
-    
-    DATABASE_PASSWORD=
-    
-    DATABASE_PORT=
-    
-    
-    SERVER_URL=
+```
+ROOT_URL=
+
+KEYCLOAK_SERVER_URL=
+KEYCLOAK_CLIENT_ID=
+KEYCLOAK_USERNAME=
+KEYCLOAK_PASSWORD=
+KEYCLOAK_REALM=
+
+SMTP_SERVER=
+SMTP_PORT=
+SMTP_USERNAME=
+SMTP_PASSWORD=
+
+DATABASE_HOST=
+DATABASE_USERNAME=
+DATABASE_PASSWORD=
+DATABASE_PORT=
+DATABASE_NAME=
+
+SERVER_URL=
+```
 
 ## Workflow of Ports stored 
 
