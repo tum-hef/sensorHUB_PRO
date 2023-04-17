@@ -352,6 +352,46 @@ def generate_success_email(firstName, email):
         return jsonify(success=False, error=str(err)), 500
 
 
+@app.route("/frost-server", methods=["GET"])
+def frost_server():
+    email = request.args.get("email")
+    if not email:
+        # email parameter not received, handle the error here
+        return jsonify({"success": False, "message": "Email parameter not received"})
+    if "@" not in email or "." not in email:
+        # email parameter not in correct format, handle the error here
+        return jsonify({"success": False, "message": "Email parameter not in correct format"})
+
+    DATABASE_HOST = os.getenv("DATABASE_HOST")
+    DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+    DATABASE_NAME = os.getenv("DATABASE_NAME")
+    # Try to connect to the database
+    db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
+                         user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+
+    # Check if the connection to the database was successful
+    if db is None:
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    cursor = db.cursor()
+
+    # Query to get the node_red_port based on email
+    query = "SELECT s.frost_port_one FROM services s JOIN user_registered ur ON ur.id = s.user_id WHERE ur.email = %s LIMIT 1"
+    cursor.execute(query, (email,))
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        return jsonify({"success": False, "message": "Does Not Exist"}), 404
+
+    PORT = result[0][0]
+    if PORT is None:
+        return jsonify(success=False, error="Error occurred "), 500
+
+    return jsonify({"success": True, "PORT": PORT})
+
+
 @app.route("/node-red", methods=["GET"])
 def node_red():
     email = request.args.get("email")
@@ -1253,7 +1293,6 @@ def register():
         commandTUM = ['ldapsearch', '-H', 'ldaps://iauth.tum.de/', '-D', 'cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de', '-b',
                       'ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de', '-x', '-w', 'HEF@sensorservice2023', f'(&(imAffiliation=member)(imEmailAdressen={email}))']
 
-        print("TEST2", flush=True)
         # tumVerificationResult = verifyTUMresponseString(
         #     resultcommandTUM.stdout)
 
@@ -1274,7 +1313,7 @@ def register():
         #     return jsonify(success=False, error="Your Email is Invalid or does not exist in TUM Database"), 403
 
         # Get current timestamp
-        now_utc2 = datetime.now(timezone(timedelta(hours=2)))
+        now_utc2 = datetime.now(timezone(timedelta(hours=1)))
         createdAt = now_utc2.strftime('%Y-%m-%d %H:%M:%S')
 
         # Calculate expiration timestamp (24 hours after createdAt)
@@ -1296,7 +1335,7 @@ def register():
             # Send email
             generate_email(status=2, token=token,
                            firstName=firstName, expiredAt=expiredAt)
-            return jsonify(success=True, message="Email will be sent again because you are already registered"), 200
+            return jsonify(success=True, message="Email will be sent again because you are already registered", code="A00001"), 400
 
         query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 0"
         cursor.execute(query, (email,))
@@ -1304,13 +1343,13 @@ def register():
         if len(result) > 0:
             generate_email(status=2, token=token,
                            firstName=firstName, expiredAt=expiredAt)
-            return jsonify(success=True, message="Email will be sent again because you are not completed"), 200
+            return jsonify(success=False, message="Email will be sent again because you are not completed", code="A00002"), 400
 
         query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 1"
         cursor.execute(query, (email,))
         result = cursor.fetchall()
         if len(result) > 0:
-            return jsonify(success=False, error="You are already verified and registered in our system"), 400
+            return jsonify(success=False, error="You are already verified and registered in our system", code="A00003"), 400
 
         query = "INSERT INTO user_registered (firstName, lastName, email, token, createdAt) VALUES (%s, %s, %s, %s, %s)"
         cursor.execute(
@@ -1325,7 +1364,7 @@ def register():
 
     except pymysql.err.OperationalError as e:
         print(e, flush=True)
-        return jsonify(success=False, error="Failed to connect to the database"), 500
+        return jsonify(success=False, error="Failed to connect to the database", code="A00004"), 500
 
     except requests.exceptions.HTTPError as err:
         print(err, flush=True)
