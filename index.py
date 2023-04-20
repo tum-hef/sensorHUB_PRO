@@ -391,6 +391,55 @@ def frost_server():
 
     return jsonify({"success": True, "PORT": PORT})
 
+# Get all frost clients for that specific client
+
+
+@app.route("/frost-clients", methods=["GET"])
+def frost_client():
+    user_id = request.args.get('user_id')
+    KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+    KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+    KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+    KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+    KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+
+    try:
+        # Step 1: Get access token
+        token_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+            data={
+                "client_id": KEYCLOAK_CLIENT_ID,
+                "username": KEYCLOAK_USERNAME,
+                "password": KEYCLOAK_PASSWORD,
+                "grant_type": "password",
+            },
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        )
+        token_request.raise_for_status()
+        access_token = token_request.json()["access_token"]
+
+        try:
+            # Step 2: Fetch the list of clients for the user
+            clients_request = requests.get(
+                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json"
+                }
+            )
+            clients_request.raise_for_status()
+            clients = clients_request.json()
+
+            return jsonify({"success": True, "clients": clients})
+
+        except Exception as e:
+            return jsonify({"success": False, "error": str(e)})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
 
 @app.route("/node-red", methods=["GET"])
 def node_red():
