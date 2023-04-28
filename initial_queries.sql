@@ -7,10 +7,13 @@ CREATE TABLE user_registered (
   email varchar(255) NOT NULL,
   token varchar(255) NOT NULL,
   isVerified boolean DEFAULT false,
-	keycloak_user_creation boolean DEFAULT false,
+  keycloak_user_creation boolean DEFAULT false,
   keycloak_generate_client boolean DEFAULT false,
   keycloak_create_roles_for_client boolean DEFAULT false,
   keycloak_role_mapping boolean DEFAULT false,
+  group_creation boolean  DEFAULT false,
+  group_assign_user_to_group  boolean DEFAULT false,
+  group_client_role_mapping boolean DEFAULT false,
   yml_genereration boolean DEFAULT false,
   frost_yml_execution boolean DEFAULT false,
   node_red_command_execution boolean DEFAULT false,
@@ -25,4 +28,12 @@ CREATE TABLE user_registered (
   completedAt timestamp DEFAULT NULL
 );
 
-
+CREATE TABLE services (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  group_id varchar(255),
+  frost_port_one INT,
+  frost_port_two INT,
+  node_red_port INT,
+  FOREIGN KEY (user_id) REFERENCES user_registered(ID)
+);
