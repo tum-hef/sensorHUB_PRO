@@ -499,6 +499,8 @@ def my_page():
 
         ROOT_URL = os.getenv("ROOT_URL")
 
+        GROUP_ID_RANDOM_NAME_GENERATOR = uuid.uuid4().hex
+
         # Check if there is no Token passed in the URL as Query Parameter
         if token is None:
             error = 'Token is not set'
@@ -532,7 +534,7 @@ def my_page():
         firstName = result[0][1]
         lastName = result[0][2]
         email = result[0][3]
-        createdAt = result[0][20]
+        createdAt = result[0][23]
         password = "1"
 
         # Checking if token is valid based on the time that was created
@@ -653,9 +655,6 @@ def my_page():
 
         PORT_DEFAULT_NODE_RED = 20000
 
-        # clientPORT = FORST_DEFAULT_PORT+new_clientIDNumber
-        # internalPORT = FROST_SECOND_DEFAULT_PORT+new_clientIDNumber
-
         frost_port_one_check = check_column_data_exists(
             "frost_port_one", cursor=cursor, db=db)
 
@@ -732,14 +731,9 @@ def my_page():
         print(clientPORT, flush=True)
         print(internalPORT, flush=True)
 
-        # Insert port in database
-
-        # Fetching the next Frost clientID
-        # clients = get_clients_request.json()
-        # clientIds = [client["clientId"] for client in clients]
-        # # Generate new client id
-        # new_clientIDNumber = get_max_frost(clientIds)
-        # new_clientId = f"frost_{new_clientIDNumber}"
+        # Store the Group ID On Database
+        update_service_column(
+            service_id, "group_id", GROUP_ID_RANDOM_NAME_GENERATOR, cursor, db)
 
         # Step 5: Generate new client
 
@@ -764,49 +758,6 @@ def my_page():
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
             })
-
-        # check if request returns 409 status code
-        # if create_client_request.status_code == 409:
-        #     while create_client_request.status_code == 409:
-        #         get_clients_request = requests.get(
-        #             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-        #             headers={
-        #                 "Authorization": f"Bearer {access_token}",
-        #                 "Content-Type": "application/json"
-        #             }
-        #         )
-
-        #         get_clients_request.raise_for_status()
-
-        #         clients = get_clients_request.json()
-        #         clientIds = [client["clientId"] for client in clients]
-
-        #         new_clientIDNumber = get_max_frost(clientIds)
-        #         new_clientId = f"frost_{new_clientIDNumber}"
-        #         print(new_clientId, flush=True)
-
-        #         clientPORT = FORST_DEFAULT_PORT+new_clientIDNumber
-        #         internalPORT = FROST_SECOND_DEFAULT_PORT+new_clientIDNumber
-
-        #         create_client_request = requests.post(
-        #             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
-        #             json={
-        #                 "clientId": new_clientId,
-        #                 "enabled": True,
-        #                 "serviceAccountsEnabled": True,
-        #                 "publicClient": False,  # Access type: confidential
-        #                 "authorizationServicesEnabled": True,
-        #                 "redirectUris": [f"{ROOT_URL}:{clientPORT}/FROST-Server/*"],
-        #                 "webOrigins": [f"{ROOT_URL}:{clientPORT}"],
-        #                 "protocol": "openid-connect",
-        #                 "bearerOnly": False,
-        #                 "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
-        #                 "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server"
-        #             },
-        #             headers={
-        #                 "Authorization": f"Bearer {access_token}",
-        #                 "Content-Type": "application/json"
-        #             })
 
         create_client_request.raise_for_status()
 
@@ -922,6 +873,76 @@ def my_page():
 
         # Successful creation of the keycloak role mapping
         query = "UPDATE user_registered SET keycloak_role_mapping = 1 WHERE token = %s;"
+        print(query, flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
+        # Step 9.1: Create group
+        create_group_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups",
+            json={
+                "name": GROUP_ID_RANDOM_NAME_GENERATOR
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        create_group_request.raise_for_status()
+
+        print("*****GROUP NAME ******", flush=True)
+        print(GROUP_ID_RANDOM_NAME_GENERATOR, flush=True)
+        print("*****GROUP NAME ******", flush=True)
+
+        query = "UPDATE user_registered SET group_creation = 1 WHERE token = %s;"
+        print(query, flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
+        # Step 9.2 Get The ID Of Group
+        get_group_request = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups?search={GROUP_ID_RANDOM_NAME_GENERATOR}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        get_group_request.raise_for_status()
+        group_id = get_group_request.json()[0]["id"]
+
+        print("************", flush=True)
+        print(group_id, flush=True)
+        print("************", flush=True)
+
+        # Step 9.3 Put User in that Group
+        add_user_to_group_request = requests.put(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups/{group_id}",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        add_user_to_group_request.raise_for_status()
+        print("User added to group successfully.", flush=True)
+
+        query = "UPDATE user_registered SET group_assign_user_to_group = 1 WHERE token = %s;"
+        print(query, flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
+        # Step 9.4: Map the role to the group
+        map_role_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group_id}/role-mappings/clients/{client_id}",
+            json=get_role_new_client_request.json(),
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        map_role_request.raise_for_status()
+
+        query = "UPDATE user_registered SET group_client_role_mapping = 1 WHERE token = %s;"
         print(query, flush=True)
         cursor.execute(query, (token,))
         db.commit()
