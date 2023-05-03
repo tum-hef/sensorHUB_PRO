@@ -155,3 +155,11 @@ SERVER_URL=
 ## Workflow of Ports stored 
 
 ![code2flow_Vm3Zwb (2)](https://user-images.githubusercontent.com/49834648/231116263-4a45142e-24aa-4a15-b704-104c3c751a12.png)
+
+
+## Groups
+
+When Generating a group, it will have two key value pairs.
+
+ 1. Group Name (The Email of the first user)
+ 2.  Group Type  (Individual/Instituion/Project)
