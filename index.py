@@ -391,8 +391,6 @@ def frost_server():
 
     return jsonify({"success": True, "PORT": PORT})
 
-# Get all frost clients for that specific client
-
 
 @app.route("/frost-clients", methods=["GET"])
 def frost_client():
@@ -534,7 +532,7 @@ def my_page():
         firstName = result[0][1]
         lastName = result[0][2]
         email = result[0][3]
-        createdAt = result[0][23]
+        createdAt = result[0][24]
         password = "1"
 
         # Checking if token is valid based on the time that was created
@@ -881,7 +879,11 @@ def my_page():
         create_group_request = requests.post(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups",
             json={
-                "name": GROUP_ID_RANDOM_NAME_GENERATOR
+                "name": GROUP_ID_RANDOM_NAME_GENERATOR,
+                "attributes": {
+                    "group_type": ["individual"],
+                    "group_name": [email]
+                }
             },
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -942,7 +944,7 @@ def my_page():
         )
         map_role_request.raise_for_status()
 
-        query = "UPDATE user_registered SET group_client_role_mapping = 1 WHERE token = %s;"
+        query = "UPDATE user_registered SET group_frost_client_role_mapping = 1 WHERE token = %s;"
         print(query, flush=True)
         cursor.execute(query, (token,))
         db.commit()
@@ -1218,6 +1220,22 @@ def my_page():
 
         # Successful keycloak roles mapping generation for node red
         query = "UPDATE user_registered SET node_red_keycloak_role_mapping = 1 WHERE token = %s;"
+        print(query, flush=True)
+        cursor.execute(query, (token,))
+        db.commit()
+
+        # Step 15.8 Role Mapping of the Node Red Client in the Group Generated
+        map_role_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group_id}/role-mappings/clients/{client_id_node_red}",
+            json=get_role_new_client_node_red.json(),
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+        map_role_request.raise_for_status()
+
+        query = "UPDATE user_registered SET group_node_red_client_role_mapping = 1 WHERE token = %s;"
         print(query, flush=True)
         cursor.execute(query, (token,))
         db.commit()
