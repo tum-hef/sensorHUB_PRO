@@ -533,7 +533,7 @@ def my_page():
         lastName = result[0][2]
         email = result[0][3]
         createdAt = result[0][24]
-        password = "1"
+        password = "TUM@HEF@2023"
 
         # Checking if token is valid based on the time that was created
 
@@ -592,7 +592,7 @@ def my_page():
                     {
                         "type": "password",
                         "value": password,
-                        "temporary": False
+                        "temporary": True
                     }
                 ],
                 "username": email,
