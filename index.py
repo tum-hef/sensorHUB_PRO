@@ -559,7 +559,10 @@ def get_cllients():
                 client_data = client_request.json()
 
                 for client in client_data:
-                    clients.append({client['clientId']: client['rootUrl']})
+                    clients.append({
+                        'root_url': client['rootUrl'],
+                        'client_id': client['clientId']
+                    })
 
         return jsonify({"success": True, "clients": clients}), 200
 
