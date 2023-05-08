@@ -1462,9 +1462,9 @@ def register():
         firstName = request.json.get("firstName")
         lastName = request.json.get("lastName")
         email = request.json.get("email")
-        password = request.json.get("password")
+        # password = request.json.get("password")
 
-        if not all([firstName, lastName, email, password]):
+        if not all([firstName, lastName, email]):
             return jsonify(success=False, error="Inputs are missing"), 400
         commandTUM = ['ldapsearch', '-H', 'ldaps://iauth.tum.de/', '-D', 'cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de', '-b',
                       'ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de', '-x', '-w', 'HEF@sensorservice2023', f'(&(imAffiliation=member)(imEmailAdressen={email}))']
