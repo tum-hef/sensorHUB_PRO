@@ -479,7 +479,95 @@ def node_red():
     return jsonify({"success": True, "PORT": PORT})
 
 
-@app.route('/validate', methods=["GET"])
+@app.route('/get_clients', methods=["GET"])
+def get_cllients():
+    try:
+        user_id = request.args.get('user_id')
+
+        if (user_id == None):
+            return jsonify({"success": False, "message": "user_id not provided"}), 400
+
+        KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+        KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+        KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+        KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+        KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+
+        # Step 1: Get access token
+        token_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+            data={
+                "client_id": KEYCLOAK_CLIENT_ID,
+                "username": KEYCLOAK_USERNAME,
+                "password": KEYCLOAK_PASSWORD,
+                "grant_type": "password",
+            },
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        )
+
+        token_request.raise_for_status()
+        access_token = token_request.json()["access_token"]
+
+        # Step 2: Get group where user is part
+
+        group_request = requests.get(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        group_request.raise_for_status()
+        groups = group_request.json()
+
+        if (len(groups) == 0):
+            return jsonify({"success": False, "message": "User does not belong to any group"}), 404
+
+        # Step 3: For each group, get the clients by doing the role mapping
+
+        clients_name = []
+        clients = []
+
+        for group in groups:
+            clients_request = requests.get(
+                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}/role-mappings",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json"
+                }
+            )
+            clients_request.raise_for_status()
+            clients_json = clients_request.json()
+            for client in clients_json['clientMappings']:
+                clients_name.append(client)
+
+            # Step 3: For each client, get the the root url
+
+            for client in clients_name:
+                client_request = requests.get(
+                    f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={client}",
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json"
+                    }
+                )
+
+                client_request.raise_for_status()
+                client_data = client_request.json()
+
+                for client in client_data:
+                    clients.append({client['clientId']: client['rootUrl']})
+
+        return jsonify({"success": True, "clients": clients}), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@ app.route('/validate', methods=["GET"])
 def my_page():
     try:
         token = request.args.get('token')
@@ -1337,7 +1425,7 @@ def my_page():
         return render_template('token.html', error=str(err))
 
 
-@app.route("/register", methods=["POST"])
+@ app.route("/register", methods=["POST"])
 def register():
     try:
         KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
