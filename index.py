@@ -11,6 +11,7 @@ import uuid
 import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import json
 app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app)
@@ -329,6 +330,7 @@ def generate_success_email(firstName, email):
             <h2>Mr. {firstname}, thank you for registering!</h2>
             <p>Your account has been successfully created.</p>
             <p>You can access your account now.</p>
+            <p>Initial password is:  </p> <b> TUM@HEF@2023 </b>
             <p>Thank you!</p>
         </body>
         </html>
@@ -521,11 +523,39 @@ def get_cllients():
         )
 
         group_request.raise_for_status()
-        groups = group_request.json()
+        groups_json = group_request.json()
+        groups=[]
 
-        if (len(groups) == 0):
+        if (len(groups_json) == 0):
             return jsonify({"success": False, "message": "User does not belong to any group"}), 404
 
+        for group in groups_json:
+            group_request = requests.get(
+                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json"
+                }
+            )
+            group_request.raise_for_status()
+
+            group_json = group_request.json()
+
+            # print inside an objcet the id and inside that object the attributes
+            print(group_json['id'])
+            print(group_json['attributes'])
+
+            object = {
+                "id": group_json['id'],
+                "attributes": group_json['attributes']
+            }
+
+            groups.append(object)
+            # print(json.dumps(group_json, indent=4, sort_keys=True))
+
+        print(groups)
+
+        # for each group, get attributes
         # Step 3: For each group, get the clients by doing the role mapping
 
         clients_name = []
@@ -541,32 +571,48 @@ def get_cllients():
             )
             clients_request.raise_for_status()
             clients_json = clients_request.json()
-            for client in clients_json['clientMappings']:
-                clients_name.append(client)
 
-            # Step 3: For each client, get the the root url
+            # # print(json.dumps(clients_json, indent=4, sort_keys=True))
 
-            for client in clients_name:
-                client_request = requests.get(
-                    f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={client}",
-                    headers={
-                        "Authorization": f"Bearer {access_token}",
-                        "Content-Type": "application/json"
-                    }
-                )
+            # print(clients_json)
 
-                client_request.raise_for_status()
-                client_data = client_request.json()
+            # for client in clients_json['clientMappings']:
+            #     clients_name.append(client)
 
-                for client in client_data:
-                    clients.append({
-                        'root_url': client['rootUrl'],
-                        'client_id': client['clientId']
-                    })
+            # # Step 3: For each client, get the the root url
 
-        return jsonify({"success": True, "clients": clients}), 200
+            # for client in clients_name:
+            #     client_request = requests.get(
+            #         f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={client}",
+            #         headers={
+            #             "Authorization": f"Bearer {access_token}",
+            #             "Content-Type": "application/json"
+            #         }
+            #     )
+
+            #     client_request.raise_for_status()
+            #     client_data = client_request.json()
+
+            #     for client in client_data:
+            #         clients.append({
+            #             'root_url': client['rootUrl'],
+            #             'client_id': client['clientId']
+            #         })
+
+        return jsonify({"success": True, "groups": groups}), 200
 
     except Exception as e:
+        tb = traceback.format_exception(
+            type(e), e, e.__traceback__)
+        error_message = tb[-1].strip()  # Get the last line of the traceback
+        # Get the line number from the second-to-last line of the traceback
+        line_number = tb[-2].split(", ")[1].strip()
+        print("***********************************************", flush=True)
+        print(error_message, flush=True)
+        print("***********************************************", flush=True)
+        print(line_number, flush=True)
+        print("***********************************************", flush=True)
+        print(tb, flush=True)
         return jsonify({"success": False, "error": str(e)}), 500
 
 
