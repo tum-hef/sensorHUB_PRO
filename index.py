@@ -524,7 +524,7 @@ def get_cllients():
 
         group_request.raise_for_status()
         groups_json = group_request.json()
-        groups=[]
+        groups = []
 
         if (len(groups_json) == 0):
             return jsonify({"success": False, "message": "User does not belong to any group"}), 404
@@ -939,6 +939,20 @@ def my_page():
 
         create_role_read_request.raise_for_status()
 
+        # Update role for the new client
+
+        create_role_update_request = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            json={
+                "name": "update"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            })
+
+        create_role_update_request.raise_for_status()
+
         create_role_create_request = requests.post(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
@@ -1299,6 +1313,18 @@ def my_page():
 
         create_role_read_node_red.raise_for_status()
 
+        create_role_update_node_red = requests.post(
+            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            json={
+                "name": "update"
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        create_role_update_node_red.raise_for_status()
         create_role_create_node_red = requests.post(
             f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
