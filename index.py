@@ -883,7 +883,7 @@ def my_page():
                 "publicClient": False,  # Access type: confidential
                 "authorizationServicesEnabled": True,
                 "redirectUris": [f"{ROOT_URL}:{clientPORT}/FROST-Server/*"],
-                "webOrigins": [f"{ROOT_URL}:{clientPORT}"],
+                "webOrigins": ["*"],
                 "protocol": "openid-connect",
                 "bearerOnly": False,
                 "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
@@ -1250,7 +1250,6 @@ def my_page():
                 "serviceAccountsEnabled": True,
                 "authorizationServicesEnabled": True,
                 "redirectUris": [f"{ROOT_URL}:{new_node_red_port}/*"],
-                "webOrigins": [f"{ROOT_URL}:{new_node_red_port}"],
                 "adminUrl": f"{ROOT_URL}:{new_node_red_port}",
                 "rootUrl": f"{ROOT_URL}:{new_node_red_port}",
             },
@@ -1628,6 +1627,68 @@ def register():
     except Exception as err:
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
+
+
+# detete
+
+@app.route("/delete", methods=["POST"])
+def delete():
+    ROOT_URL = os.getenv("ROOT_URL")
+
+    # check if request is json
+    if not request.is_json:
+        return jsonify(success=False, error="Request is not JSON"), 400
+
+    # get token from header and check if it exists
+
+    data = request.json
+    token = request.headers.get("Authorization")
+    url = data.get("url")
+    FROST_PORT = data.get("FROST_PORT")
+
+    print(token, flush=True)
+    print(url, flush=True)
+    print(FROST_PORT, flush=True)
+
+    if not all([token, url, FROST_PORT, ROOT_URL]):
+        return jsonify(success=False, error="Inputs are missing"), 400
+
+    URL_TO_EXECUTE = f"{ROOT_URL}:{FROST_PORT}/FROST-Server/v1.0/{url}"
+
+    print("TEST", flush=True)
+
+    # return jsonify(success=True), 200
+    try:
+        # Step 1: Get access token
+        delete_request = requests.delete(
+            f"{URL_TO_EXECUTE}",
+            # Authorization token as a header
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
+        # Check if response has content
+        if delete_request.content:
+            response = delete_request.json()
+            print(response, flush=True)
+        else:
+            response = None
+
+        # get status code
+        status_code = delete_request.status_code
+        if status_code == 200:
+            return jsonify(success=True), 200
+        else:
+            return jsonify(success=False, error=response), 500
+
+    except json.JSONDecodeError as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Error parsing response as JSON"), 500
+    except requests.exceptions.RequestException as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Error making the delete request"), 500
+    except Exception as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Server Error"), 500
 
 
 if __name__ == '__main__':
