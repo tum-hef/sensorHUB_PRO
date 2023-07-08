@@ -1655,9 +1655,8 @@ def delete():
 
     URL_TO_EXECUTE = f"{ROOT_URL}:{FROST_PORT}/FROST-Server/v1.0/{url}"
 
-    print("TEST", flush=True)
+    print(URL_TO_EXECUTE, flush=True)
 
-    # return jsonify(success=True), 200
     try:
         # Step 1: Get access token
         delete_request = requests.delete(
@@ -1675,6 +1674,65 @@ def delete():
 
         # get status code
         status_code = delete_request.status_code
+        if status_code == 200:
+            return jsonify(success=True), 200
+        else:
+            return jsonify(success=False, error=response), 500
+
+    except json.JSONDecodeError as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Error parsing response as JSON"), 500
+    except requests.exceptions.RequestException as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Error making the delete request"), 500
+    except Exception as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Server Error"), 500
+
+
+@app.route("/update", methods=["PATCH"])
+def update():
+    ROOT_URL = os.getenv("ROOT_URL")
+
+    data = request.json
+    token = request.headers.get("Authorization")
+    url = data.get("url")
+    FROST_PORT = data.get("FROST_PORT")
+    body = data.get("body")
+
+    print(token, flush=True)
+    print(url, flush=True)
+    print(FROST_PORT, flush=True)
+
+    # Access the entire JSON object
+    print("JSON Object:", body)
+
+    if not all([token, url, FROST_PORT, ROOT_URL, body]):
+        return jsonify(success=False, error="Inputs are missing"), 400
+
+    URL_TO_EXECUTE = f"{ROOT_URL}:{FROST_PORT}/FROST-Server/v1.0/{url}"
+
+    print(URL_TO_EXECUTE, flush=True)
+
+    try:
+        # Step 1: Get access token
+        update_request = requests.patch(
+            URL_TO_EXECUTE,
+            headers={"Authorization": f"{token}",
+                     "Content-Type": "application/json"},
+            json=body
+        )
+        print(update_request.content.decode('utf-8'), flush=True)
+
+        # Check if response has content
+        if update_request.content:
+            response = update_request.json()
+            print(response, flush=True)
+        else:
+            response = None
+
+        # get status code
+        status_code = update_request.status_code
         if status_code == 200:
             return jsonify(success=True), 200
         else:
