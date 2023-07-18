@@ -38,3 +38,19 @@ CREATE TABLE services (
   node_red_port INT,
   FOREIGN KEY (user_id) REFERENCES user_registered(ID)
 );
+
+CREATE TABLE contact_form(
+id INT AUTO_INCREMENT PRIMARY KEY,
+email varchar(255),
+first_name varchar(255),
+last_name varchar(255),
+is_resolved boolean DEFAULT false,
+type varchar(255),
+subject varchar(255),
+details varchar(255),
+createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
+updatedAt timestamp DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
