@@ -158,6 +158,11 @@ DATABASE_NAME=
 SERVER_URL=
 ```
 
+11) sudo ufw allow 4500
+
+    Allowing Access in port 4500
+    
+
 ## Workflow of Ports stored 
 
 ![code2flow_Vm3Zwb (2)](https://user-images.githubusercontent.com/49834648/231116263-4a45142e-24aa-4a15-b704-104c3c751a12.png)
