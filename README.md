@@ -1,6 +1,7 @@
 
 
 
+
 # KEYCLOAK_SERVICES
 
 The script is designed to interact with a local Keycloak server to perform various actions (Currently creating new user, client, roles, and role-mapping)
@@ -103,7 +104,7 @@ Please note that authentication via LDAP is not a recommended method, especially
 
 Preconfig:
 
-1) ** Download Docker, docker-compose and ldapsearch commands ** 
+1) ** Download Docker** 
 
 ------------------------------------------------------------------------------------
 1) **Install keycloak** 
@@ -124,7 +125,7 @@ docker run -d --name keycloak -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PA
 
 4) **Create new client**
 In the root URL use the  frontend url
-```e.g. http://10.155.92.243:3000/```
+```e.g. http://localhost:3000/```
 
 5) **Create new user (Or use admin)**
 
@@ -135,9 +136,13 @@ In the root URL use the  frontend url
 8) **Install mysql**
 ```docker run -d -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD= YOUR_PASSWORD> mysql ```
 
-9) **Execute in the database "initial_queries.sql" file**
+9) Clone Git repository 
 
-10) **Fill variables in .env**
+``` git clone https://github.com/HEFLoRa/KEYCLOAK_SERVICES ```
+
+10) **Execute in the database "initial_queries.sql" file**
+
+11) **Fill variables in .env**
 
 ```
 ROOT_URL=
@@ -163,9 +168,20 @@ DATABASE_NAME=
 SERVER_URL=
 ```
 
-11) sudo ufw allow 4500
+11) Allow Access to all ports
 
-    Allowing Access in port 4500
+```
+    sudo ufw allow in from any to any
+    sudo ufw allow out from any to any
+```
+
+12) Create image from the docker file inside repository
+
+``docker build -t hefsensorhub_image_backend .``
+
+13) Run Application
+`docker run -p 4500:4500 --env-file .env --name HEFsensorHUB_container hefsensorhub_image_backend`
+
     
 
 ## Workflow of Ports stored 
