@@ -1,5 +1,6 @@
 
 
+
 # KEYCLOAK_SERVICES
 
 The script is designed to interact with a local Keycloak server to perform various actions (Currently creating new user, client, roles, and role-mapping)
@@ -105,18 +106,22 @@ docker run -d --name keycloak -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PA
 
 2) **Remove HTTPS (Not recommanded)**
 
+```docker exec -it {contaierID} bash```
+
   
+```   cd /opt/jboss/keycloak/bin```
+        
+``` ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user ```admin 
+ 
+ ``` ./kcadm.sh update realms/master -s sslRequired=NONE```
 
-       docker exec -it {contaierID} bash
-        cd /opt/jboss/keycloak/bin
-         ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin 
-         ./kcadm.sh update realms/master -s sslRequired=NONE
-
-3) **Create new realm**
+3) **Create new realm (Or use Master)**
 
 4) **Create new client**
+In the root URL use the  frontend url
+```e.g. http://10.155.92.243:3000/```
 
-5) **Create new user**
+5) **Create new user (Or use admin)**
 
 6) **Create a static password and remove Temporary password**
 
@@ -151,8 +156,6 @@ DATABASE_NAME=
 
 # FLUSK Service
 SERVER_URL=
-
-
 ```
 
 ## Workflow of Ports stored 
