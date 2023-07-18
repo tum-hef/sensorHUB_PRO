@@ -101,6 +101,11 @@ Please note that authentication via LDAP is not a recommended method, especially
    
 ## Configuration
 
+Preconfig:
+
+1) ** Download Docker, docker-compose and ldapsearch commands ** 
+
+------------------------------------------------------------------------------------
 1) **Install keycloak** 
 docker run -d --name keycloak -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak
 
