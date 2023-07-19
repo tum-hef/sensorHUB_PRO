@@ -81,7 +81,7 @@ def check_column_data_exists(column_name, cursor, db):
 
 
 def get_container_id(container_name):
-    command = f"sudo docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
+    command = f"docker ps --filter name={container_name} --format '{{{{.ID}}}}'"
     output = subprocess.run(command, shell=True, capture_output=True)
     if output.returncode != 0:
         return jsonify(success=False, error="Error getting the container ID"), 500
@@ -240,7 +240,7 @@ def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,
     new_file_content = create_node_red_new_settings_file(
         clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL)
 
-    cmd = f"echo '{new_file_content}' | sudo tee {directory}/settings.js"
+    cmd = f"echo '{new_file_content}' | tee {directory}/settings.js"
     subprocess.run(cmd, shell=True)
 
 
@@ -1139,7 +1139,7 @@ def my_page():
         print(new_clientId, flush=True)
 
         subprocess_run_frost = subprocess.run(
-            ["sudo", "docker-compose", "-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
+            ["docker-compose", "-p", new_clientId, "-f", f"yml_files/{new_clientId}.yml", "up", "-d"])
 
         print(subprocess_run_frost, flush=True)
 
@@ -1181,7 +1181,7 @@ def my_page():
         node_red_name = f"node_red_{service_id}"
         node_red_name_storage_name = f"node_red_storage_{service_id}"
 
-        command_create_node_red_instance = f"sudo docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
+        command_create_node_red_instance = f"docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
         result_command_create_new_node_instance = subprocess.run(
             command_create_node_red_instance, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -1208,7 +1208,7 @@ def my_page():
 
         # Step 14 : Install passport-keycloak-oauth2-oidc in the new node-red container
 
-        command_node_red_dependency_installation = ["sudo", "docker", "exec", container_node_red_id, "bash", "-c",
+        command_node_red_dependency_installation = ["docker", "exec", container_node_red_id, "bash", "-c",
                                                     "cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc"]
 
         command_red_node = subprocess.run(
@@ -1435,7 +1435,7 @@ def my_page():
         # Step 15.9 : Restart the node-red container
 
         restart_node_red_container = subprocess.run(
-            f"sudo docker restart {container_node_red_id}", shell=True, check=True)
+            f"docker restart {container_node_red_id}", shell=True, check=True)
 
         print(restart_node_red_container, flush=True)
 

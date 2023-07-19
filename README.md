@@ -180,7 +180,7 @@ SERVER_URL=
 ``docker build -t hefsensorhub_image_backend .``
 
 13) Run Application
-`docker run -p 4500:4500 --env-file .env --name HEFsensorHUB_container hefsensorhub_image_backend`
+`docker run -d -p 4500:4500 --env-file .env --name HEFsensorHUB_container_backend -v /var/run/docker.sock:/var/run/docker.sock hefsensorhub_image_backend`
 
     
 
