@@ -108,7 +108,7 @@ Preconfig:
 
 ------------------------------------------------------------------------------------
 1) **Install keycloak** 
-docker run -d --name keycloak -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak
+``` docker run -d --name keycloak --restart=always -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak  ```
 
 2) **Remove HTTPS (Not recommanded)**
 
