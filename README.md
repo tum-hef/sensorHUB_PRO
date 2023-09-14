@@ -2,6 +2,7 @@
 
 
 
+
 # KEYCLOAK_SERVICES
 
 The script is designed to interact with a local Keycloak server to perform various actions (Currently creating new user, client, roles, and role-mapping)
@@ -108,7 +109,7 @@ Preconfig:
 
 ------------------------------------------------------------------------------------
 1) **Install keycloak** 
-``` docker run -d --name keycloak --restart=always -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak  ```
+``` docker run -d --name keycloak --restart=always -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true jboss/keycloak  ```
 
 2) **Remove HTTPS (Not recommanded)**
 
@@ -167,6 +168,54 @@ DATABASE_NAME=
 # FLUSK Service
 SERVER_URL=
 ```
+
+Example .env for production (HTTPs included)
+
+```
+ROOT_URL=https://keycloak.hef.tum.de
+
+  
+
+KEYCLOAK_SERVER_URL=https://keycloak.hef.tum.de
+
+KEYCLOAK_CLIENT_ID=hefSensorHub_production
+
+KEYCLOAK_USERNAME=admin
+
+KEYCLOAK_PASSWORD=admin
+
+KEYCLOAK_REALM=master
+
+  
+
+SMTP_SERVER=smtp.gmail.com
+
+SMTP_PORT=587
+
+SMTP_USERNAME=tumhefservicetest@gmail.com
+
+SMTP_PASSWORD=PW
+
+  
+
+DATABASE_HOST=HOST
+
+DATABASE_USERNAME=USER
+
+DATABASE_PASSWORD=PW
+
+DATABASE_PORT=3306
+
+DATABASE_NAME=tumservices
+
+  
+
+# FLUSK Service
+
+SERVER_URL=https://services.hef.tum.de
+
+```
+
 
 11) Allow Access to all ports
 
