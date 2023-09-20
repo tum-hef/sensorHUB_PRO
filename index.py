@@ -393,6 +393,10 @@ def frost_server():
 
     return jsonify({"success": True, "PORT": PORT})
 
+@app.route("/test", methods=["GET"])
+def test():
+    return jsonify({"success": True})
+        
 
 @app.route("/frost-clients", methods=["GET"])
 def frost_client():
@@ -1181,7 +1185,7 @@ def my_page():
         node_red_name = f"node_red_{service_id}"
         node_red_name_storage_name = f"node_red_storage_{service_id}"
 
-        command_create_node_red_instance = f"docker run -d --init -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
+        command_create_node_red_instance = f"docker run -d --restart always --init  -p {new_node_red_port}:1880 -v {node_red_name_storage_name}:/data --name {node_red_name} nodered/node-red"
         result_command_create_new_node_instance = subprocess.run(
             command_create_node_red_instance, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
