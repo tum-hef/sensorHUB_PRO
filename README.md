@@ -229,7 +229,7 @@ SERVER_URL=https://services.hef.tum.de
 ``docker build -t hefsensorhub_image_backend .``
 
 13) Run Application
-`docker run -d -p 4500:4500 --env-file .env --name HEFsensorHUB_container_backend -v /var/run/docker.sock:/var/run/docker.sock hefsensorhub_image_backend`
+`docker run -d -p 4500:4500 --env-file .env --name HEFsensorHUB_container_backend -v /var/run/docker.sock:/var/run/docker.sock --restart always hefsensorhub_image_backend`
 
     
 
