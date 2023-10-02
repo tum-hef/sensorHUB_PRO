@@ -1845,6 +1845,59 @@ def send_email():
         print(e, flush=True)
         return jsonify(success=False, error="Server Error"), 500
 
+@app.route("/reset_password", methods=["POST"])
+def reset_password():
+        try:
+            data = request.json
+            user_id = data.get("user_id")
+            password = data.get("password")
+            
+            if not all([user_id, password]):
+                return jsonify(success=False, error="Inputs are missing"), 400
+            
+            KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
+            KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+            KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
+            KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
+            KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
+            
+            # Step 1: Get access token
+            token_request = requests.post(
+                f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+                data={
+                    "client_id": KEYCLOAK_CLIENT_ID,
+                    "username": KEYCLOAK_USERNAME,
+                    "password": KEYCLOAK_PASSWORD,
+                    "grant_type": "password",
+                },
+                headers={
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            )
+
+            token_request.raise_for_status()
+            access_token = token_request.json()["access_token"]
+            
+            # reset password request using
+            change_password_request = requests.put(
+                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/reset-password",
+                json={
+                    "type": "password",
+                    "value": password
+                },
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json"
+                }
+            )
+            
+            if change_password_request.status_code != 204:
+                return jsonify(success=False, error="Error when changing password"), 500
+            
+            return jsonify(success=True), 200
+        except Exception as e:
+            print(e, flush=True)
+            return jsonify(success=False, error="Server Error"), 500
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port="4500")
