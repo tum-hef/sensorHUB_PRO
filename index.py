@@ -1799,6 +1799,51 @@ def generate_contact_email(first_name, last_name, email, subject, details, type)
     except Exception as err:
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
+    
+
+def generate_mutation_error_log_email(keycloak_id, method, attribute):
+    try:
+
+        SMTP_SERVER = os.getenv("SMTP_SERVER")
+        SMTP_PORT = int(os.getenv("SMTP_PORT"))
+        SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+        SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "sensorHUB Mutation Error Log"
+        msg['From'] = SMTP_USERNAME
+        msg['To'] = "tumhefservicetest@gmail.com"
+
+        html = """\
+             <html>
+            <head></head>
+            <body style="text-align: center;">
+                <h2>Hi,</h2>
+                <p>A new bug was encountered:</p>
+              <p><b>User: </b>{keycloak_id}</p>
+                 <p><b>Method: </b>{method}</p>
+              <p><b>Attribute: </b>{attribute}</p>
+    
+            </body>
+            </html>
+        """
+        # Replace placeholders with actual values
+        html = html.format(keycloak_id=keycloak_id, method=method,
+                           attribute=attribute)
+
+        # Attach HTML message to email
+        msg.attach(MIMEText(html, 'html'))
+
+        # connect to SMTP server and send email
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(
+                SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string())
+
+    except Exception as err:
+        print(err, flush=True)
+        return jsonify(success=False, error=str(err)), 500
 
 
 @app.route("/send_email/contact", methods=["POST"])
@@ -1838,6 +1883,48 @@ def send_email():
         query = "INSERT INTO contact_form (type, subject, details, email, first_name, last_name) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.execute(
             query, (type, subject, details, email, first_name, last_name))
+        db.commit()
+
+        return jsonify(success=True), 200
+    except Exception as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Server Error"), 500
+
+
+@app.route("/mutation_error_logs", methods=["POST"])
+def mutation_error_logs():
+    try:
+        data = request.json
+        keycloak_id = data.get("keycloak_id")
+        method = data.get("method")
+        attribute = data.get("attribute")
+  
+
+        print(keycloak_id, method, attribute, flush=True)
+
+        if not all([keycloak_id, method, attribute]):
+            return jsonify(success=False, error="Inputs are missing"), 400
+
+        generate_mutation_error_log_email(keycloak_id, method, attribute)
+
+        DATABASE_HOST = os.getenv("DATABASE_HOST")
+        DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
+        DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+        DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+        DATABASE_NAME = os.getenv("DATABASE_NAME")
+
+        # Try to connect to the database
+        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
+                             user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+
+        # Check if the connection to the database was successful
+        if db is None:
+            return jsonify(success=False, error="Failed to connect to the database"), 500
+
+        cursor = db.cursor()
+        query = "INSERT INTO mutation_error_logs (keycloak_id, method, attribute) VALUES (%s, %s, %s)"
+        cursor.execute(
+            query, (keycloak_id, method, attribute))
         db.commit()
 
         return jsonify(success=True), 200

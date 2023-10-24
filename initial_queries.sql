@@ -52,5 +52,10 @@ createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
 updatedAt timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
+CREATE TABLE mutation_error_logs (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    keycloak_id VARCHAR(255) NOT NULL,
+    method VARCHAR(255) NOT NULL NOT NULL,
+    attribute VARCHAR(255) NOT NULL NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
