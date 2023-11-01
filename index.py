@@ -1801,7 +1801,7 @@ def generate_contact_email(first_name, last_name, email, subject, details, type)
         return jsonify(success=False, error=str(err)), 500
     
 
-def generate_mutation_error_log_email(keycloak_id, method, attribute):
+def generate_mutation_error_log_email(keycloak_id, method, attribute,attribute_id,frost_port):
     try:
 
         SMTP_SERVER = os.getenv("SMTP_SERVER")
@@ -1814,22 +1814,28 @@ def generate_mutation_error_log_email(keycloak_id, method, attribute):
         msg['From'] = SMTP_USERNAME
         msg['To'] = "tumhefservicetest@gmail.com"
 
-        html = """\
-             <html>
+        html = f"""\
+            <html>
             <head></head>
             <body style="text-align: center;">
                 <h2>Hi,</h2>
                 <p>A new bug was encountered:</p>
-              <p><b>User: </b>{keycloak_id}</p>
-                 <p><b>Method: </b>{method}</p>
-              <p><b>Attribute: </b>{attribute}</p>
-    
+                <p><b>User: </b>{keycloak_id}</p>
+                <p><b>Method: </b>{method}</p>
+                <p><b>Attribute: </b>{attribute}</p>
+        """
+
+        if attribute_id is not None:
+            html += f"<p><b>Attribute_ID: </b>{attribute_id}</p>"
+
+        html += """
+            <p><b>Frost Port: </b>{frost_port}</p>
             </body>
             </html>
         """
         # Replace placeholders with actual values
         html = html.format(keycloak_id=keycloak_id, method=method,
-                           attribute=attribute)
+                           attribute=attribute,attribute_id=attribute_id,frost_port=frost_port)
 
         # Attach HTML message to email
         msg.attach(MIMEText(html, 'html'))
@@ -1898,14 +1904,15 @@ def mutation_error_logs():
         keycloak_id = data.get("keycloak_id")
         method = data.get("method")
         attribute = data.get("attribute")
+        attribute_id = data.get("attribute_id")
+        frost_port = data.get("frost_port")
   
-
-        print(keycloak_id, method, attribute, flush=True)
+        print(keycloak_id, method, attribute,attribute_id,frost_port, flush=True)
 
         if not all([keycloak_id, method, attribute]):
             return jsonify(success=False, error="Inputs are missing"), 400
 
-        generate_mutation_error_log_email(keycloak_id, method, attribute)
+        generate_mutation_error_log_email(keycloak_id, method, attribute,attribute_id,frost_port)
 
         DATABASE_HOST = os.getenv("DATABASE_HOST")
         DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
@@ -1922,9 +1929,9 @@ def mutation_error_logs():
             return jsonify(success=False, error="Failed to connect to the database"), 500
 
         cursor = db.cursor()
-        query = "INSERT INTO mutation_error_logs (keycloak_id, method, attribute) VALUES (%s, %s, %s)"
+        query = "INSERT INTO mutation_error_logs (keycloak_id, method, attribute, attribute_id, frost_port) VALUES (%s, %s, %s, %s, %s)"
         cursor.execute(
-            query, (keycloak_id, method, attribute))
+            query, (keycloak_id, method, attribute,attribute_id,frost_port))
         db.commit()
 
         return jsonify(success=True), 200
