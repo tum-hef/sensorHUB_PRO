@@ -11,6 +11,7 @@ import uuid
 import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import re
 import json
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -1632,6 +1633,29 @@ def register():
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
 
+def process_dataitem_string(input_string):
+    main_string, _ = input_string.split('(')
+
+    if main_string == 'Things':
+        return 'Devices'
+    elif main_string == 'Sensors':
+        return 'Sensors'
+    elif main_string == 'ObservedProperties':
+        return 'Measurement Property'
+    elif main_string == 'Datastreams':
+        return 'Datastreams'
+    else:
+        return None
+            
+    return None
+
+def extract_number(input_string):
+    # Use regular expression to extract the number from the input string
+    match = re.match(r'.*\((\d+)\)', input_string)
+    if match:
+        return int(match.group(1))
+    else:
+        return None
 
 # detete
 
@@ -1649,17 +1673,38 @@ def delete():
     token = request.headers.get("Authorization")
     url = data.get("url")
     FROST_PORT = data.get("FROST_PORT")
+    keycloak_id=data.get("keycloak_id")
 
     print(token, flush=True)
     print(url, flush=True)
     print(FROST_PORT, flush=True)
 
-    if not all([token, url, FROST_PORT, ROOT_URL]):
+    if not all([token, url, FROST_PORT, ROOT_URL,keycloak_id]):
         return jsonify(success=False, error="Inputs are missing"), 400
 
     URL_TO_EXECUTE = f"{ROOT_URL}:{FROST_PORT}/FROST-Server/v1.0/{url}"
+    
+    attribute_type=process_dataitem_string(url)
+    attribute_id=extract_number(url)
+    method="DELETE"
 
     print(URL_TO_EXECUTE, flush=True)
+    
+    DATABASE_HOST = os.getenv("DATABASE_HOST")
+    DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+    DATABASE_NAME = os.getenv("DATABASE_NAME")
+
+    # Try to connect to the database
+    db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
+                            user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+
+    # Check if the connection to the database was successful
+    if db is None:
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    cursor = db.cursor()
 
     try:
         # Step 1: Get access token
@@ -1675,6 +1720,11 @@ def delete():
             print(response, flush=True)
         else:
             response = None
+        
+        query = "INSERT INTO logs (keycloak_id, method, attribute_type, attribute_id, frost_port) VALUES (%s, %s, %s, %s, %s)"
+        cursor.execute(
+            query, (keycloak_id, method, attribute_type,attribute_id,FROST_PORT))
+        db.commit()
 
         # get status code
         status_code = delete_request.status_code
@@ -1703,30 +1753,54 @@ def update():
     url = data.get("url")
     FROST_PORT = data.get("FROST_PORT")
     body = data.get("body")
+    keycloak_id=data.get("keycloak_id")
 
-    print(token, flush=True)
+    # print(token, flush=True)
     print(url, flush=True)
-    print(FROST_PORT, flush=True)
+    # print(FROST_PORT, flush=True)
 
     # Access the entire JSON object
-    print("JSON Object:", body)
+    # print("JSON Object:", body)
 
-    if not all([token, url, FROST_PORT, ROOT_URL, body]):
+    if not all([token, url, FROST_PORT, ROOT_URL, body,keycloak_id]):
         return jsonify(success=False, error="Inputs are missing"), 400
 
     URL_TO_EXECUTE = f"{ROOT_URL}:{FROST_PORT}/FROST-Server/v1.0/{url}"
 
-    print(URL_TO_EXECUTE, flush=True)
+    # print(URL_TO_EXECUTE, flush=True)
+    
+    attribute_type=process_dataitem_string(url)
+    attribute_id=extract_number(url)
+    method="UPDATE"
+    
+    print(attribute_type,flush=True)
+    print(attribute_id,flush=True)
+    print(keycloak_id,flush=True)
+
+    DATABASE_HOST = os.getenv("DATABASE_HOST")
+    DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
+    DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+    DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+    DATABASE_NAME = os.getenv("DATABASE_NAME")
+
+    # Try to connect to the database
+    db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
+                            user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+
+    # Check if the connection to the database was successful
+    if db is None:
+        return jsonify(success=False, error="Failed to connect to the database"), 500
+
+    cursor = db.cursor()
 
     try:
-        # Step 1: Get access token
         update_request = requests.patch(
             URL_TO_EXECUTE,
             headers={"Authorization": f"{token}",
                      "Content-Type": "application/json"},
             json=body
         )
-        print(update_request.content.decode('utf-8'), flush=True)
+        # print(update_request.content.decode('utf-8'), flush=True)
 
         # Check if response has content
         if update_request.content:
@@ -1734,6 +1808,12 @@ def update():
             print(response, flush=True)
         else:
             response = None
+
+        # STORE LOGS 
+        query = "INSERT INTO logs (keycloak_id, method, attribute_type, attribute_id, frost_port) VALUES (%s, %s, %s, %s, %s)"
+        cursor.execute(
+            query, (keycloak_id, method, attribute_type,attribute_id,FROST_PORT))
+        db.commit()
 
         # get status code
         status_code = update_request.status_code
