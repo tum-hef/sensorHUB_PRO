@@ -1696,6 +1696,7 @@ def delete():
 
 @app.route("/update", methods=["PATCH"])
 def update():
+    print("UPDATE", flush=True)
     ROOT_URL = os.getenv("ROOT_URL")
 
     data = request.json
@@ -1704,19 +1705,19 @@ def update():
     FROST_PORT = data.get("FROST_PORT")
     body = data.get("body")
 
-    print(token, flush=True)
+    # print(token, flush=True)
     print(url, flush=True)
-    print(FROST_PORT, flush=True)
+    # print(FROST_PORT, flush=True)
 
     # Access the entire JSON object
-    print("JSON Object:", body)
+    # print("JSON Object:", body)
 
     if not all([token, url, FROST_PORT, ROOT_URL, body]):
         return jsonify(success=False, error="Inputs are missing"), 400
 
     URL_TO_EXECUTE = f"{ROOT_URL}:{FROST_PORT}/FROST-Server/v1.0/{url}"
 
-    print(URL_TO_EXECUTE, flush=True)
+    # print(URL_TO_EXECUTE, flush=True)
 
     try:
         # Step 1: Get access token
@@ -1992,6 +1993,63 @@ def reset_password():
         except Exception as e:
             print(e, flush=True)
             return jsonify(success=False, error="Server Error"), 500
+
+
+@app.route("/logs", methods=["GET"])
+def logs():
+    try:
+        DATABASE_HOST = os.getenv("DATABASE_HOST")
+        DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
+        DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+        DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
+        DATABASE_NAME = os.getenv("DATABASE_NAME")
+        
+        keycloak_id = request.args.get("keycloak_id")
+
+        print(keycloak_id, flush=True)
+        
+        if not all([keycloak_id]):
+            return jsonify(success=False, error="Inputs are missing"), 400
+         
+        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
+                             user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+         
+        if db is None:
+            return jsonify(success=False, error="Failed to connect to the database"), 500
+
+        cursor = db.cursor()
+        
+        # Get all the logs from the database
+        query = "SELECT * FROM logs WHERE keycloak_id = %s ORDER BY created_at DESC;"
+        
+        # return as json object
+        cursor.execute(query, (keycloak_id,))
+        result = cursor.fetchall()
+        
+        json_logs = []
+        for log in result:
+            json_logs.append({
+                "id": log[0],
+                "keycloak_id": log[1],
+                "method": log[2],
+                "attribute": log[4],
+                "attribute_id": log[3],
+                "frost_port": log[5],
+                "created_at": log[6]
+            })
+            
+            
+        print(json_logs, flush=True)
+
+        # Closing the connection
+        cursor.close()
+        db.close()
+
+        return jsonify(success=True, logs=json_logs), 200
+    except Exception as e:
+        print(e, flush=True)
+        return jsonify(success=False, error="Server Error"), 500
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port="4500")
