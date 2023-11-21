@@ -66,7 +66,7 @@ CREATE TABLE logs (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     keycloak_id VARCHAR(255) NOT NULL,
     method VARCHAR(255) NOT NULL,
-    attribute_id VARCHAR(255) NOT NULL,
+    attribute_id VARCHAR(255),
     attribute_type VARCHAR(255) NOT NULL,
     frost_port INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
