@@ -67,3 +67,52 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 -   `--restart always`: This flag ensures that the container automatically restarts if it stops unexpectedly.
 -   `-e MYSQL_ROOT_PASSWORD=<YOUR_PASSWORD>`: This environment variable sets the root password for the MySQL database. Replace `<YOUR_PASSWORD>` with the desired password. This is important for securing the MySQL instance.
 -   `mysql`: This is the name of the Docker image that will be used to create the container. It specifies the official MySQL Docker image.
+
+#### Cloning Backend from GitHub
+
+    git clone https://github.com/HEFLoRa/KEYCLOAK_SERVICES
+
+    cd KEYCLOAK_SERVICES
+  
+    
+Run the Initial queries  `KEYCLOAK_SERVICES/initial_queries.sql` on the DB instance you created.
+
+Inside the the KEYCLOAK_SERVICES folder, create a new file `.env` for env variables, you also follow `.env example`
+
+```
+ROOT_URL= (e.g. http://tuzehez-sensors.srv.mwn.de)
+
+KEYCLOAK_SERVER_URL= (e.g. Keycloak URL http://tuzehez-sensors.srv.mwn.de:8080) 
+KEYCLOAK_CLIENT_ID= (client ID registered in keycloak)
+KEYCLOAK_USERNAME= (username created in keycloak)
+KEYCLOAK_PASSWORD= (password created in keycloak)
+KEYCLOAK_REALM= (e.g. master by default)
+
+SMTP_SERVER=
+SMTP_PORT=
+SMTP_USERNAME=
+SMTP_PASSWORD=
+
+DATABASE_HOST=
+DATABASE_USERNAME=
+DATABASE_PASSWORD=
+DATABASE_PORT=
+DATABASE_NAME=
+
+# FLUSK Service
+SERVER_URL= (e.g http://tuzehez-sensors.srv.mwn.de:4500) 
+```
+
+```
+sudo ufw allow in from any to any
+sudo ufw allow out from any to any
+```
+
+  
+The provided commands configure the firewall to allow all incoming and outgoing traffic on any port from any source or to any destination. This effectively opens up the firewall, allowing unrestricted communication to and from the system. This allows to allow traffic in created ports for NodeRED and FROST.
+
+    docker build -t hefsensorhub_image_backend .
+    docker run -d -p 4500:4500 --env-file .env --name HEFsensorHUB_container_backend -v /var/run/docker.sock:/var/run/docker.sock --restart always hefsensorhub_image_backend
+
+  
+The first command builds a Docker image named `hefsensorhub_image_backend` from the Dockerfile in the current directory. The second command runs a detached Docker container named `HEFsensorHUB_container_backend` based on the `hefsensorhub_image_backend` image, mapping port 4500, using environment variables from a file (`.env`), and allowing interaction with the host's Docker daemon through a volume mount. The container restarts automatically.
