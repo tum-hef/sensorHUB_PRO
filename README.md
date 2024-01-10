@@ -18,7 +18,8 @@ The sensorHUB technology stack comprises the following components:
     
 6.  MySQL serves as the database, tracking user registrations, verifications, and error logs.
 
-![Tech-Stack](https://github.com/HEFLoRa/HEF-sensorHUB/assets/49834648/a24b787e-0dea-4954-ad78-5445d0514f8b)
+
+![Untitled-2022-12-31-1939](https://github.com/HEFLoRa/HEF-sensorHUB/assets/49834648/d2f6ce53-ea1a-4f6e-a9c1-c81335ea2525)
 
 
 
