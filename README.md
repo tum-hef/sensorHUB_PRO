@@ -1,3 +1,4 @@
+
 # HEF-sensorHUB
 
 
@@ -6,17 +7,17 @@
   
 The sensorHUB technology stack comprises the following components:
 
-1.  Keycloak for authentication and overall application security, serving as the top layer that protects NodeRED, Frontend, Backend, FROST-server, and MySQL.
+1.  **Keycloak** for authentication and overall application security, serving as the top layer that protects NodeRED, Frontend, Backend, FROST-server, and MySQL.
     
-2.  Frontend developed using React with Typescript, serving as the web application. Upon user authentication, it can connect to the Node-RED page.
+2.  **Frontend** developed using React with Typescript, serving as the web application. Upon user authentication, it can connect to the Node-RED page.
     
-3.  Backend implemented in Python using Flask, providing functionalities such as user registration, various procedures linked to FROST-server, email sending, and log tracking.
+3.  **Backend** implemented in Python using Flask, providing functionalities such as user registration, various procedures linked to FROST-server, email sending, and log tracking.
     
-4.  NodeRED, integrated into the stack, enhances the overall functionality and connectivity of the application.
+4.  **NodeRED**, integrated into the stack, enhances the overall functionality and connectivity of the application.
     
-5.  FROST-server is utilized for specific procedures within the backend, contributing to the overall capabilities of the system.
+5.  **FROST-server** is utilized for specific procedures within the backend, contributing to the overall capabilities of the system.
     
-6.  MySQL serves as the database, tracking user registrations, verifications, and error logs.
+6.  **MySQL** serves as the database, tracking user registrations, verifications, and error logs.
 
 
 ![Untitled-2022-12-31-1939](https://github.com/HEFLoRa/HEF-sensorHUB/assets/49834648/d2f6ce53-ea1a-4f6e-a9c1-c81335ea2525)
@@ -55,9 +56,9 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
  2. Create a new client, in the `clientI ID`, put the name of the client the you are going to use e.g. `hefSensorHub_production`
  3. In the Root URL, please use the frontend URL (also port if you are using it/or you can use dev URL `e.g. http://localhost:3000`
 
-### Running a MySQL instance and cloning Backend
+## Running a MySQL instance and cloning Backend
 
-#### Pulling MySQL image and creating an instance 
+### Pulling MySQL image and creating an instance 
 
     docker run -d -p 3306:3306 --name mysql --restart always -e MYSQL_ROOT_PASSWORD=<YOUR_PASSWORD> mysql
 
@@ -69,7 +70,7 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 -   `-e MYSQL_ROOT_PASSWORD=<YOUR_PASSWORD>`: This environment variable sets the root password for the MySQL database. Replace `<YOUR_PASSWORD>` with the desired password. This is important for securing the MySQL instance.
 -   `mysql`: This is the name of the Docker image that will be used to create the container. It specifies the official MySQL Docker image.
 
-#### Cloning Backend from GitHub
+### Cloning Backend from GitHub
 
     git clone https://github.com/HEFLoRa/KEYCLOAK_SERVICES
 
@@ -117,3 +118,44 @@ The provided commands configure the firewall to allow all incoming and outgoing 
 
   
 The first command builds a Docker image named `hefsensorhub_image_backend` from the Dockerfile in the current directory. The second command runs a detached Docker container named `HEFsensorHUB_container_backend` based on the `hefsensorhub_image_backend` image, mapping port 4500, using environment variables from a file (`.env`), and allowing interaction with the host's Docker daemon through a volume mount. The container restarts automatically.
+
+
+## Running Frontend
+
+### Cloning the Frontend From GitHub
+
+    git clone https://github.com/HEFLoRa/WEB_APP.git
+
+
+## Filling the ENV variables
+
+Change directory to the `WEB_APP` folder
+
+Creating a file `.env`
+
+	
+    REACT_APP_KEYCLOAK_URL=
+    REACT_APP_KEYCLOAK_REALM=
+    REACT_APP_KEYCLOAK_CLIENT_ID=
+    REACT_APP_BACKEND_URL=
+    REACT_APP_BACKEND_URL_ROOT=
+    REACT_APP_GOOGLE_ANALYTICS_ID=
+
+    
+  ### Building the frontend
+  
+
+    docker build -t hefsensorhub_image_frontend .
+    docker run -p 3000:80 --env-file .env --name hefsensorhub_container_frontend -d --restart always hefsensorhub_image_frontend
+
+-   `docker run`: This is the command to run a Docker container.
+-   `-p 3000:80`: This flag maps port 3000 on the host machine to port 80 on the container. It establishes a communication bridge between the host and the container.
+-   `--env-file .env`: This flag specifies an environment file (`.env`) to provide environment variables to the container. The file likely contains configuration settings needed by the frontend application.
+-   `--name hefsensorhub_container_frontend`: This flag assigns the name "hefsensorhub_container_frontend" to the running container.
+-   `-d`: This flag runs the container in detached mode, meaning it runs in the background.
+-   `--restart always`: This flag ensures that the container restarts automatically if it stops unexpectedly.
+-   `hefsensorhub_image_frontend`: This is the name of the Docker image to use for creating the container. It indicates that the container is based on the specified Docker image, presumably containing the frontend application.
+
+
+Now the application should run on port `3000`.
+
