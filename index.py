@@ -124,7 +124,7 @@ def generateYML(clientID, port, secondPort, clientSecret, KEYCLOAK_REALM, ROOT_U
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl={ROOT_URL}:8080/auth/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
+          - auth.keycloakConfigUrl={ROOT_URL}:8080/realms/{KEYCLOAK_REALM}/clients-registrations/install/{clientID}
           - auth.keycloakConfigSecret={clientSecret}
         ports:
           - {port}:8080
@@ -178,7 +178,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCL
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
-                    authServerURL: "{ROOT_URL}:8080/auth",
+                    authServerURL: "{ROOT_URL}:8080",
                     callbackURL: "{callbackURL}",
                 }},
                 verify: function(token, tokenSecret, profile, done) {{
@@ -411,7 +411,7 @@ def frost_client():
     try:
         # Step 1: Get access token
         token_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+            f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
             data={
                 "client_id": KEYCLOAK_CLIENT_ID,
                 "username": KEYCLOAK_USERNAME,
@@ -428,7 +428,7 @@ def frost_client():
         try:
             # Step 2: Fetch the list of clients for the user
             clients_request = requests.get(
-                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients",
+                f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients",
                 headers={
                     "Authorization": f"Bearer {access_token}",
                     "Content-Type": "application/json"
@@ -502,7 +502,7 @@ def get_cllients():
 
         # Step 1: Get access token
         token_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+            f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
             data={
                 "client_id": KEYCLOAK_CLIENT_ID,
                 "username": KEYCLOAK_USERNAME,
@@ -520,7 +520,7 @@ def get_cllients():
         # Step 2: Get group where user is part
 
         group_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -536,7 +536,7 @@ def get_cllients():
 
         for group in groups_json:
             group_request = requests.get(
-                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}",
+                f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}",
                 headers={
                     "Authorization": f"Bearer {access_token}",
                     "Content-Type": "application/json"
@@ -568,7 +568,7 @@ def get_cllients():
 
         for group in groups:
             clients_request = requests.get(
-                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}/role-mappings",
+                f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}/role-mappings",
                 headers={
                     "Authorization": f"Bearer {access_token}",
                     "Content-Type": "application/json"
@@ -622,7 +622,7 @@ def get_cllients():
 
 
 @ app.route('/validate', methods=["GET"])
-def my_page():
+def validate_user():
     try:
         token = request.args.get('token')
         KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
@@ -708,7 +708,7 @@ def my_page():
 
         # Step 1: Get access token
         token_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+            f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
             data={
                 "client_id": KEYCLOAK_CLIENT_ID,
                 "username": KEYCLOAK_USERNAME,
@@ -725,7 +725,7 @@ def my_page():
 
         # Step 2: Create user
         create_user_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users",
             json={
                 "firstName": firstName,
                 "lastName": lastName,
@@ -755,7 +755,7 @@ def my_page():
         db.commit()
 
         get_clients_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -880,7 +880,7 @@ def my_page():
         new_clientId = f"frost_{clientPORT}"
 
         create_client_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients",
             json={
                 "clientId": new_clientId,
                 "enabled": True,
@@ -892,7 +892,10 @@ def my_page():
                 "protocol": "openid-connect",
                 "bearerOnly": False,
                 "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
-                "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server"
+                "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
+                "attributes":{
+                    "exclude.issuer.from.auth.response": "true",
+                }
             },
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -909,7 +912,7 @@ def my_page():
 
         # Step 6: Get the client id of the new client
         get_client_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -921,7 +924,7 @@ def my_page():
 
         # STEP 7: Create role for the new client
         create_role_admin_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "admin"
             },
@@ -933,7 +936,7 @@ def my_page():
         create_role_admin_request.raise_for_status()
 
         create_role_read_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "read"
             },
@@ -947,7 +950,7 @@ def my_page():
         # Update role for the new client
 
         create_role_update_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "update"
             },
@@ -959,7 +962,7 @@ def my_page():
         create_role_update_request.raise_for_status()
 
         create_role_create_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "create"
             },
@@ -971,7 +974,7 @@ def my_page():
         create_role_create_request.raise_for_status()
 
         create_role_delete_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             json={
                 "name": "delete"
             },
@@ -991,7 +994,7 @@ def my_page():
         # Step 8 : Get the user id of the new user
 
         get_user_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users?username={email}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users?username={email}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1005,7 +1008,7 @@ def my_page():
         # Step 9: GET Role ID where role name is admin, read, create, delete for the new client
 
         get_role_new_client_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/roles",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1015,7 +1018,7 @@ def my_page():
         get_role_new_client_request.raise_for_status()
 
         role_mapping_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id}",
             json=get_role_new_client_request.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -1033,7 +1036,7 @@ def my_page():
 
         # Step 9.1: Create group
         create_group_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups",
             json={
                 "name": GROUP_ID_RANDOM_NAME_GENERATOR,
                 "attributes": {
@@ -1059,7 +1062,7 @@ def my_page():
 
         # Step 9.2 Get The ID Of Group
         get_group_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups?search={GROUP_ID_RANDOM_NAME_GENERATOR}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups?search={GROUP_ID_RANDOM_NAME_GENERATOR}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1075,7 +1078,7 @@ def my_page():
 
         # Step 9.3 Put User in that Group
         add_user_to_group_request = requests.put(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups/{group_id}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups/{group_id}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1091,7 +1094,7 @@ def my_page():
 
         # Step 9.4: Map the role to the group
         map_role_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group_id}/role-mappings/clients/{client_id}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups/{group_id}/role-mappings/clients/{client_id}",
             json=get_role_new_client_request.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -1108,7 +1111,7 @@ def my_page():
         # Step 10 : GET CLIENT Secret of the new client
 
         get_client_secret_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1243,7 +1246,7 @@ def my_page():
         print(f"{ROOT_URL} {new_node_red_port} DOMAIN PRINT", flush=True)
 
         create_client_request_node_red = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients",
             json={
                 "clientId": new_clientId_node_red,
                 "enabled": True,
@@ -1280,7 +1283,7 @@ def my_page():
         # Step 15.4 : Get the client id of the new client
 
         get_client_request_node_red = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId_node_red}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients?clientId={new_clientId_node_red}",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1292,7 +1295,7 @@ def my_page():
         # Step 15.5 : Create role admin, read, create, delete in the new node-red client
 
         create_role_admin_node_red = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "admin"
             },
@@ -1305,7 +1308,7 @@ def my_page():
         create_role_admin_node_red.raise_for_status()
 
         create_role_read_node_red = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}//admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "read"
             },
@@ -1318,7 +1321,7 @@ def my_page():
         create_role_read_node_red.raise_for_status()
 
         create_role_update_node_red = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "update"
             },
@@ -1330,7 +1333,7 @@ def my_page():
 
         create_role_update_node_red.raise_for_status()
         create_role_create_node_red = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "create"
             },
@@ -1343,7 +1346,7 @@ def my_page():
         create_role_create_node_red.raise_for_status()
 
         create_role_delete_node_red = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             json={
                 "name": "delete"
             },
@@ -1364,7 +1367,7 @@ def my_page():
         # Step 15.6 get the role id of the role admin, read, create, delete
 
         get_role_new_client_node_red = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/roles",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1375,7 +1378,7 @@ def my_page():
         # Step 15.7 : Do the role mapping for the new user
 
         role_mapping_request_node_red = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id_node_red}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/role-mappings/clients/{client_id_node_red}",
             json=get_role_new_client_node_red.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -1393,7 +1396,7 @@ def my_page():
 
         # Step 15.8 Role Mapping of the Node Red Client in the Group Generated
         map_role_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/groups/{group_id}/role-mappings/clients/{client_id_node_red}",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups/{group_id}/role-mappings/clients/{client_id_node_red}",
             json=get_role_new_client_node_red.json(),
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -1410,7 +1413,7 @@ def my_page():
         # Step 15.8 : Create the secret
 
         get_client_node_red_secret_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/client-secret",
+            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients/{client_id_node_red}/client-secret",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
@@ -1543,19 +1546,19 @@ def register():
         email = request.json.get("email")
         # password = request.json.get("password")
 
-        if not all([firstName, lastName, email]):
-            return jsonify(success=False, error="Inputs are missing"), 400
-        commandTUM = ['ldapsearch', '-H', 'ldaps://iauth.tum.de/', '-D', 'cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de', '-b',
-                      'ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de', '-x', '-w', 'HEF@sensorservice2023', f'(&(imAffiliation=member)(imEmailAdressen={email}))']
+        # if not all([firstName, lastName, email]):
+        #     return jsonify(success=False, error="Inputs are missing"), 400
+        # commandTUM = ['ldapsearch', '-H', 'ldaps://iauth.tum.de/', '-D', 'cn=TUZEHEZ-KCMAILCHECK,ou=bindDNs,ou=iauth,dc=tum,dc=de', '-b',
+        #               'ou=users,ou=data,ou=prod,ou=iauth,dc=tum,dc=de', '-x', '-w', 'HEF@sensorservice2023', f'(&(imAffiliation=member)(imEmailAdressen={email}))']
 
         # tumVerificationResult = verifyTUMresponseString(
         #     resultcommandTUM.stdout)
 
-        resultcommandTUM = subprocess.run(
-            commandTUM, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        # resultcommandTUM = subprocess.run(
+        #     commandTUM, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        print(resultcommandTUM.stdout)
-        print(resultcommandTUM.stderr)
+        # print(resultcommandTUM.stdout)
+        # print(resultcommandTUM.stderr)
 
         # if resultcommandTUM.returncode != 0:
         # print("Error:", resultcommandTUM.stderr)
@@ -2038,7 +2041,7 @@ def reset_password():
             
             # Step 1: Get access token
             token_request = requests.post(
-                f"{KEYCLOAK_SERVER_URL}/auth/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
+                f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
                 data={
                     "client_id": KEYCLOAK_CLIENT_ID,
                     "username": KEYCLOAK_USERNAME,
@@ -2055,7 +2058,7 @@ def reset_password():
             
             # reset password request using
             change_password_request = requests.put(
-                f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/reset-password",
+                f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/reset-password",
                 json={
                     "type": "password",
                     "value": password

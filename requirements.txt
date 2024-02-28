@@ -3,3 +3,4 @@ requests==2.26.0
 Flask-Cors==3.0.10
 pymysql==1.0.2
 python-dotenv
+Werkzeug==2.2.2
