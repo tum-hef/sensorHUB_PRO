@@ -70,6 +70,9 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 -   `-e MYSQL_ROOT_PASSWORD=<YOUR_PASSWORD>`: This environment variable sets the root password for the MySQL database. Replace `<YOUR_PASSWORD>` with the desired password. This is important for securing the MySQL instance.
 -   `mysql`: This is the name of the Docker image that will be used to create the container. It specifies the official MySQL Docker image.
 
+![image (5)](https://github.com/HEFLoRa/HEF-sensorHUB/assets/40120846/bb91afe1-96a5-40da-9837-6bfc71102309)
+
+
 ### Cloning Backend from GitHub
 
     git clone https://github.com/HEFLoRa/KEYCLOAK_SERVICES
