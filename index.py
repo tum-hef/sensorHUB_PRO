@@ -13,6 +13,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import re
 import json
+from time import sleep
 app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app)
@@ -161,6 +162,7 @@ def verifyTUMresponseString(response):
 
 
 def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL):
+    print(clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL)
     new_file_content = f"""
     module.exports = {{
         flowFile: "flows.json",
@@ -178,6 +180,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCL
                     publicClient: "false",
                     clientSecret: "{clientSecret}",
                     sslRequired: "external",
+                    scope: "openid profile email",
                     authServerURL: "{ROOT_URL}:8080",
                     callbackURL: "{callbackURL}",
                 }},
@@ -236,14 +239,21 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCL
     return new_file_content
 
 
+
+
 def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL):
-    directory = "/var/lib/docker/volumes/{}/_data".format(node_red_storage)
+    # Construct the mountpoint using the provided volume name
+    mountpoint = subprocess.check_output(f"docker volume inspect {node_red_storage} --format='{{{{.Mountpoint}}}}'", shell=True, text=True).strip()
+
+    # Construct the full path to the settings file
+    settings_file_path = f"{mountpoint}/settings.js"
+
     new_file_content = create_node_red_new_settings_file(
         clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL)
 
-    cmd = f"echo '{new_file_content}' | tee {directory}/settings.js"
-    subprocess.run(cmd, shell=True)
-
+    # Write new_file_content to the settings file
+    with open(settings_file_path, "w") as settings_file:
+        settings_file.write(new_file_content)
 
 def generate_email(status, token, firstName, expiredAt):
     try:
@@ -275,7 +285,7 @@ def generate_email(status, token, firstName, expiredAt):
             <body style="text-align: center;">
                 <h2>Hi {firstname},</h2>
                 <p>Thank you for registering,</p>
-                <p>Please click <a href="{link}">here</a> to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
+                <p>Please click <a href={link}>here</a> (alternatively directly use following link: {link}) to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
                 <p>Thank you,</p>
             </body>
             </html>
@@ -288,7 +298,7 @@ def generate_email(status, token, firstName, expiredAt):
             <body style="text-align: center;">
                 <h2>Hi {firstname},</h2>
                 <p>Thank you for registering, we have created a new valid link for you</p>
-                <p>Please click <a href="{link}">here</a> to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
+                <p>Please click <a href={link}>here</a> (alternatively directly use following link: {link}) to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
                 <p>Thank you,</p>
             </body>
             </html>
@@ -375,6 +385,7 @@ def frost_server():
                          user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
 
     # Check if the connection to the database was successful
+    
     if db is None:
         return jsonify(success=False, error="Failed to connect to the database"), 500
 
@@ -706,7 +717,9 @@ def validate_user():
         cursor.execute(query, (token,))
         db.commit()
 
-        # Step 1: Get access token
+        # Step 1: Get access token 
+        print("Step1 before  {KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token") 
+        sleep(5)
         token_request = requests.post(
             f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
             data={
@@ -719,7 +732,7 @@ def validate_user():
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         )
-
+        print("token_request",token_request.json())
         token_request.raise_for_status()
         access_token = token_request.json()["access_token"]
 
@@ -747,6 +760,7 @@ def validate_user():
         )
 
         create_user_request.raise_for_status()
+        print("step2")
 
         # Successful creation of the keycloak user
         query = "UPDATE user_registered SET keycloak_user_creation = 1 WHERE token = %s;"
@@ -762,7 +776,7 @@ def validate_user():
             }
         )
         get_clients_request.raise_for_status()
-
+        print("step3")
         # Get ID of the new user
         query = "SELECT id FROM user_registered where email = %s;"
         print(query, flush=True)
@@ -1516,24 +1530,29 @@ def register():
         KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
         KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
 
-        DATABASE_HOST = os.getenv("DATABASE_HOST")
-        DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
-        DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
-        DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
-        DATABASE_NAME = os.getenv("DATABASE_NAME")
+        host = os.getenv("DATABASE_HOST")
+        port = int(os.getenv("DATABASE_PORT"))
+        user = os.getenv("DATABASE_USERNAME")
+        password = os.getenv("DATABASE_PASSWORD")
+        database = os.getenv("DATABASE_NAME")
 
         SMTP_SERVER = os.getenv("SMTP_SERVER")
         SMTP_PORT = int(os.getenv("SMTP_PORT"))
         SMTP_USERNAME = os.getenv("SMTP_USERNAME")
         SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
-        if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_NAME,
+        if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, host, user, password, port, database,
                     SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD]):
             return jsonify(success=False, error="One or more .env variable is missing"), 500
 
         # Try to connect to the database
-        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
-                             user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
+        db = pymysql.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
+        )
 
         # Check if the connection to the database was successful
         if db is None:
@@ -2134,5 +2153,55 @@ def logs():
         return jsonify(success=False, error="Server Error"), 500
 
 
+@app.route("/test_db_connection", methods=["GET"])
+def test_db_connection():
+    try:
+        # Get database credentials from environment variables
+        host = os.getenv("DATABASE_HOST")
+        port = int(os.getenv("DATABASE_PORT"))
+        user = os.getenv("DATABASE_USERNAME")
+        password = os.getenv("DATABASE_PASSWORD")
+        database = os.getenv("DATABASE_NAME")
+
+        # Establish connection to MySQL server
+        connection = pymysql.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
+        )
+
+        # Close the connection
+        connection.close()
+
+        # If no exception is raised, return success response
+        return jsonify(success=True, message="Database connection successful")
+
+    except Exception as e:
+        # If an exception is raised, return error response
+        return jsonify(success=False, error=str(e))
+@app.route('/pathcheck', methods=['GET'])
+def test_path():
+    try:
+        # Replace "node_red_storage_38" with the dynamic volume name
+        node_red_storage = "node_red_storage_38"
+        
+        # Construct the directory path
+        directory = f"/var/lib/docker/volumes/{node_red_storage}/_data"
+        
+        # Check if the directory exists
+        if os.path.exists(directory):
+            current_path = os.getcwd()
+            return jsonify({'success': True, 'message': f'Directory {directory} exists', 'current_path': current_path})
+        else:
+            return jsonify({'success': False, 'error': f'Directory {directory} does not exist'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': f"Error: {e}"})
+
+ 
+    
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port="4500")
+
+    
