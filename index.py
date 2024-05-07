@@ -275,7 +275,7 @@ def generate_email(status, token, firstName, expiredAt):
             <body style="text-align: center;">
                 <h2>Hi {firstname},</h2>
                 <p>Thank you for registering,</p>
-                <p>Please click <a href="{link}">here</a> to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
+                <p>Please click <a href={link}>here</a> (alternatively directly use following link: {link}) to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
                 <p>Thank you,</p>
             </body>
             </html>
@@ -288,7 +288,7 @@ def generate_email(status, token, firstName, expiredAt):
             <body style="text-align: center;">
                 <h2>Hi {firstname},</h2>
                 <p>Thank you for registering, we have created a new valid link for you</p>
-                <p>Please click <a href="{link}">here</a> to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
+                <p>Please click <a href={link}>here</a> (alternatively directly use following link: {link}) to verify your account and to generate services for you. This link will expire on {expires_at}.</p>
                 <p>Thank you,</p>
             </body>
             </html>
