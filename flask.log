@@ -7,54 +7,29 @@ nohup: ignoring input
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:4500
- * Running on http://138.246.225.198:4500
+ * Running on http://138.246.225.192:4500
 [33mPress CTRL+C to quit[0m
-10.157.62.172 - - [06/May/2024 14:52:07] "GET /get_clients?user_id=9433ea5c-a8e1-4f1f-b1ff-dcf2594192d0 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:08] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:08] "GET /get_clients?user_id=9433ea5c-a8e1-4f1f-b1ff-dcf2594192d0 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:08] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:11] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:11] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:11] "GET /frost-server?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:12] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:12] "GET /get_clients?user_id=9433ea5c-a8e1-4f1f-b1ff-dcf2594192d0 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:52:12] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:54:55] "GET /get_clients?user_id=9433ea5c-a8e1-4f1f-b1ff-dcf2594192d0 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:54:55] "GET /frost-server?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:54:55] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:54:55] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:54:55] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:54:55] "GET /get_clients?user_id=9433ea5c-a8e1-4f1f-b1ff-dcf2594192d0 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 14:54:55] "GET /node-red?email=testuser46@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:19:41] "OPTIONS /register HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:19:43] "POST /register HTTP/1.1" 200 -
-37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea
-{'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}
-[{'id': '37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea', 'attributes': {'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}}]
-37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea
-{'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}
-[{'id': '37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea', 'attributes': {'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}}]
-37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea
-{'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}
-[{'id': '37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea', 'attributes': {'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}}]
-37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea
-{'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}
-[{'id': '37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea', 'attributes': {'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}}]
-37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea
-{'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}
-[{'id': '37dd4ca7-b8c9-4f69-bcd3-ae31daaad4ea', 'attributes': {'group_name': ['testuser46@tum.de'], 'group_type': ['individual']}}]
+10.157.46.20 - - [07/May/2024 13:42:52] "OPTIONS /register HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 13:45:06] "OPTIONS /register HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 13:45:13] "POST /register HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 13:45:27] "[31m[1mGET /register HTTP/1.1[0m" 405 -
+10.157.46.20 - - [07/May/2024 13:45:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+10.157.46.20 - - [07/May/2024 13:45:32] "[31m[1mGET /register HTTP/1.1[0m" 405 -
+10.157.46.20 - - [07/May/2024 13:47:26] "POST /register HTTP/1.1" 200 -
+127.0.0.1 - - [07/May/2024 13:48:41] "[33mGET / HTTP/1.0[0m" 404 -
+10.157.46.20 - - [07/May/2024 14:09:11] "GET /test_db_connection HTTP/1.1" 200 -
 SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))
-((48, 'testing', 'dev', 'testhef@tum.de', 'a91177b8-60f8-454c-9666-f08ab8c80a90', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, datetime.datetime(2024, 5, 6, 14, 19, 41), None),)
+((25, 'test', 'user10', 'testuser10@tum.de', '234760af-48f8-47ee-8e13-d62c62ff3bf4', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, datetime.datetime(2024, 5, 7, 12, 45, 6), None),)
 UPDATE user_registered SET isVerified = 1 WHERE token = %s;
 Step1 before  {KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token
-token_request {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJITUQ1YWNNak01c25QS2lYU0lhZnROOFA4NWZmUFdQUVhLVHI2QkRkcDFvIn0.eyJleHAiOjE3MTUwMDUxOTUsImlhdCI6MTcxNTAwMTU5NSwianRpIjoiMDM1MWFmMTUtZDViZS00YjcxLWEyYTMtMjI1ZTU1MjNhYWJkIiwiaXNzIjoiaHR0cDovL3R1emVoZXotZGV2LnNydi5td24uZGU6ODA4MC9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiMDkxZmZkZWEtOTVlYi00ZDNjLWI5MzItNGQ4OTQ2ODBlYTExIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaGVmU2Vuc29ySHViX2RldmVsb3BtZW50Iiwic2Vzc2lvbl9zdGF0ZSI6IjM3ZTA1MmJhLTc5YTMtNGQ2Yy04ZTc1LWU0YzMzMTExODRmNSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtYXN0ZXItcmVhbG0iOnsicm9sZXMiOlsidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJ2aWV3LXJlYWxtIiwibWFuYWdlLWlkZW50aXR5LXByb3ZpZGVycyIsImltcGVyc29uYXRpb24iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsInNpZCI6IjM3ZTA1MmJhLTc5YTMtNGQ2Yy04ZTc1LWU0YzMzMTExODRmNSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.EY0BkCI6YPDmT8Zn68TWXU3UWzvI-x_BVmHKWOrFzOBkU4epfwrCvO1dGf1fS4XSjlkA5rbInpkvUivQbUlSgI568du-QbaedDTEFDiR8Uzxld02iZJPleLVTRj1CzzO64VqyPUIKEpBvW0UwTghMz9egnDB2ZTf4i6VZyFwfYiCNowj_E6Rd4vbjq9xJLj5hL28-8lbYMCgDMEIrPyczZ9N8Molr8LreV5ah_w2ffnbYzPdKZN6vkGaHaQx4BX3Nn6R1WFEBpGYNgB25gHoDKM56Ujq3kVPtUJrPI3csu9fRHUxfp31v35qh-NlUsdErR-uJKpFsi8DArAW3I6S-Q', 'expires_in': 3600, 'refresh_expires_in': 1800, 'refresh_token': 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhMWVmN2JjNC1hNGIzLTQ1MzQtYWMxZS1lODk0ZjJhOGQ0MzIifQ.eyJleHAiOjE3MTUwMDMzOTUsImlhdCI6MTcxNTAwMTU5NSwianRpIjoiNTEyMDMyNTMtM2ZmZC00MDUwLTlhYmUtMmE5YTBlOTc2ZmIzIiwiaXNzIjoiaHR0cDovL3R1emVoZXotZGV2LnNydi5td24uZGU6ODA4MC9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiaHR0cDovL3R1emVoZXotZGV2LnNydi5td24uZGU6ODA4MC9yZWFsbXMvbWFzdGVyIiwic3ViIjoiMDkxZmZkZWEtOTVlYi00ZDNjLWI5MzItNGQ4OTQ2ODBlYTExIiwidHlwIjoiUmVmcmVzaCIsImF6cCI6ImhlZlNlbnNvckh1Yl9kZXZlbG9wbWVudCIsInNlc3Npb25fc3RhdGUiOiIzN2UwNTJiYS03OWEzLTRkNmMtOGU3NS1lNGMzMzExMTg0ZjUiLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiIzN2UwNTJiYS03OWEzLTRkNmMtOGU3NS1lNGMzMzExMTg0ZjUifQ.0xflYi8HndyCajtT9Ph_bUMmd0J_R0vfVxkz6Ip6Pvo', 'token_type': 'Bearer', 'not-before-policy': 0, 'session_state': '37e052ba-79a3-4d6c-8e75-e4c3311184f5', 'scope': 'email profile'}
+token_request {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ1Q3N0eEF5cVlKOWdwSTFXSE5MdVd4WTF0TzJTaVpETmVwVy0xazZTaWU4In0.eyJleHAiOjE3MTUwODc0MDMsImlhdCI6MTcxNTA4MzgwMywianRpIjoiNDc1ZjE0YjktYzUxZS00YjhkLWJlOTEtZGVkZDY1OTY4NGQ2IiwiaXNzIjoiaHR0cDovL3R1emVoZXotc2Vuc29ycy5zcnYubXduLmRlOjgwODAvcmVhbG1zL21hc3RlciIsImF1ZCI6WyJtYXN0ZXItcmVhbG0iLCJhY2NvdW50Il0sInN1YiI6Ijg4NWZhN2IyLTljYjctNDViYy1hNjZmLThhMGNhZTZmOWQ5ZiIsInR5cCI6IkJlYXJlciIsImF6cCI6ImhlZlNlbnNvckh1Yl9wcm9kdWN0aW9uIiwic2Vzc2lvbl9zdGF0ZSI6IjczZWQxZDlkLWIyNzEtNGY4Ni1iMjIwLTg4NWFkZjlmNjQzZCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtYXN0ZXItcmVhbG0iOnsicm9sZXMiOlsidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJ2aWV3LXJlYWxtIiwibWFuYWdlLWlkZW50aXR5LXByb3ZpZGVycyIsImltcGVyc29uYXRpb24iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsInNpZCI6IjczZWQxZDlkLWIyNzEtNGY4Ni1iMjIwLTg4NWFkZjlmNjQzZCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImRhdmlkLmdhY2tzdGV0dGVyQHR1bS5kZSJ9.Fv9yjTfZ3ElHENUcHawA8Ebw3EyJdWP33r0ZQDcZeB6IBIqTgnckpqhyDX3YeX0qXGduowoW6kFFtf1ti6jGYj0avR-k4-he5YoD0d2f7MthIEJR10ZTQbCGRycsyid86uVNUBovq1NwR85j0vFJ-2sRPe9EFPcjagzNJuEMVOvJIG00y0wD18f-zpDEju2nqh3uewPO6s0vznRqylk6GOymvSaIKTV6Jf0zGaxhLQ2ICPMM9GzBMmByICiGmOJcoPYl08O6FsvHX-oZREQuTrY3qECL4bjiW0ZxQBX5S2J1r0iWt6xpPGLdlCHHkoaHtYF-yqm5XhlQC6Xp1Qp-6w', 'expires_in': 3600, 'refresh_expires_in': 1800, 'refresh_token': 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1NDNkODY0ZC1hYjIzLTQ1MGEtOTU5OC05NDIxYjcwYmMzODAifQ.eyJleHAiOjE3MTUwODU2MDMsImlhdCI6MTcxNTA4MzgwMywianRpIjoiNzQ5ZGRlNjUtY2Q3My00NmU1LWI0MzQtNWVjZmJiOTBlYmI3IiwiaXNzIjoiaHR0cDovL3R1emVoZXotc2Vuc29ycy5zcnYubXduLmRlOjgwODAvcmVhbG1zL21hc3RlciIsImF1ZCI6Imh0dHA6Ly90dXplaGV6LXNlbnNvcnMuc3J2Lm13bi5kZTo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJzdWIiOiI4ODVmYTdiMi05Y2I3LTQ1YmMtYTY2Zi04YTBjYWU2ZjlkOWYiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiaGVmU2Vuc29ySHViX3Byb2R1Y3Rpb24iLCJzZXNzaW9uX3N0YXRlIjoiNzNlZDFkOWQtYjI3MS00Zjg2LWIyMjAtODg1YWRmOWY2NDNkIiwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiNzNlZDFkOWQtYjI3MS00Zjg2LWIyMjAtODg1YWRmOWY2NDNkIn0.xF2ElJtL6OqCOSc7kpzBGj7UyckWgdTQ6vDWeFBo51E', 'token_type': 'Bearer', 'not-before-policy': 0, 'session_state': '73ed1d9d-b271-4f86-b220-885adf9f643d', 'scope': 'email profile'}
 step2
 UPDATE user_registered SET keycloak_user_creation = 1 WHERE token = %s;
 step3
 SELECT id FROM user_registered where email = %s;
-User ID: 48
-Data inserted successfully into service table for user ID: 48
-43
+User ID: 25
+Data inserted successfully into service table for user ID: 25
+17
 TEST1
 True
 TEST2
@@ -63,17 +38,17 @@ TEST5
 TEST6
 TEST7
 TEST10
-6043
-1933
+6017
+1907
 UPDATE user_registered SET keycloak_generate_client = 1 WHERE token = %s;
 UPDATE user_registered SET keycloak_create_roles_for_client = 1 WHERE token = %s;
 UPDATE user_registered SET keycloak_role_mapping = 1 WHERE token = %s;
 *****GROUP NAME ******
-16c255c5aaa34db689e69e09f006c24f
+703d4d3592a144448b6262136cf5e5cf
 *****GROUP NAME ******
 UPDATE user_registered SET group_creation = 1 WHERE token = %s;
 ************
-60509eb7-37e3-4072-893c-8a1c2a7186b0
+8734a6b1-5696-454e-a9bc-c73d99f96879
 ************
 User added to group successfully.
 UPDATE user_registered SET group_assign_user_to_group = 1 WHERE token = %s;
@@ -84,9 +59,9 @@ UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
     services:
       web:
         image: fraunhoferiosb/frost-server:2.0
-        container_name: frost_6043
+        container_name: frost_6017
         environment:
-          - serviceRootUrl=http://tuzehez-dev.srv.mwn.de:6043/FROST-Server
+          - serviceRootUrl=http://tuzehez-sensors.srv.mwn.de:6017/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -96,17 +71,17 @@ UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl=http://tuzehez-dev.srv.mwn.de:8080/realms/master/clients-registrations/install/frost_6043
-          - auth.keycloakConfigSecret=HuWyh5o81PH7bkfWjr1p1L1ppXPtvHDw
+          - auth.keycloakConfigUrl=http://tuzehez-sensors.srv.mwn.de:8080/realms/master/clients-registrations/install/frost_6017
+          - auth.keycloakConfigSecret=Stl7bMjYwRaieMdcdDBqAbmDxqEulsRJ
         ports:
-          - 6043:8080
-          - 1933:1883
+          - 6017:8080
+          - 1907:1883
         depends_on:
           - database
         restart: always
       database:
         image: postgis/postgis:11-2.5-alpine
-        container_name: frost_6043_db
+        container_name: frost_6017_db
         environment:
           - POSTGRES_DB=sensorthings
           - POSTGRES_USER=sensorthings
@@ -117,78 +92,537 @@ UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
     volumes:
         postgis_volume:
     
-frost_6043
-Creating network "frost_6043_default" with the default driver
-Creating volume "frost_6043_postgis_volume" with default driver
-Creating frost_6043_db ... 
-[1A[2KCreating frost_6043_db ... [32mdone[0m[1BCreating frost_6043    ... 
-[1A[2KCreating frost_6043    ... [32mdone[0m[1BCompletedProcess(args=['docker-compose', '-p', 'frost_6043', '-f', 'yml_files/frost_6043.yml', 'up', '-d'], returncode=0)
+frost_6017
+Creating network "frost_6017_default" with the default driver
+Creating volume "frost_6017_postgis_volume" with default driver
+Creating frost_6017_db ... 
+Creating frost_6017_db ... done
+Creating frost_6017    ... 
+Creating frost_6017    ... done
+CompletedProcess(args=['docker-compose', '-p', 'frost_6017', '-f', 'yml_files/frost_6017.yml', 'up', '-d'], returncode=0)
 UPDATE user_registered SET frost_yml_execution = 1 WHERE token = %s;
-CompletedProcess(args='docker run -d --restart always --init  -p 20026:1880 -v node_red_storage_43:/data --name node_red_43 nodered/node-red', returncode=0, stdout=b'7acd08cc2f81f04bd3ead2838bf4d1d4270fc290fc6f1893f05abf626f0dc431\n', stderr=b'')
+CompletedProcess(args='docker run -d --restart always --init  -p 20014:1880 -v node_red_storage_17:/data --name node_red_17 nodered/node-red', returncode=0, stdout=b'ac6f9a6f06f8ad79b84c21078a034c142e94b730b1f4eb468bd6ea5b8dc9cc33\n', stderr=b'')
 UPDATE user_registered SET node_red_command_execution = 1 WHERE token = %s;
-node_red_43WASS 
-7acd08cc2f81 WASSS 
-7acd08cc2f81
+node_red_17WASS 
+ac6f9a6f06f8 WASSS 
+ac6f9a6f06f8
 
-added 5 packages, and audited 309 packages in 3s
+added 5 packages, and audited 309 packages in 7s
 
-47 packages are looking for funding
+46 packages are looking for funding
   run `npm fund` for details
 
-found 0 vulnerabilities
+9 vulnerabilities (3 moderate, 6 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues, run:
+  npm audit fix --force
+
+Run `npm audit` for details.
 npm notice 
 npm notice New major version of npm available! 8.19.4 -> 10.7.0
 npm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.7.0>
 npm notice Run `npm install -g npm@10.7.0` to update!
 npm notice 
-CompletedProcess(args=['docker', 'exec', '7acd08cc2f81', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
-CompletedProcess(args=['docker', 'exec', '7acd08cc2f81', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+CompletedProcess(args=['docker', 'exec', 'ac6f9a6f06f8', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+CompletedProcess(args=['docker', 'exec', 'ac6f9a6f06f8', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
 UPDATE user_registered SET node_red_install_libaries = 1 WHERE token = %s;
-http://tuzehez-dev.srv.mwn.de 20026 DOMAIN PRINT
+http://tuzehez-sensors.srv.mwn.de 20014 DOMAIN PRINT
 UPDATE user_registered SET node_red_keycloak_generate_new_client = 1 WHERE token = %s;
 UPDATE user_registered SET node_red_keycloak_generate_roles = 1 WHERE token = %s;
 UPDATE user_registered SET node_red_keycloak_role_mapping = 1 WHERE token = %s;
 UPDATE user_registered SET group_node_red_client_role_mapping = 1 WHERE token = %s;
-IJOlYlDMQcCxOB8f0CKlUrqrQwWiWkrG SECRET OF NODE RED
-eb0734d9-595a-4cc8-92f6-785cb111f694 ID OF RED NODE CLIENT
-node_red_43 TEST 
-node_red_43 IJOlYlDMQcCxOB8f0CKlUrqrQwWiWkrG http://tuzehez-dev.srv.mwn.de:20026/auth/strategy/callback http://tuzehez-dev.srv.mwn.de:8080 master testhef@tum.de http://tuzehez-dev.srv.mwn.de
+B4JzJBNfrGyoNKyH40E824ooYLv9kvaQ SECRET OF NODE RED
+b22258c3-9d37-4d76-94ef-436d3d9b8554 ID OF RED NODE CLIENT
+node_red_17 TEST 
+node_red_17 B4JzJBNfrGyoNKyH40E824ooYLv9kvaQ http://tuzehez-sensors.srv.mwn.de:20014/auth/strategy/callback http://tuzehez-sensors.srv.mwn.de:8080 master testuser10@tum.de http://tuzehez-sensors.srv.mwn.de
 UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;
-7acd08cc2f81
-CompletedProcess(args='docker restart 7acd08cc2f81', returncode=0)
+ac6f9a6f06f8
+CompletedProcess(args='docker restart ac6f9a6f06f8', returncode=0)
 UPDATE user_registered SET node_red_restart_container = 1 WHERE token = %s;
 UPDATE user_registered SET isCompleted = 1, completedAt = %s WHERE token = %s;
-10.157.62.172 - - [06/May/2024 15:20:06] "GET /validate?token=a91177b8-60f8-454c-9666-f08ab8c80a90 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:06] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-10.157.62.172 - - [06/May/2024 15:20:50] "GET /node-red?email=testhef@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:50] "GET /get_clients?user_id=12492f9b-3cbe-44a4-90a5-f62d9fa159a3 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:50] "GET /node-red?email=testhef@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:50] "GET /get_clients?user_id=12492f9b-3cbe-44a4-90a5-f62d9fa159a3 HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:53] "GET /node-red?email=testhef@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:54] "GET /frost-server?email=testhef@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:54] "GET /node-red?email=testhef@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:55] "GET /node-red?email=testhef@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:55] "GET /node-red?email=testhef@tum.de HTTP/1.1" 200 -
-10.157.62.172 - - [06/May/2024 15:20:55] "GET /get_clients?user_id=12492f9b-3cbe-44a4-90a5-f62d9fa159a3 HTTP/1.1" 200 -
-167.248.133.178 - - [06/May/2024 21:31:54] code 400, message Bad request version ('À\x14À')
-167.248.133.178 - - [06/May/2024 21:31:54] "[35m[1m î  ê­¦¿°÷ÖoJÈ z¹àÏ ýx80»Mæ]ã$Ú "%7 J³ºs;<{´Åì¹Ïd)÷{ÃspwD¯ü &Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ[0m" HTTPStatus.BAD_REQUEST -
-167.248.133.178 - - [06/May/2024 21:31:57] "[33mGET / HTTP/1.1[0m" 404 -
-167.248.133.178 - - [06/May/2024 21:32:01] "[33mGET / HTTP/1.1[0m" 404 -
-167.248.133.178 - - [06/May/2024 21:32:01] code 505, message Invalid HTTP version (2.0)
-167.248.133.178 - - [06/May/2024 21:32:01] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-167.248.133.42 - - [07/May/2024 10:04:27] code 400, message Bad request syntax ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03Æ\x99Ûh;XîÂ\x82Ï¶!b')
-167.248.133.42 - - [07/May/2024 10:04:27] "[35m[1m î  êÆÛh;XîÂÏ¶!b[0m" HTTPStatus.BAD_REQUEST -
-167.248.133.42 - - [07/May/2024 10:04:30] "[33mGET / HTTP/1.1[0m" 404 -
-167.248.133.42 - - [07/May/2024 10:04:34] "[33mGET / HTTP/1.1[0m" 404 -
-167.248.133.42 - - [07/May/2024 10:04:34] code 505, message Invalid HTTP version (2.0)
-167.248.133.42 - - [07/May/2024 10:04:34] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-199.45.154.19 - - [07/May/2024 11:46:47] code 400, message Bad request version ('À\x14À')
-199.45.154.19 - - [07/May/2024 11:46:47] "[35m[1m î  ê ¼ÔGn>Ñ EÔD`>gÕÇ5öçOÍ' õ½ê»/jÏ¨»¸³ ç¿®¾asàê±TE¸cR_Ö> &Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ[0m" HTTPStatus.BAD_REQUEST -
-199.45.154.19 - - [07/May/2024 11:46:51] "[33mGET / HTTP/1.1[0m" 404 -
-199.45.154.19 - - [07/May/2024 11:46:55] "[33mGET / HTTP/1.1[0m" 404 -
-199.45.154.19 - - [07/May/2024 11:46:55] code 505, message Invalid HTTP version (2.0)
-199.45.154.19 - - [07/May/2024 11:46:55] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-141.24.51.188 - - [07/May/2024 12:05:27] "[33mGET / HTTP/1.1[0m" 404 -
-141.24.51.188 - - [07/May/2024 12:05:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-194.165.16.72 - - [07/May/2024 12:41:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
-194.165.16.72 - - [07/May/2024 12:41:14] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+10.157.46.20 - - [07/May/2024 14:12:39] "GET /validate?token=234760af-48f8-47ee-8e13-d62c62ff3bf4 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:13:57] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:13:57] "GET /get_clients?user_id=838227c8-16c0-48c0-a56c-3d3876e0a902 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:13:57] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:14:03] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:14:03] "GET /frost-server?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:14:03] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:14:03] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:14:03] "GET /get_clients?user_id=838227c8-16c0-48c0-a56c-3d3876e0a902 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 14:14:04] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:49] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:49] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:49] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:51] "GET /frost-server?email=test5@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:51] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:51] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:52] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:52] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:26:52] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:28:22] "OPTIONS /register HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:30:43] "POST /register HTTP/1.1" 200 -
+8734a6b1-5696-454e-a9bc-c73d99f96879
+{'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}
+[{'id': '8734a6b1-5696-454e-a9bc-c73d99f96879', 'attributes': {'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}}]
+8734a6b1-5696-454e-a9bc-c73d99f96879
+{'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}
+[{'id': '8734a6b1-5696-454e-a9bc-c73d99f96879', 'attributes': {'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}}]
+ad80e138-fa5f-4f79-81e6-733a61bf6843
+{'group_name': ['test5@tum.de'], 'group_type': ['individual']}
+[{'id': 'ad80e138-fa5f-4f79-81e6-733a61bf6843', 'attributes': {'group_name': ['test5@tum.de'], 'group_type': ['individual']}}]
+ad80e138-fa5f-4f79-81e6-733a61bf6843
+{'group_name': ['test5@tum.de'], 'group_type': ['individual']}
+[{'id': 'ad80e138-fa5f-4f79-81e6-733a61bf6843', 'attributes': {'group_name': ['test5@tum.de'], 'group_type': ['individual']}}]
+SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))
+((26, 'testXY', 'afterbugfix', 'testXY@tum.de', 'a5c06ad1-0feb-485d-a021-4cbaf601b106', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, datetime.datetime(2024, 5, 7, 13, 28, 22), None),)
+UPDATE user_registered SET isVerified = 1 WHERE token = %s;
+Step1 before  {KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token
+token_request {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ1Q3N0eEF5cVlKOWdwSTFXSE5MdVd4WTF0TzJTaVpETmVwVy0xazZTaWU4In0.eyJleHAiOjE3MTUwODg3NDMsImlhdCI6MTcxNTA4NTE0MywianRpIjoiOWQxYjA1ZWItNmEzNS00NThmLWIxOTItNGE3MGI5MjBkYTExIiwiaXNzIjoiaHR0cDovL3R1emVoZXotc2Vuc29ycy5zcnYubXduLmRlOjgwODAvcmVhbG1zL21hc3RlciIsImF1ZCI6WyJtYXN0ZXItcmVhbG0iLCJhY2NvdW50Il0sInN1YiI6Ijg4NWZhN2IyLTljYjctNDViYy1hNjZmLThhMGNhZTZmOWQ5ZiIsInR5cCI6IkJlYXJlciIsImF6cCI6ImhlZlNlbnNvckh1Yl9wcm9kdWN0aW9uIiwic2Vzc2lvbl9zdGF0ZSI6IjEwOWQxMTRmLTA2ZmMtNDU3Mi05M2UzLTZhNzExOWI4NzUyZiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtYXN0ZXItcmVhbG0iOnsicm9sZXMiOlsidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJ2aWV3LXJlYWxtIiwibWFuYWdlLWlkZW50aXR5LXByb3ZpZGVycyIsImltcGVyc29uYXRpb24iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsInNpZCI6IjEwOWQxMTRmLTA2ZmMtNDU3Mi05M2UzLTZhNzExOWI4NzUyZiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImRhdmlkLmdhY2tzdGV0dGVyQHR1bS5kZSJ9.EK8Ic-DS-wKK4hGcH4qLwrmmO77qTBkmZD1TVB5CsL6_y9S3dwKxkk7hUBFxif6__l5DB89uNfwIrDfzua1U2Z8IxdZRiQbcXZ3m7BMEjnxHyG9dwMYC4YjX-hwy1NGsuaJJvH8ibtjJR4VRo663fhbwcSn2kXoRioQBINZTybgE-l4MNSXKuRSKss1ZBiQF4Ibk5C75tTf6AUhtk7jWh7vNt5vAh_vMtkfv2g3DCvG088Knfv7KjcylLypoM0DFshmOTC1wTnv9Mv50L9vqdRWDLxuUdXCQ75YRpVZmprTcWDyVwF4PY87nRbbjcVMYQcfFyQ348Dzl0SajsVhcHg', 'expires_in': 3600, 'refresh_expires_in': 1800, 'refresh_token': 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1NDNkODY0ZC1hYjIzLTQ1MGEtOTU5OC05NDIxYjcwYmMzODAifQ.eyJleHAiOjE3MTUwODY5NDMsImlhdCI6MTcxNTA4NTE0MywianRpIjoiYTk4MzExNWItNmM0Mi00ZjkxLWE4ODktMGMzYTdlMzcyMzJhIiwiaXNzIjoiaHR0cDovL3R1emVoZXotc2Vuc29ycy5zcnYubXduLmRlOjgwODAvcmVhbG1zL21hc3RlciIsImF1ZCI6Imh0dHA6Ly90dXplaGV6LXNlbnNvcnMuc3J2Lm13bi5kZTo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJzdWIiOiI4ODVmYTdiMi05Y2I3LTQ1YmMtYTY2Zi04YTBjYWU2ZjlkOWYiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiaGVmU2Vuc29ySHViX3Byb2R1Y3Rpb24iLCJzZXNzaW9uX3N0YXRlIjoiMTA5ZDExNGYtMDZmYy00NTcyLTkzZTMtNmE3MTE5Yjg3NTJmIiwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiMTA5ZDExNGYtMDZmYy00NTcyLTkzZTMtNmE3MTE5Yjg3NTJmIn0.MsALq4ZPJN4xGlrT_jjLzxWaaprERvlFE-NrwvbaRuw', 'token_type': 'Bearer', 'not-before-policy': 0, 'session_state': '109d114f-06fc-4572-93e3-6a7119b8752f', 'scope': 'email profile'}
+step2
+UPDATE user_registered SET keycloak_user_creation = 1 WHERE token = %s;
+step3
+SELECT id FROM user_registered where email = %s;
+User ID: 26
+Data inserted successfully into service table for user ID: 26
+18
+TEST1
+True
+TEST2
+TEST3
+TEST5
+TEST6
+TEST7
+TEST10
+6018
+1908
+UPDATE user_registered SET keycloak_generate_client = 1 WHERE token = %s;
+UPDATE user_registered SET keycloak_create_roles_for_client = 1 WHERE token = %s;
+UPDATE user_registered SET keycloak_role_mapping = 1 WHERE token = %s;
+*****GROUP NAME ******
+495b5a749b384f0687bfbc898759c519
+*****GROUP NAME ******
+UPDATE user_registered SET group_creation = 1 WHERE token = %s;
+************
+35bd4899-576d-4c84-934c-6d7efebbe50a
+************
+User added to group successfully.
+UPDATE user_registered SET group_assign_user_to_group = 1 WHERE token = %s;
+UPDATE user_registered SET group_frost_client_role_mapping = 1 WHERE token = %s;
+UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
+
+    version: '3'
+    services:
+      web:
+        image: fraunhoferiosb/frost-server:2.0
+        container_name: frost_6018
+        environment:
+          - serviceRootUrl=http://tuzehez-sensors.srv.mwn.de:6018/FROST-Server
+          - http_cors_enable=true
+          - http_cors_allowed.origins=*
+          - persistence_db_driver=org.postgresql.Driver
+          - persistence_db_url=jdbc:postgresql://database:5432/sensorthings
+          - persistence_db_username=sensorthings
+          - persistence_db_password=ChangeMe
+          - persistence_autoUpdateDatabase=true
+          - persistence_alwaysOrderbyId=true
+          - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
+          - auth.keycloakConfigUrl=http://tuzehez-sensors.srv.mwn.de:8080/realms/master/clients-registrations/install/frost_6018
+          - auth.keycloakConfigSecret=QbrypPgIqcByCFBLtEojUr7I90bqpRGi
+        ports:
+          - 6018:8080
+          - 1908:1883
+        depends_on:
+          - database
+        restart: always
+      database:
+        image: postgis/postgis:11-2.5-alpine
+        container_name: frost_6018_db
+        environment:
+          - POSTGRES_DB=sensorthings
+          - POSTGRES_USER=sensorthings
+          - POSTGRES_PASSWORD=ChangeMe
+        volumes:
+          - postgis_volume:/var/lib/postgresql/data
+        restart: always
+    volumes:
+        postgis_volume:
+    
+frost_6018
+Creating network "frost_6018_default" with the default driver
+Creating volume "frost_6018_postgis_volume" with default driver
+Creating frost_6018_db ... 
+Creating frost_6018_db ... done
+Creating frost_6018    ... 
+Creating frost_6018    ... done
+CompletedProcess(args=['docker-compose', '-p', 'frost_6018', '-f', 'yml_files/frost_6018.yml', 'up', '-d'], returncode=0)
+UPDATE user_registered SET frost_yml_execution = 1 WHERE token = %s;
+CompletedProcess(args='docker run -d --restart always --init  -p 20015:1880 -v node_red_storage_18:/data --name node_red_18 nodered/node-red', returncode=0, stdout=b'1f1fc70d859a5b8efdbdf0e3b9a8a3127bc38e2da42c7aff90163cb941f7427c\n', stderr=b'')
+UPDATE user_registered SET node_red_command_execution = 1 WHERE token = %s;
+node_red_18WASS 
+1f1fc70d859a WASSS 
+1f1fc70d859a
+
+added 5 packages, and audited 309 packages in 6s
+
+46 packages are looking for funding
+  run `npm fund` for details
+
+9 vulnerabilities (3 moderate, 6 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues, run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice 
+npm notice New major version of npm available! 8.19.4 -> 10.7.0
+npm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.7.0>
+npm notice Run `npm install -g npm@10.7.0` to update!
+npm notice 
+CompletedProcess(args=['docker', 'exec', '1f1fc70d859a', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+CompletedProcess(args=['docker', 'exec', '1f1fc70d859a', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+UPDATE user_registered SET node_red_install_libaries = 1 WHERE token = %s;
+http://tuzehez-sensors.srv.mwn.de 20015 DOMAIN PRINT
+UPDATE user_registered SET node_red_keycloak_generate_new_client = 1 WHERE token = %s;
+UPDATE user_registered SET node_red_keycloak_generate_roles = 1 WHERE token = %s;
+UPDATE user_registered SET node_red_keycloak_role_mapping = 1 WHERE token = %s;
+UPDATE user_registered SET group_node_red_client_role_mapping = 1 WHERE token = %s;
+hOAQ4L8LtGuAwktfeZm1nna7DPcH9n7q SECRET OF NODE RED
+e2b4721e-6169-470f-bfcb-940cf97105fb ID OF RED NODE CLIENT
+node_red_18 TEST 
+node_red_18 hOAQ4L8LtGuAwktfeZm1nna7DPcH9n7q http://tuzehez-sensors.srv.mwn.de:20015/auth/strategy/callback http://tuzehez-sensors.srv.mwn.de:8080 master testXY@tum.de http://tuzehez-sensors.srv.mwn.de
+UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;
+1f1fc70d859a
+CompletedProcess(args='docker restart 1f1fc70d859a', returncode=0)
+UPDATE user_registered SET node_red_restart_container = 1 WHERE token = %s;
+UPDATE user_registered SET isCompleted = 1, completedAt = %s WHERE token = %s;
+10.157.47.50 - - [07/May/2024 14:34:54] "GET /validate?token=a5c06ad1-0feb-485d-a021-4cbaf601b106 HTTP/1.1" 200 -
+SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))
+()
+10.157.47.50 - - [07/May/2024 14:37:46] "GET /validate?token=a5c06ad1-0feb-485d-a021-4cbaf601b106 HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:37:46] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+10.157.47.50 - - [07/May/2024 14:39:15] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:15] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:15] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:17] "GET /frost-server?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:39:17] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:39] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:39] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:39] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:42] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:43] "GET /frost-server?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:43] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:43] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:43] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:40:44] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:42:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:42:17] "GET /frost-server?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:42:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:42:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:42:17] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.47.50 - - [07/May/2024 14:42:17] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:31] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:31] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:31] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:31] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:33] "GET /frost-server?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:33] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:33] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:34] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:34] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.47.62 - - [07/May/2024 15:47:34] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:29] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:29] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:29] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:29] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:35] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:36] "GET /frost-server?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:36] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:36] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:36] "GET /get_clients?user_id=4b591c03-58b8-4eb4-b5ea-e304483719b6 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:51:36] "GET /node-red?email=testxy@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:42] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:42] "GET /get_clients?user_id=838227c8-16c0-48c0-a56c-3d3876e0a902 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:43] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:43] "GET /get_clients?user_id=838227c8-16c0-48c0-a56c-3d3876e0a902 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:46] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:46] "GET /frost-server?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:46] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:47] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:47] "GET /get_clients?user_id=838227c8-16c0-48c0-a56c-3d3876e0a902 HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:53:47] "GET /node-red?email=testuser10@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:55:02] "OPTIONS /register HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 15:57:22] "POST /register HTTP/1.1" 200 -
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+35bd4899-576d-4c84-934c-6d7efebbe50a
+{'group_name': ['testXY@tum.de'], 'group_type': ['individual']}
+[{'id': '35bd4899-576d-4c84-934c-6d7efebbe50a', 'attributes': {'group_name': ['testXY@tum.de'], 'group_type': ['individual']}}]
+8734a6b1-5696-454e-a9bc-c73d99f96879
+{'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}
+[{'id': '8734a6b1-5696-454e-a9bc-c73d99f96879', 'attributes': {'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}}]
+8734a6b1-5696-454e-a9bc-c73d99f96879
+{'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}
+[{'id': '8734a6b1-5696-454e-a9bc-c73d99f96879', 'attributes': {'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}}]
+8734a6b1-5696-454e-a9bc-c73d99f96879
+{'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}
+[{'id': '8734a6b1-5696-454e-a9bc-c73d99f96879', 'attributes': {'group_name': ['testuser10@tum.de'], 'group_type': ['individual']}}]
+SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))
+((27, 'test', 'user11', 'testuser11@tum.de', '43115df4-a4f0-4c09-a570-8044aea1150f', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, datetime.datetime(2024, 5, 7, 14, 55, 2), None),)
+UPDATE user_registered SET isVerified = 1 WHERE token = %s;
+Step1 before  {KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token
+token_request {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ1Q3N0eEF5cVlKOWdwSTFXSE5MdVd4WTF0TzJTaVpETmVwVy0xazZTaWU4In0.eyJleHAiOjE3MTUwOTM4NjksImlhdCI6MTcxNTA5MDI2OSwianRpIjoiZTYwNzMwOGQtMDQ4ZS00ODQwLWEwYjItNTFmNjkzYTM3ZmVjIiwiaXNzIjoiaHR0cDovL3R1emVoZXotc2Vuc29ycy5zcnYubXduLmRlOjgwODAvcmVhbG1zL21hc3RlciIsImF1ZCI6WyJtYXN0ZXItcmVhbG0iLCJhY2NvdW50Il0sInN1YiI6Ijg4NWZhN2IyLTljYjctNDViYy1hNjZmLThhMGNhZTZmOWQ5ZiIsInR5cCI6IkJlYXJlciIsImF6cCI6ImhlZlNlbnNvckh1Yl9wcm9kdWN0aW9uIiwic2Vzc2lvbl9zdGF0ZSI6IjY3YWNmYjg2LTcxNWUtNDQxZi05ZTJkLTYwOTVmMzkwMTk0NCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtYXN0ZXItcmVhbG0iOnsicm9sZXMiOlsidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJ2aWV3LXJlYWxtIiwibWFuYWdlLWlkZW50aXR5LXByb3ZpZGVycyIsImltcGVyc29uYXRpb24iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsInNpZCI6IjY3YWNmYjg2LTcxNWUtNDQxZi05ZTJkLTYwOTVmMzkwMTk0NCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImRhdmlkLmdhY2tzdGV0dGVyQHR1bS5kZSJ9.EkzEP9Ws0RFS3u87UzC_9cDcwxRW6rcpV2DdrJQQpYsIQrcJx429ZpBO-w-LPouW9a9InLUg8PuKnIoGrrV6JuRKMNLNEhNKaloNk4Ysl1Ze5R59tRhzF92-HeMjbrFJXsmn2mWcTr7wlHKzqfixZiXL_u9h_o0hUBhOD8Wnko88YEWB3Zu8Uk2itZwl_mhhjI6d-gfsXhn2b1ntLt3O55NzD7WUUrsm7twsS302g2HFuo5J4bFH6trCVVk2temQWdTXB33rwDmSUrWPmZm7pzKzAnpgH9qWpLQXyloXw-rsMAr9uWVU4HBQx6JyEXat9yyZCRJReQq7Gq6nGVxJ2A', 'expires_in': 3600, 'refresh_expires_in': 1800, 'refresh_token': 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1NDNkODY0ZC1hYjIzLTQ1MGEtOTU5OC05NDIxYjcwYmMzODAifQ.eyJleHAiOjE3MTUwOTIwNjksImlhdCI6MTcxNTA5MDI2OSwianRpIjoiZGU5ZDdhNWQtNjUzOC00YWYyLWJjZWEtYjJhNGVhOWUyMGRiIiwiaXNzIjoiaHR0cDovL3R1emVoZXotc2Vuc29ycy5zcnYubXduLmRlOjgwODAvcmVhbG1zL21hc3RlciIsImF1ZCI6Imh0dHA6Ly90dXplaGV6LXNlbnNvcnMuc3J2Lm13bi5kZTo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJzdWIiOiI4ODVmYTdiMi05Y2I3LTQ1YmMtYTY2Zi04YTBjYWU2ZjlkOWYiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiaGVmU2Vuc29ySHViX3Byb2R1Y3Rpb24iLCJzZXNzaW9uX3N0YXRlIjoiNjdhY2ZiODYtNzE1ZS00NDFmLTllMmQtNjA5NWYzOTAxOTQ0Iiwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiNjdhY2ZiODYtNzE1ZS00NDFmLTllMmQtNjA5NWYzOTAxOTQ0In0.oVdbG3XEUoxpzZMxGyJYj1aksWdfVrJLHL8r4AjajXE', 'token_type': 'Bearer', 'not-before-policy': 0, 'session_state': '67acfb86-715e-441f-9e2d-6095f3901944', 'scope': 'email profile'}
+step2
+UPDATE user_registered SET keycloak_user_creation = 1 WHERE token = %s;
+step3
+SELECT id FROM user_registered where email = %s;
+User ID: 27
+Data inserted successfully into service table for user ID: 27
+19
+TEST1
+True
+TEST2
+TEST3
+TEST5
+TEST6
+TEST7
+TEST10
+6019
+1909
+UPDATE user_registered SET keycloak_generate_client = 1 WHERE token = %s;
+UPDATE user_registered SET keycloak_create_roles_for_client = 1 WHERE token = %s;
+UPDATE user_registered SET keycloak_role_mapping = 1 WHERE token = %s;
+*****GROUP NAME ******
+4fc8d15276eb4990a8bce99801f2035c
+*****GROUP NAME ******
+UPDATE user_registered SET group_creation = 1 WHERE token = %s;
+************
+4e6d7b5e-0e51-40b9-bada-c07310376c77
+************
+User added to group successfully.
+UPDATE user_registered SET group_assign_user_to_group = 1 WHERE token = %s;
+UPDATE user_registered SET group_frost_client_role_mapping = 1 WHERE token = %s;
+UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
+
+    version: '3'
+    services:
+      web:
+        image: fraunhoferiosb/frost-server:2.0
+        container_name: frost_6019
+        environment:
+          - serviceRootUrl=http://tuzehez-sensors.srv.mwn.de:6019/FROST-Server
+          - http_cors_enable=true
+          - http_cors_allowed.origins=*
+          - persistence_db_driver=org.postgresql.Driver
+          - persistence_db_url=jdbc:postgresql://database:5432/sensorthings
+          - persistence_db_username=sensorthings
+          - persistence_db_password=ChangeMe
+          - persistence_autoUpdateDatabase=true
+          - persistence_alwaysOrderbyId=true
+          - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
+          - auth.keycloakConfigUrl=http://tuzehez-sensors.srv.mwn.de:8080/realms/master/clients-registrations/install/frost_6019
+          - auth.keycloakConfigSecret=Bgaz7wwhrkf2JuI5ZZOY045U1XBBSpSs
+        ports:
+          - 6019:8080
+          - 1909:1883
+        depends_on:
+          - database
+        restart: always
+      database:
+        image: postgis/postgis:11-2.5-alpine
+        container_name: frost_6019_db
+        environment:
+          - POSTGRES_DB=sensorthings
+          - POSTGRES_USER=sensorthings
+          - POSTGRES_PASSWORD=ChangeMe
+        volumes:
+          - postgis_volume:/var/lib/postgresql/data
+        restart: always
+    volumes:
+        postgis_volume:
+    
+frost_6019
+Creating network "frost_6019_default" with the default driver
+Creating volume "frost_6019_postgis_volume" with default driver
+Creating frost_6019_db ... 
+Creating frost_6019_db ... done
+Creating frost_6019    ... 
+Creating frost_6019    ... done
+CompletedProcess(args=['docker-compose', '-p', 'frost_6019', '-f', 'yml_files/frost_6019.yml', 'up', '-d'], returncode=0)
+UPDATE user_registered SET frost_yml_execution = 1 WHERE token = %s;
+CompletedProcess(args='docker run -d --restart always --init  -p 20016:1880 -v node_red_storage_19:/data --name node_red_19 nodered/node-red', returncode=0, stdout=b'11368c7e09b5231c241448c2d5cec474eb9b8193dd185abc1d16355f66b2c86d\n', stderr=b'')
+UPDATE user_registered SET node_red_command_execution = 1 WHERE token = %s;
+node_red_19WASS 
+11368c7e09b5 WASSS 
+11368c7e09b5
+npm notice 
+npm notice New major version of npm available! 8.19.4 -> 10.7.0
+npm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.7.0>
+npm notice Run `npm install -g npm@10.7.0` to update!
+npm notice 
+
+added 5 packages, and audited 309 packages in 4s
+
+46 packages are looking for funding
+  run `npm fund` for details
+
+9 vulnerabilities (3 moderate, 6 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues, run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+CompletedProcess(args=['docker', 'exec', '11368c7e09b5', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+CompletedProcess(args=['docker', 'exec', '11368c7e09b5', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+UPDATE user_registered SET node_red_install_libaries = 1 WHERE token = %s;
+http://tuzehez-sensors.srv.mwn.de 20016 DOMAIN PRINT
+UPDATE user_registered SET node_red_keycloak_generate_new_client = 1 WHERE token = %s;
+UPDATE user_registered SET node_red_keycloak_generate_roles = 1 WHERE token = %s;
+UPDATE user_registered SET node_red_keycloak_role_mapping = 1 WHERE token = %s;
+UPDATE user_registered SET group_node_red_client_role_mapping = 1 WHERE token = %s;
+FR9jh3qTVmUCzo9rrSwUeHjJiLaI3rZf SECRET OF NODE RED
+8d9b7241-268d-4c73-a32c-07256860a5b1 ID OF RED NODE CLIENT
+node_red_19 TEST 
+node_red_19 FR9jh3qTVmUCzo9rrSwUeHjJiLaI3rZf http://tuzehez-sensors.srv.mwn.de:20016/auth/strategy/callback http://tuzehez-sensors.srv.mwn.de:8080 master testuser11@tum.de http://tuzehez-sensors.srv.mwn.de
+UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;
+11368c7e09b5
+CompletedProcess(args='docker restart 11368c7e09b5', returncode=0)
+UPDATE user_registered SET node_red_restart_container = 1 WHERE token = %s;
+UPDATE user_registered SET isCompleted = 1, completedAt = %s WHERE token = %s;
+10.157.46.20 - - [07/May/2024 16:00:18] "GET /validate?token=43115df4-a4f0-4c09-a570-8044aea1150f HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:13] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:13] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:14] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:14] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:16] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:17] "GET /frost-server?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:17] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:17] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:17] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:01:17] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:52] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:52] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:55] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:55] "GET /frost-server?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:55] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:55] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:55] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:06:55] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:07:12] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:21] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:21] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:21] "GET /frost-server?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:21] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:21] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:21] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:24] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:24] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:24] "GET /frost-server?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:24] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:24] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:24] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:24] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:39] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:39] "GET /frost-server?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:39] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:39] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:39] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:39] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:08:39] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:09:29] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:09:29] "GET /frost-server?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:09:29] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:25] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:25] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:25] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:25] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:52] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:52] "GET /frost-server?email=test5@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:52] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:53] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:53] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+77.178.100.14 - - [07/May/2024 16:10:53] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:15:54] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:15:54] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:15:54] "GET /node-red?email=testuser11@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:15:54] "GET /get_clients?user_id=3c7eca0d-03ba-4c8f-b615-ce2b99e849ef HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:03] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:04] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:04] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:04] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:09] "GET /frost-server?email=test5@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:09] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:10] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:10] "GET /get_clients?user_id=bb123303-9827-422e-90c4-101c97de690d HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:10] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+10.157.46.20 - - [07/May/2024 16:16:10] "GET /node-red?email=test5@tum.de HTTP/1.1" 200 -
+87.236.176.19 - - [07/May/2024 19:10:55] code 400, message Bad request version ('À\x13À')
+87.236.176.19 - - [07/May/2024 19:10:55] "[35m[1m\x16\x03\x01\x01&\x01\x00\x01"\x03\x03è\x17\x9f+Ân³\x87æ'½¦w\x9fÐ\x8cÍ\x99\x08Ð¾N\x95\x96#9LJWyX\\ 1ù»âUS\x832lúR\x13)\x1eó\x96?$Üpæ\x11\x18Ì\x8bqÃ©Æ\x9d\x91ã\x00<À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.26 - - [07/May/2024 19:11:10] "[33mGET / HTTP/1.1[0m" 404 -
+43.153.97.102 - - [07/May/2024 23:58:12] code 400, message Bad request version ('À\x13À')
+43.153.97.102 - - [07/May/2024 23:58:12] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03I\x06²ù¼\x99iÀYûøºe-\x83Ud]\x0e\x8d·b8´gÆÝ9dZ8f gÁ\x81i³öòË°©\x19NÖ½\x95g|püé<Z¡\x90T·é¥8'O;\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+43.153.97.102 - - [07/May/2024 23:58:22] "[33mGET / HTTP/1.1[0m" 404 -
+172.104.137.47 - - [08/May/2024 06:06:08] "[33mGET / HTTP/1.0[0m" 404 -
+172.104.137.47 - - [08/May/2024 06:06:08] "[33mOPTIONS / HTTP/1.0[0m" 404 -
+172.104.137.47 - - [08/May/2024 06:06:08] code 400, message Bad request version ('RTSP/1.0')
+172.104.137.47 - - [08/May/2024 06:06:08] "[35m[1mOPTIONS / RTSP/1.0[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:13] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+172.104.137.47 - - [08/May/2024 06:06:13] "[35m[1m\x80\x00\x00(rþ\x1d\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:18] code 400, message Bad HTTP/0.9 request type ('\x00')
+172.104.137.47 - - [08/May/2024 06:06:18] "[35m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:18] code 400, message Bad request syntax ('HELP')
+172.104.137.47 - - [08/May/2024 06:06:18] "[35m[1mHELP[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:18] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
+172.104.137.47 - - [08/May/2024 06:06:18] "[35m[1m\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:18] code 400, message Bad request version ('\x00/\x00')
+172.104.137.47 - - [08/May/2024 06:06:18] "[35m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:18] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
+172.104.137.47 - - [08/May/2024 06:06:18] "[35m[1m\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:23] code 400, message Bad request version ('0.12\x00')
+172.104.137.47 - - [08/May/2024 06:06:23] "[35m[1m\x00\x00\x00¤ÿSMBr\x00\x00\x00\x00\x08\x01@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x06\x00\x00\x01\x00\x00\x81\x00\x02PC NETWORK PROGRAM 1.0\x00\x02MICROSOFT NETWORKS 1.03\x00\x02MICROSOFT NETWORKS 3.0\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02Samba\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:28] code 400, message Bad HTTP/0.9 request type ('l\x00')
+172.104.137.47 - - [08/May/2024 06:06:28] "[35m[1ml\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:28] code 400, message Bad request version ('SIP/2.0')
+172.104.137.47 - - [08/May/2024 06:06:28] "[35m[1mOPTIONS sip:nm SIP/2.0[0m" HTTPStatus.BAD_REQUEST -
+172.104.137.47 - - [08/May/2024 06:06:50] code 400, message Bad request version ('\x00/\x00')
+172.104.137.47 - - [08/May/2024 06:06:50] "[35m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" HTTPStatus.BAD_REQUEST -
