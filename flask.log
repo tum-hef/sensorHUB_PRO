@@ -295,3 +295,5 @@ UPDATE user_registered SET isCompleted = 1, completedAt = %s WHERE token = %s;
 36.156.145.152 - - [30/Jul/2024 12:40:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
 46.249.102.107 - - [30/Jul/2024 12:45:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
 46.249.102.107 - - [30/Jul/2024 12:45:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [30/Jul/2024 13:07:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [30/Jul/2024 13:07:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
