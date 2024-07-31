@@ -9,22 +9,20 @@ nohup: ignoring input
  * Running on http://127.0.0.1:4500
  * Running on http://138.246.225.198:4500
 [33mPress CTRL+C to quit[0m
-192.168.16.4 - - [29/Jul/2024 15:56:44] "[31m[1mGET /register HTTP/1.0[0m" 405 -
-192.168.16.4 - - [29/Jul/2024 15:56:44] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
-192.168.16.4 - - [29/Jul/2024 15:57:27] "OPTIONS /register HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:57:28] "POST /register HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:49:27] "OPTIONS /register HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:49:29] "POST /register HTTP/1.0" 200 -
 SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))
-((71, 'testing', 'one', 'testingone@tum.de', '65534177-f80d-49e8-a1a4-4ea82a836cc0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, datetime.datetime(2024, 7, 29, 14, 57, 27), None),)
+((76, 'testing', 'six', 'testingsix@tum.de', 'aba74def-f3f5-4633-a748-c54f58e87f81', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, datetime.datetime(2024, 7, 31, 15, 49, 27), None),)
 UPDATE user_registered SET isVerified = 1 WHERE token = %s;
 Step1 before  {KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token
-token_request {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI2ZXFTUjM3MWtEMV9vR09oQlR6c0ZNQXBzdklQX2FoRjl4YmM1YnV5X3RnIn0.eyJleHAiOjE3MjIyNjE1MjMsImlhdCI6MTcyMjI2MTQ2MywianRpIjoiMTFiNzRlMmItOGIxMy00ZTg3LTg1OTEtYmU1YjFkOTczYjkzIiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay1kZXYuaGVmLnR1bS5kZS9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiZGQ3NmU0NjItMTMyYi00ZGZhLTg0NjAtY2IxOGZlN2MyN2QwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaGVmU2Vuc29ySHViX2RldmVsb3BtZW50Iiwic2Vzc2lvbl9zdGF0ZSI6IjM3ZmUwNGQxLTcwOGYtNGY2Ni1iMTBkLTJmYjhkOGI5NGJlNyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtYXN0ZXItcmVhbG0iOnsicm9sZXMiOlsidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJ2aWV3LXJlYWxtIiwibWFuYWdlLWlkZW50aXR5LXByb3ZpZGVycyIsImltcGVyc29uYXRpb24iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsInNpZCI6IjM3ZmUwNGQxLTcwOGYtNGY2Ni1iMTBkLTJmYjhkOGI5NGJlNyIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.xqU65-H05T-rnEoeP6blNCg5P1maxyHNKgimVjqopjUiwvIVg_ZCHvQ9gGr3UUCG_sdXcuqOhVNb8BEpr6dwhiQ_yzbYNsGMrKYQq7RtXuy2bz4NeOVxTzQ5IaRHZcGlJjx_LkApXUbGSt-v3M2JNNSzY6ZAJ3JjMpz_YuYMLki8n4urkPFlGchr1irNpjq7EqRNUDv0io0_Gb1NnED6iUooR8dq6HONkLuvIvNaC9SDkutvvKc8Sso8dVAqLhN-pyscjcncTO4nfZ83AF-M2g9zqrLuQvl9BTwsMoEvqhRCuSHa4qJi7eTL5J25eH5LME7F1_3CQXb3aye5y6SmpA', 'expires_in': 60, 'refresh_expires_in': 1800, 'refresh_token': 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzNGU5ZDYzYi04MzEzLTRjNDUtOWQ2MS1hMDAzMDY0MzM2OWMifQ.eyJleHAiOjE3MjIyNjMyNjMsImlhdCI6MTcyMjI2MTQ2MywianRpIjoiZjQ2MjM4YTYtZWY1OC00ZDc4LTkwYzUtZjcyNzRiNjkxODk3IiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay1kZXYuaGVmLnR1bS5kZS9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiaHR0cHM6Ly9rZXljbG9hay1kZXYuaGVmLnR1bS5kZS9yZWFsbXMvbWFzdGVyIiwic3ViIjoiZGQ3NmU0NjItMTMyYi00ZGZhLTg0NjAtY2IxOGZlN2MyN2QwIiwidHlwIjoiUmVmcmVzaCIsImF6cCI6ImhlZlNlbnNvckh1Yl9kZXZlbG9wbWVudCIsInNlc3Npb25fc3RhdGUiOiIzN2ZlMDRkMS03MDhmLTRmNjYtYjEwZC0yZmI4ZDhiOTRiZTciLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiIzN2ZlMDRkMS03MDhmLTRmNjYtYjEwZC0yZmI4ZDhiOTRiZTcifQ.YBCZ4lpKvKAfeTCw7K2oxzSGVu-6C3k70Ly_JbPVrG8', 'token_type': 'Bearer', 'not-before-policy': 0, 'session_state': '37fe04d1-708f-4f66-b10d-2fb8d8b94be7', 'scope': 'email profile'}
+token_request {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI2ZXFTUjM3MWtEMV9vR09oQlR6c0ZNQXBzdklQX2FoRjl4YmM1YnV5X3RnIn0.eyJleHAiOjE3MjI0Mzc0NDQsImlhdCI6MTcyMjQzNzM4NCwianRpIjoiODNmN2M0ZWEtZTRkNi00NjU5LTk5ZGEtNDQwNGYxYmYyMTAyIiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay1kZXYuaGVmLnR1bS5kZS9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiZGQ3NmU0NjItMTMyYi00ZGZhLTg0NjAtY2IxOGZlN2MyN2QwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaGVmU2Vuc29ySHViX2RldmVsb3BtZW50Iiwic2Vzc2lvbl9zdGF0ZSI6ImU2Yjg1N2IyLWQ3ZjUtNDIzOS04YjA4LTkzMzNhMzVjNDU5YyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtYXN0ZXItcmVhbG0iOnsicm9sZXMiOlsidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJ2aWV3LXJlYWxtIiwibWFuYWdlLWlkZW50aXR5LXByb3ZpZGVycyIsImltcGVyc29uYXRpb24iLCJjcmVhdGUtY2xpZW50IiwibWFuYWdlLXVzZXJzIiwicXVlcnktcmVhbG1zIiwidmlldy1hdXRob3JpemF0aW9uIiwicXVlcnktY2xpZW50cyIsInF1ZXJ5LXVzZXJzIiwibWFuYWdlLWV2ZW50cyIsIm1hbmFnZS1yZWFsbSIsInZpZXctZXZlbnRzIiwidmlldy11c2VycyIsInZpZXctY2xpZW50cyIsIm1hbmFnZS1hdXRob3JpemF0aW9uIiwibWFuYWdlLWNsaWVudHMiLCJxdWVyeS1ncm91cHMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsInNpZCI6ImU2Yjg1N2IyLWQ3ZjUtNDIzOS04YjA4LTkzMzNhMzVjNDU5YyIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.RKz3mausULbvERHlbY3TSIwmft5K6pyyDmuv7hPtKaeqTuIcgW5-nZ3XIgem_uwbc8EBWDslUlI6cNx7BFkRIm2YYInccedgKUqWzQoilfqsghK062WExBre3VG_Enp6p3CgMQYfAp4mUbeHugJbGGK9m3bf_qqkYfW65vH1e6BkW_qBvDSQmngoTglrVE3yQzQq_Kvyc_tnvWfFCJ7quiL_G7ERlHYTiotKc-rO9AZGchSNHrKLalm77i9Kcow7WR6tQfZ3RSgTuchGvHbWZcshkI-NHwAg4SEL_Pvq4oj8sehdU_MGawpN9kQtg4Fo_zaDpxBrHAUier97hiz2pA', 'expires_in': 60, 'refresh_expires_in': 1800, 'refresh_token': 'eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzNGU5ZDYzYi04MzEzLTRjNDUtOWQ2MS1hMDAzMDY0MzM2OWMifQ.eyJleHAiOjE3MjI0MzkxODQsImlhdCI6MTcyMjQzNzM4NCwianRpIjoiNTA2NmQyZTQtNGQ2MC00NTJmLTkxNjItNTE2ODcyZmMxZjU4IiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay1kZXYuaGVmLnR1bS5kZS9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiaHR0cHM6Ly9rZXljbG9hay1kZXYuaGVmLnR1bS5kZS9yZWFsbXMvbWFzdGVyIiwic3ViIjoiZGQ3NmU0NjItMTMyYi00ZGZhLTg0NjAtY2IxOGZlN2MyN2QwIiwidHlwIjoiUmVmcmVzaCIsImF6cCI6ImhlZlNlbnNvckh1Yl9kZXZlbG9wbWVudCIsInNlc3Npb25fc3RhdGUiOiJlNmI4NTdiMi1kN2Y1LTQyMzktOGIwOC05MzMzYTM1YzQ1OWMiLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiJlNmI4NTdiMi1kN2Y1LTQyMzktOGIwOC05MzMzYTM1YzQ1OWMifQ.Kb4f7ig2xtI1XkvnVwYANUrBaI2Q6GNQnbfoze0Tc74', 'token_type': 'Bearer', 'not-before-policy': 0, 'session_state': 'e6b857b2-d7f5-4239-8b08-9333a35c459c', 'scope': 'email profile'}
 step2
 UPDATE user_registered SET keycloak_user_creation = 1 WHERE token = %s;
 step3
 SELECT id FROM user_registered where email = %s;
-User ID: 71
-Data inserted successfully into service table for user ID: 71
-65
+User ID: 76
+Data inserted successfully into service table for user ID: 76
+70
 TEST1
 True
 TEST2
@@ -33,30 +31,32 @@ TEST5
 TEST6
 TEST7
 TEST10
-6065
-1955
+6070
+1960
 UPDATE user_registered SET keycloak_generate_client = 1 WHERE token = %s;
 UPDATE user_registered SET keycloak_create_roles_for_client = 1 WHERE token = %s;
 UPDATE user_registered SET keycloak_role_mapping = 1 WHERE token = %s;
 *****GROUP NAME ******
-464b27337c9540d891468471ac0ad750
+d385fa2b021e48abbcdb8818949fdb54
 *****GROUP NAME ******
 UPDATE user_registered SET group_creation = 1 WHERE token = %s;
 ************
-2ba7456a-4e18-41f7-ac7a-6a806fd14592
+000ded00-89e1-4c44-a332-4b70acf5f333
 ************
 User added to group successfully.
 UPDATE user_registered SET group_assign_user_to_group = 1 WHERE token = %s;
 UPDATE user_registered SET group_frost_client_role_mapping = 1 WHERE token = %s;
+Error response from daemon: No such container: e921945659fe
+Error testing Nginx configuration: Command '['docker', 'exec', 'e921945659fe', 'nginx', '-t']' returned non-zero exit status 1.
 UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
 
     version: '3'
     services:
       web:
         image: fraunhoferiosb/frost-server:2.0
-        container_name: frost_6065
+        container_name: frost_6070
         environment:
-          - serviceRootUrl=http://tuzehez-dev.srv.mwn.de:6065/FROST-Server
+          - serviceRootUrl=https://6070-frost-dev.hef.tum.de/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -66,17 +66,17 @@ UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
           - persistence_autoUpdateDatabase=true
           - persistence_alwaysOrderbyId=true
           - auth.provider=de.fraunhofer.iosb.ilt.frostserver.auth.keycloak.KeycloakAuthProvider
-          - auth.keycloakConfigUrl=https://keycloak-dev.hef.tum.de/realms/master/clients-registrations/install/frost_6065
-          - auth.keycloakConfigSecret=o41fFMNdmZoFAYb0yKd5tUmvjpkkbPZO
+          - auth.keycloakConfigUrl=https://keycloak-dev.hef.tum.de/realms/master/clients-registrations/install/frost_6070
+          - auth.keycloakConfigSecret=xD8nzfyF1T1ktsULQ6BuuuzCymurDL1P
         ports:
-          - 6065:8080
-          - 1955:1883
+          - 6070:8080
+          - 1960:1883
         depends_on:
           - database
         restart: always
       database:
         image: postgis/postgis:11-2.5-alpine
-        container_name: frost_6065_db
+        container_name: frost_6070_db
         environment:
           - POSTGRES_DB=sensorthings
           - POSTGRES_USER=sensorthings
@@ -87,20 +87,20 @@ UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;
     volumes:
         postgis_volume:
     
-frost_6065
-Creating network "frost_6065_default" with the default driver
-Creating volume "frost_6065_postgis_volume" with default driver
-Creating frost_6065_db ... 
-[1A[2KCreating frost_6065_db ... [32mdone[0m[1BCreating frost_6065    ... 
-[1A[2KCreating frost_6065    ... [32mdone[0m[1BCompletedProcess(args=['docker-compose', '-p', 'frost_6065', '-f', 'yml_files/frost_6065.yml', 'up', '-d'], returncode=0)
+frost_6070
+Creating network "frost_6070_default" with the default driver
+Creating volume "frost_6070_postgis_volume" with default driver
+Creating frost_6070_db ... 
+[1A[2KCreating frost_6070_db ... [32mdone[0m[1BCreating frost_6070    ... 
+[1A[2KCreating frost_6070    ... [32mdone[0m[1BCompletedProcess(args=['docker-compose', '-p', 'frost_6070', '-f', 'yml_files/frost_6070.yml', 'up', '-d'], returncode=0)
 UPDATE user_registered SET frost_yml_execution = 1 WHERE token = %s;
-CompletedProcess(args='docker run -d --restart always --init  -p 20041:1880 -v node_red_storage_65:/data --name node_red_65 nodered/node-red', returncode=0, stdout=b'898564581f0fb1455eebea6490eaa1d040c2f7dc1bf2b6837fb6e646c539ba9e\n', stderr=b'')
+CompletedProcess(args='docker run -d --restart always --init  -p 20044:1880 -v node_red_storage_70:/data --name node_red_70 nodered/node-red', returncode=0, stdout=b'eab92c32b2b79f511b9ac1ec666b3a996b4007421332b94af005ae2d47958aca\n', stderr=b'')
 UPDATE user_registered SET node_red_command_execution = 1 WHERE token = %s;
-node_red_65WASS 
-898564581f0f WASSS 
-898564581f0f
+node_red_70WASS 
+eab92c32b2b7 WASSS 
+eab92c32b2b7
 
-added 5 packages, and audited 309 packages in 4s
+added 5 packages, and audited 309 packages in 2s
 
 47 packages are looking for funding
   run `npm fund` for details
@@ -119,181 +119,64 @@ npm notice New major version of npm available! 8.19.4 -> 10.8.2
 npm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.8.2>
 npm notice Run `npm install -g npm@10.8.2` to update!
 npm notice 
-CompletedProcess(args=['docker', 'exec', '898564581f0f', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
-CompletedProcess(args=['docker', 'exec', '898564581f0f', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+CompletedProcess(args=['docker', 'exec', 'eab92c32b2b7', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
+CompletedProcess(args=['docker', 'exec', 'eab92c32b2b7', 'bash', '-c', 'cd /usr/src/node-red/node_modules && npm install passport-keycloak-oauth2-oidc'], returncode=0)
 UPDATE user_registered SET node_red_install_libaries = 1 WHERE token = %s;
-http://tuzehez-dev.srv.mwn.de 20041 DOMAIN PRINT
+http://tuzehez-dev.srv.mwn.de 20044 DOMAIN PRINT
 UPDATE user_registered SET node_red_keycloak_generate_new_client = 1 WHERE token = %s;
 UPDATE user_registered SET node_red_keycloak_generate_roles = 1 WHERE token = %s;
 UPDATE user_registered SET node_red_keycloak_role_mapping = 1 WHERE token = %s;
 UPDATE user_registered SET group_node_red_client_role_mapping = 1 WHERE token = %s;
-j0bvT2hKAVHl4D0UewVyzAkZr1RbkRcv SECRET OF NODE RED
-1c0726ae-7001-4d93-80e5-6deeb8861e03 ID OF RED NODE CLIENT
-node_red_65 TEST 
-node_red_65 j0bvT2hKAVHl4D0UewVyzAkZr1RbkRcv http://tuzehez-dev.srv.mwn.de:20041/auth/strategy/callback https://keycloak-dev.hef.tum.de master testingone@tum.de http://tuzehez-dev.srv.mwn.de
+PcmaZ4kQtOrg8uYYzUkUdRLz5SNt6GgC SECRET OF NODE RED
+958f11c6-e922-4273-8692-dad27f68da1c ID OF RED NODE CLIENT
+node_red_70 TEST 
+node_red_70 PcmaZ4kQtOrg8uYYzUkUdRLz5SNt6GgC http://tuzehez-dev.srv.mwn.de:20044/auth/strategy/callback https://keycloak-dev.hef.tum.de master testingsix@tum.de http://tuzehez-dev.srv.mwn.de
 UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;
-898564581f0f
-CompletedProcess(args='docker restart 898564581f0f', returncode=0)
+eab92c32b2b7
+CompletedProcess(args='docker restart eab92c32b2b7', returncode=0)
 UPDATE user_registered SET node_red_restart_container = 1 WHERE token = %s;
 UPDATE user_registered SET isCompleted = 1, completedAt = %s WHERE token = %s;
-192.168.16.4 - - [29/Jul/2024 15:57:52] "GET /validate?token=65534177-f80d-49e8-a1a4-4ea82a836cc0 HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:57:52] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
-192.168.16.4 - - [29/Jul/2024 15:58:41] "GET /node-red?email=testingone@tum.de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:41] "GET /node-red?email=testingone@tum.de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:41] "GET /get_clients?user_id=aa715c53-d811-4161-a073-017b5dfa41de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:45] "GET /node-red?email=testingone@tum.de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:45] "GET /frost-server?email=testingone@tum.de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:45] "GET /node-red?email=testingone@tum.de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:46] "GET /node-red?email=testingone@tum.de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:46] "GET /node-red?email=testingone@tum.de HTTP/1.0" 200 -
-192.168.16.4 - - [29/Jul/2024 15:58:46] "GET /get_clients?user_id=aa715c53-d811-4161-a073-017b5dfa41de HTTP/1.0" 200 -
-36.156.145.152 - - [29/Jul/2024 16:15:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 16:15:53] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 16:44:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 16:44:18] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 17:12:51] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 17:12:51] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 17:40:11] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 17:40:11] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 18:08:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 18:08:32] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 18:36:50] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 18:36:50] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 19:04:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 19:04:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-167.94.145.103 - - [29/Jul/2024 19:29:58] code 400, message Bad request version ('À\x14À')
-167.94.145.103 - - [29/Jul/2024 19:29:58] "[35m[1m î  ê	ùÞí3Úç¤"ð=à8Â²þ­¹uÍà¡Eµ ¿ 1åÿQ³ákMvkï¤\û"yCQ# ð &Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ[0m" HTTPStatus.BAD_REQUEST -
-167.94.145.103 - - [29/Jul/2024 19:30:01] "[33mGET / HTTP/1.1[0m" 404 -
-167.94.145.103 - - [29/Jul/2024 19:30:04] "[33mGET / HTTP/1.1[0m" 404 -
-167.94.145.103 - - [29/Jul/2024 19:30:04] code 505, message Invalid HTTP version (2.0)
-167.94.145.103 - - [29/Jul/2024 19:30:04] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-36.156.145.152 - - [29/Jul/2024 19:32:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 19:32:28] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 20:00:46] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 20:00:46] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-80.66.76.134 - - [29/Jul/2024 20:20:30] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
-80.66.76.134 - - [29/Jul/2024 20:20:30] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
-167.94.146.50 - - [29/Jul/2024 20:23:41] code 400, message Bad request version ('À\x14À')
-167.94.146.50 - - [29/Jul/2024 20:23:41] "[35m[1m î  ê!û/ÓIÍ`°ÞÖ[´å{Îuþ,Èy:¹ +x¬Ö¼Ñ½!p%þ2÷=ùQò3ª'Ú¿\9Â:I* &Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ[0m" HTTPStatus.BAD_REQUEST -
-167.94.146.50 - - [29/Jul/2024 20:23:44] "[33mGET / HTTP/1.1[0m" 404 -
-167.94.146.50 - - [29/Jul/2024 20:23:48] "[33mGET / HTTP/1.1[0m" 404 -
-167.94.146.50 - - [29/Jul/2024 20:23:48] code 505, message Invalid HTTP version (2.0)
-167.94.146.50 - - [29/Jul/2024 20:23:48] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-36.156.145.152 - - [29/Jul/2024 20:27:57] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 20:27:57] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 20:55:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 20:55:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 21:22:15] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 21:22:15] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 21:49:30] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 21:49:30] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 22:17:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 22:17:44] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 22:45:59] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 22:45:59] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 23:13:16] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 23:13:16] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [29/Jul/2024 23:41:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [29/Jul/2024 23:41:32] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 00:09:51] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 00:09:51] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 00:37:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 00:37:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 01:04:30] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 01:04:30] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 01:31:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 01:31:52] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 01:43:34] code 400, message Bad request syntax ('\x03\x00\x00\x13\x0eà\x00\x00\x00\x00\x00\x01\x00\x08\x00\x03\x00\x00\x00')
-46.249.102.107 - - [30/Jul/2024 01:43:34] "[35m[1m  à          [0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 01:59:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 01:59:14] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 02:14:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 02:14:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 02:26:38] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 02:26:38] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 02:46:08] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 02:46:08] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 02:54:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 02:54:34] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 03:23:16] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 03:23:16] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 03:24:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 03:24:32] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 03:51:35] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 03:51:35] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 04:03:20] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 04:03:20] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 04:19:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 04:19:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 04:40:45] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 04:40:45] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 04:46:33] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 04:46:33] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 05:14:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 05:14:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 05:21:02] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 05:21:02] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 05:41:36] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 05:41:36] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 06:00:11] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 06:00:11] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 06:09:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 06:09:09] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-206.168.34.32 - - [30/Jul/2024 06:13:52] code 400, message Bad request version ('À\x14À')
-206.168.34.32 - - [30/Jul/2024 06:13:52] "[35m[1m î  êØaW8|1ÎõÕ2u\êµ>Ã/Áüö1ÿÍ¹ ¥(0¥®hS¯o\º;æ¢çèRÕ!ª÷F &Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ[0m" HTTPStatus.BAD_REQUEST -
-206.168.34.32 - - [30/Jul/2024 06:13:55] "[33mGET / HTTP/1.1[0m" 404 -
-206.168.34.32 - - [30/Jul/2024 06:13:58] "[33mGET / HTTP/1.1[0m" 404 -
-206.168.34.32 - - [30/Jul/2024 06:13:59] code 505, message Invalid HTTP version (2.0)
-206.168.34.32 - - [30/Jul/2024 06:13:59] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
-36.156.145.152 - - [30/Jul/2024 06:36:43] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 06:36:43] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 06:42:37] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 06:42:37] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 07:04:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 07:04:18] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 07:11:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 07:11:55] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 07:31:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 07:31:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 07:56:00] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 07:56:00] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 07:59:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 07:59:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 08:24:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 08:24:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 08:27:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 08:27:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 08:54:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 08:54:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 09:11:01] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 09:11:01] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 09:22:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 09:22:18] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 09:37:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 09:37:44] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-194.165.16.73 - - [30/Jul/2024 09:45:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
-194.165.16.73 - - [30/Jul/2024 09:45:10] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 09:49:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 09:49:56] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 10:17:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 10:17:34] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 10:22:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 10:22:55] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 10:46:16] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 10:46:16] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 11:10:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 11:10:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 11:14:59] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 11:14:59] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 11:42:39] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 11:42:39] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 11:53:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 11:53:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 12:11:22] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 12:11:22] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 12:40:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 12:40:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-46.249.102.107 - - [30/Jul/2024 12:45:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-46.249.102.107 - - [30/Jul/2024 12:45:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
-36.156.145.152 - - [30/Jul/2024 13:07:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
-36.156.145.152 - - [30/Jul/2024 13:07:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [31/Jul/2024 16:49:51] "GET /validate?token=aba74def-f3f5-4633-a748-c54f58e87f81 HTTP/1.0" 200 -
+SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isCompleted = 0) OR (isVerified = 1 AND isCompleted = 0))
+()
+192.168.80.4 - - [31/Jul/2024 16:55:27] "GET /validate?token=aba74def-f3f5-4633-a748-c54f58e87f81 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:01] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:01] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:01] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:02] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:03] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:03] "GET /frost-server?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:03] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:03] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:03] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:03] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:05] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:05] "GET /frost-server?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:05] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:05] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:05] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:05] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:59] "GET /frost-server?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:59] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:56:59] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:06] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:06] "GET /frost-server?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:06] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:06] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:06] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:06] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:59] "GET /frost-server?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:57:59] "GET /node-red?email=testingsix@tum.de HTTP/1.0" 200 -
+192.168.80.4 - - [31/Jul/2024 16:58:00] "GET /get_clients?user_id=5d7c0175-c4f7-42b6-bf20-d5b3f8747c90 HTTP/1.0" 200 -
+36.156.145.152 - - [31/Jul/2024 17:03:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 17:03:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.99 - - [31/Jul/2024 17:03:30] code 400, message Bad request syntax ("\x16\x03\x01\x01+\x01\x00\x01'\x03\x03\x98¨3X")
+87.236.176.99 - - [31/Jul/2024 17:03:30] "[35m[1m+ '¨3X[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.85 - - [31/Jul/2024 17:03:45] "[33mGET / HTTP/1.1[0m" 404 -

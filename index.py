@@ -107,7 +107,7 @@ def get_max_node_red(arr):
     return int(max_num.split("_")[1]) + 1
 
 
-def generateYML(clientID, port, secondPort, clientSecret, KEYCLOAK_REALM, ROOT_URL,KEYCLOAK_SERVER_URL):
+def generateYML(clientID, port, secondPort, clientSecret, KEYCLOAK_REALM, ROOT_URL,KEYCLOAK_SERVER_URL,frost_newURL):
     yml_template = """
     version: '3'
     services:
@@ -115,7 +115,7 @@ def generateYML(clientID, port, secondPort, clientSecret, KEYCLOAK_REALM, ROOT_U
         image: fraunhoferiosb/frost-server:2.0
         container_name: {clientID}
         environment:
-          - serviceRootUrl={ROOT_URL}:{port}/FROST-Server
+          - serviceRootUrl={frost_newURL}/FROST-Server
           - http_cors_enable=true
           - http_cors_allowed.origins=*
           - persistence_db_driver=org.postgresql.Driver
@@ -146,7 +146,7 @@ def generateYML(clientID, port, secondPort, clientSecret, KEYCLOAK_REALM, ROOT_U
     volumes:
         postgis_volume:
     """
-    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret, KEYCLOAK_REALM=KEYCLOAK_REALM, ROOT_URL=ROOT_URL,KEYCLOAK_SERVER_URL=KEYCLOAK_SERVER_URL)
+    return yml_template.format(clientID=clientID, secondPort=secondPort,  port=port, clientSecret=clientSecret, KEYCLOAK_REALM=KEYCLOAK_REALM, ROOT_URL=ROOT_URL,KEYCLOAK_SERVER_URL=KEYCLOAK_SERVER_URL,frost_newURL=frost_newURL)
 
 
 def verifyTUMresponseString(response):
@@ -363,6 +363,86 @@ def generate_success_email(firstName, email):
     except Exception as err:
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
+    
+def append_https_server_block(domain, port, nginx_conf_path="/root/keycloak-setup/nginx.conf"):
+    # Remove scheme if present in the domain
+    domain = domain.replace("https://", "").replace("http://", "")
+    # Define the HTTPS server block
+    https_server_block = f"""
+server {{
+    listen 443 ssl;
+    server_name {domain};
+
+    ssl_certificate /etc/letsencrypt/live/{domain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{domain}/privkey.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
+
+    location / {{
+        proxy_pass http://138.246.225.198:{port};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }}
+}}
+"""
+
+    # Ensure the Nginx configuration path is an absolute path
+    nginx_conf_path = os.path.abspath(nginx_conf_path)
+
+    # Read the existing nginx.conf from the host system
+    if os.path.exists(nginx_conf_path):
+        with open(nginx_conf_path, "r") as file:
+            existing_conf = file.read()
+    else:
+        print(f"Configuration file {nginx_conf_path} does not exist.")
+        return
+
+    # Check if the server block already exists
+    if f"server_name {domain};" in existing_conf:
+        print(f"HTTPS server block for {domain} already exists in {nginx_conf_path}")
+        return
+
+    # Find the end of the `http` block
+    http_block_end_index = existing_conf.rfind('}')
+    if http_block_end_index == -1:
+        print(f"Cannot find the end of the `http` block in {nginx_conf_path}")
+        return
+
+    # Split the configuration into before and after the `http` block's closing brace
+    before_http_end = existing_conf[:http_block_end_index]
+    after_http_end = existing_conf[http_block_end_index:]
+
+    # Prepare the updated configuration
+    updated_conf = before_http_end + https_server_block + "\n}" + after_http_end
+
+    # Write the updated configuration back to the file
+    with open(nginx_conf_path, "w") as file:
+        file.write(updated_conf)
+
+    # Test the Nginx configuration inside the Docker container
+    try:
+        subprocess.run([
+            "docker", "exec", "e921945659fe",  # Replace with your actual container name
+            "nginx", "-t"
+        ], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error testing Nginx configuration: {e}")
+        return
+
+    # Reload Nginx to apply the changes inside the Docker container
+    try:
+        subprocess.run([
+            "docker", "exec", "e921945659fe",  # Replace with your actual container name
+            "nginx", "-s", "reload"
+        ], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error reloading Nginx configuration: {e}")
+        return
+
+    print(f"HTTPS server block for {domain} appended to {nginx_conf_path}")
 
 
 @app.route("/frost-server", methods=["GET"])
@@ -647,6 +727,11 @@ def validate_user():
         DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
         DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
         DATABASE_NAME = os.getenv("DATABASE_NAME")
+        
+        SERVER_IP=os.getenv("SERVER_IP")
+        NODERED_URL=os.getenv("NODERED_URL")
+        FROST_URL=os.getenv("FROST_URL")
+        
 
         ROOT_URL = os.getenv("ROOT_URL")
 
@@ -892,6 +977,7 @@ def validate_user():
         # Step 5: Generate new client
 
         new_clientId = f"frost_{clientPORT}"
+        frost_newURL =  f"https://{clientPORT}-{FROST_URL[len('https://'):]}"
 
         create_client_request = requests.post(
             f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients",
@@ -901,12 +987,12 @@ def validate_user():
                 "serviceAccountsEnabled": True,
                 "publicClient": False,  # Access type: confidential
                 "authorizationServicesEnabled": True,
-                "redirectUris": [f"{ROOT_URL}:{clientPORT}/FROST-Server/*"],
+                "redirectUris": [f"{frost_newURL}/FROST-Server/*"],
                 "webOrigins": ["*"],
                 "protocol": "openid-connect",
                 "bearerOnly": False,
-                "adminUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
-                "rootUrl": f"{ROOT_URL}:{clientPORT}/FROST-Server",
+                "adminUrl": f"{frost_newURL}/FROST-Server",
+                "rootUrl": f"{frost_newURL}/FROST-Server",
                 "attributes":{
                     "exclude.issuer.from.auth.response": "true",
                 }
@@ -1137,8 +1223,9 @@ def validate_user():
 
         # Step 11 : Generate new YML Template
         new_yml_template = generateYML(
-            new_clientId, clientPORT, internalPORT, client_secret, KEYCLOAK_REALM, ROOT_URL,KEYCLOAK_SERVER_URL)
-
+            new_clientId, clientPORT, internalPORT, client_secret, KEYCLOAK_REALM, ROOT_URL,KEYCLOAK_SERVER_URL ,frost_newURL)
+        
+        append_https_server_block(frost_newURL,clientPORT)
         # Successful of generating the YML file
         query = "UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;"
         print(query, flush=True)
@@ -2199,6 +2286,7 @@ def test_path():
         return jsonify({'success': False, 'error': f"Error: {e}"})
 
  
+
     
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port="4500")
