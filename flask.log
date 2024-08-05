@@ -180,3 +180,694 @@ SELECT * FROM user_registered WHERE token = %s and ((isVerified = 0 AND isComple
 87.236.176.99 - - [31/Jul/2024 17:03:30] code 400, message Bad request syntax ("\x16\x03\x01\x01+\x01\x00\x01'\x03\x03\x98¨3X")
 87.236.176.99 - - [31/Jul/2024 17:03:30] "[35m[1m+ '¨3X[0m" HTTPStatus.BAD_REQUEST -
 87.236.176.85 - - [31/Jul/2024 17:03:45] "[33mGET / HTTP/1.1[0m" 404 -
+36.156.145.152 - - [31/Jul/2024 17:33:23] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 17:33:23] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [31/Jul/2024 17:44:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [31/Jul/2024 17:44:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 18:03:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 18:03:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 18:32:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 18:32:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 19:02:20] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 19:02:20] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 19:32:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 19:32:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 20:00:50] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 20:00:50] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 20:30:36] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 20:30:36] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [31/Jul/2024 20:34:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [31/Jul/2024 20:34:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 21:00:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 21:00:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+206.168.34.205 - - [31/Jul/2024 21:07:14] code 400, message Bad request syntax ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03óÚÓP\x08¢')
+206.168.34.205 - - [31/Jul/2024 21:07:14] "[35m[1m î  êóÚÓP¢[0m" HTTPStatus.BAD_REQUEST -
+206.168.34.205 - - [31/Jul/2024 21:07:18] "[33mGET / HTTP/1.1[0m" 404 -
+206.168.34.205 - - [31/Jul/2024 21:07:21] "[33mGET / HTTP/1.1[0m" 404 -
+206.168.34.205 - - [31/Jul/2024 21:07:22] code 505, message Invalid HTTP version (2.0)
+206.168.34.205 - - [31/Jul/2024 21:07:22] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+36.156.145.152 - - [31/Jul/2024 21:29:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 21:29:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 21:58:45] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 21:58:45] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [31/Jul/2024 22:14:10] "[33mGET /.git/config HTTP/1.0[0m" 404 -
+36.156.145.152 - - [31/Jul/2024 22:28:23] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 22:28:23] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 22:57:01] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 22:57:01] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.61 - - [31/Jul/2024 23:01:28] code 400, message Bad request version ('¢Áhw1\x14m`·')
+87.236.176.61 - - [31/Jul/2024 23:01:28] "[35m[1m) %-^OÑuäÃäÞhstï²ÒAý¸jEßZ	Sa´ ¢Áhw1m`·[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.57 - - [31/Jul/2024 23:01:43] "[33mGET / HTTP/1.1[0m" 404 -
+46.249.102.107 - - [31/Jul/2024 23:17:59] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [31/Jul/2024 23:17:59] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 23:26:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 23:26:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [31/Jul/2024 23:56:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [31/Jul/2024 23:56:28] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 00:25:11] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 00:25:11] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 00:53:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 00:53:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 01:22:38] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 01:22:38] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 01:51:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 01:51:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 02:20:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 02:20:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 02:26:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 02:26:44] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 02:48:59] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 02:48:59] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 03:17:46] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 03:17:46] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 03:46:36] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 03:46:36] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+194.165.16.76 - - [01/Aug/2024 03:50:26] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+194.165.16.76 - - [01/Aug/2024 03:50:26] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [01/Aug/2024 03:51:06] "[33mGET /Public/home/js/check.js HTTP/1.0[0m" 404 -
+192.168.80.4 - - [01/Aug/2024 03:51:07] "[33mGET /static/admin/javascript/hetong.js HTTP/1.0[0m" 404 -
+36.156.145.152 - - [01/Aug/2024 04:15:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 04:15:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 04:44:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 04:44:18] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 05:10:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 05:10:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 05:13:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 05:13:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 05:42:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 05:42:09] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 06:11:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 06:11:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [01/Aug/2024 06:18:22] "[33mGET /.env HTTP/1.0[0m" 404 -
+36.156.145.152 - - [01/Aug/2024 06:40:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 06:40:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 07:09:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 07:09:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 07:38:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 07:38:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 08:07:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 08:07:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [01/Aug/2024 08:10:37] "[33mGET /wp-admin/setup-config.php?step=1 HTTP/1.0[0m" 404 -
+192.168.80.4 - - [01/Aug/2024 08:10:37] "[33mGET /wordpress/wp-admin/setup-config.php?step=1 HTTP/1.0[0m" 404 -
+46.249.102.107 - - [01/Aug/2024 08:24:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 08:24:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 08:36:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 08:36:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 09:05:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 09:05:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 09:34:15] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 09:34:15] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [01/Aug/2024 09:41:16] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [01/Aug/2024 10:03:25] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 10:03:25] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 10:33:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 10:33:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 11:03:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 11:03:53] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 11:33:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 11:33:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 12:03:31] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 12:03:31] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 12:33:50] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 12:33:50] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 13:04:35] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 13:04:35] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 13:24:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 13:24:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:37] "[33mGET / HTTP/1.0[0m" 404 -
+172.105.246.139 - - [01/Aug/2024 13:30:37] "[33mOPTIONS / HTTP/1.0[0m" 404 -
+172.105.246.139 - - [01/Aug/2024 13:30:37] code 400, message Bad request version ('RTSP/1.0')
+172.105.246.139 - - [01/Aug/2024 13:30:37] "[35m[1mOPTIONS / RTSP/1.0[0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:42] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+172.105.246.139 - - [01/Aug/2024 13:30:42] "[35m[1m  (rþ          |                    [0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:47] code 400, message Bad HTTP/0.9 request type ('\x00')
+172.105.246.139 - - [01/Aug/2024 13:30:47] "[35m[1m          versionbind   [0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:47] code 400, message Bad request syntax ('HELP')
+172.105.246.139 - - [01/Aug/2024 13:30:47] "[35m[1mHELP[0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:47] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
+172.105.246.139 - - [01/Aug/2024 13:30:47] "[35m[1m  S  O ?G×÷º,îê²`~ó ý{¹ÕÈwæÄÛ<=Ûoïn  (   [0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:47] code 400, message Bad request version ('\x00/\x00')
+172.105.246.139 - - [01/Aug/2024 13:30:47] "[35m[1m  i  eU§ärandom1random2random3random4   / [0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:47] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
+172.105.246.139 - - [01/Aug/2024 13:30:47] "[35m[1m   qjn0k¡¢[0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:52] code 400, message Bad request version ('0.12\x00')
+172.105.246.139 - - [01/Aug/2024 13:30:52] "[35m[1m   ¤ÿSMBr    @              @     PC NETWORK PROGRAM 1.0 MICROSOFT NETWORKS 1.03 MICROSOFT NETWORKS 3.0 LANMAN1.0 LM1.2X002 Samba NT LANMAN 1.0 NT LM 0.12 [0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:57] code 400, message Bad HTTP/0.9 request type ('l\x00')
+172.105.246.139 - - [01/Aug/2024 13:30:57] "[35m[1ml          [0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:30:57] code 400, message Bad request version ('SIP/2.0')
+172.105.246.139 - - [01/Aug/2024 13:30:57] "[35m[1mOPTIONS sip:nm SIP/2.0[0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:31:02] code 400, message Bad HTTP/0.9 request type ('AMQP\x00\x00')
+172.105.246.139 - - [01/Aug/2024 13:31:02] "[35m[1mAMQP  	[0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:31:03] code 400, message Bad request version ('\x00/\x00')
+172.105.246.139 - - [01/Aug/2024 13:31:03] "[35m[1m  i  eU§ärandom1random2random3random4   / [0m" HTTPStatus.BAD_REQUEST -
+172.105.246.139 - - [01/Aug/2024 13:31:07] "[33mGET / HTTP/1.1[0m" 404 -
+172.105.246.139 - - [01/Aug/2024 13:31:21] code 400, message Bad request syntax ('\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00bbbb0100000001')
+172.105.246.139 - - [01/Aug/2024 13:31:21] "[35m[1m               bbbb0100000001[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 13:34:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 13:34:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 14:04:11] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 14:04:11] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 14:34:38] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 14:34:38] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 15:04:59] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 15:04:59] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 15:35:31] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 15:35:31] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 16:05:57] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 16:05:57] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 16:36:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 16:36:32] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+80.82.70.133 - - [01/Aug/2024 16:40:39] code 400, message Bad request version ("¯nãY»bhlÿ(=':©\x82ÙoÈ¢×\x93\x98´ï\x80å¹\x90\x00(À")
+80.82.70.133 - - [01/Aug/2024 16:40:39] "[35m[1mo kRHÅ#÷:Nßâ´/ÿ	T§Äy°hÆ¤="á ´,¯nãY»bhlÿ(=':©ÙoÈ¢×´ïå¹ (À[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.37 - - [01/Aug/2024 16:43:35] code 400, message Bad request syntax ('\x16\x03\x01\x01,\x01\x00\x01(\x03\x03¡')
+87.236.176.37 - - [01/Aug/2024 16:43:35] "[35m[1m, (¡[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.21 - - [01/Aug/2024 16:43:50] "[33mGET / HTTP/1.1[0m" 404 -
+36.156.145.152 - - [01/Aug/2024 17:06:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 17:06:55] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 17:36:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 17:36:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 18:07:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 18:07:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+194.165.16.72 - - [01/Aug/2024 18:15:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+194.165.16.72 - - [01/Aug/2024 18:15:05] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 18:37:26] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 18:37:26] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 18:47:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 18:47:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 19:06:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 19:06:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 19:16:31] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 19:16:31] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 19:38:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 19:38:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 19:45:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 19:45:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 20:09:21] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 20:09:21] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 20:12:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 20:12:56] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 20:39:41] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 20:39:41] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 20:42:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 20:42:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [01/Aug/2024 20:48:28] "[33mGET / HTTP/1.0[0m" 404 -
+192.168.80.4 - - [01/Aug/2024 20:48:36] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+46.249.102.107 - - [01/Aug/2024 21:09:36] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 21:09:36] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 21:11:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 21:11:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 21:40:16] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 21:40:16] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 21:42:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 21:42:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 22:11:08] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 22:11:08] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 22:13:39] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 22:13:39] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 22:42:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 22:42:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 22:44:51] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 22:44:51] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.116 - - [01/Aug/2024 22:58:37] code 400, message Bad request syntax ('\x16\x03\x01\x01,\x01\x00\x01(\x03\x03.½Qó4Â(\x83\x80ã\x01fÕ!Qòk\'®"u¼g6\x17È>EyÆ')
+87.236.176.116 - - [01/Aug/2024 22:58:37] "[35m[1m, (.½Qó4Â(ãfÕ!Qòk'®"u¼g6È>EyÆ[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.114 - - [01/Aug/2024 22:58:52] "[33mGET / HTTP/1.1[0m" 404 -
+46.249.102.107 - - [01/Aug/2024 23:11:40] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 23:11:40] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 23:16:20] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 23:16:20] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [01/Aug/2024 23:44:37] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [01/Aug/2024 23:44:37] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [01/Aug/2024 23:47:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [01/Aug/2024 23:47:34] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 00:16:41] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 00:16:41] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 00:18:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 00:18:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 00:48:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 00:48:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 00:51:16] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 00:51:16] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 01:20:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 01:20:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 01:22:17] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 01:22:17] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 01:51:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 01:51:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 01:58:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 01:58:32] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [02/Aug/2024 02:07:58] "[33mGET /.env HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /.aws/credentials HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /.aws/credentials.gpg HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /.aws/credentials.gpg HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /phpinfo.php HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /phpinfo HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /info HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /php_info HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /php_info.php HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /info.php HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /_profiler/phpinfo.php HTTP/1.0[0m" 404 -
+192.168.80.4 - - [02/Aug/2024 02:07:59] "[33mGET /_profiler/phpinfo HTTP/1.0[0m" 404 -
+36.156.145.152 - - [02/Aug/2024 02:22:22] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 02:22:22] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 02:33:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 02:33:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 02:53:02] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 02:53:02] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.137 - - [02/Aug/2024 02:56:45] code 400, message Bad request version ('À\x13À')
+87.236.176.137 - - [02/Aug/2024 02:56:45] "[35m[1m, (¶\,­/	ÊnHDÉø||EIûÖÜÀD2Qv;z ÷LZ#au´jzï ÐL'RZcME i%å <À+À/À,À0Ì©Ì¨À	ÀÀ[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.110 - - [02/Aug/2024 02:57:00] "[33mGET / HTTP/1.1[0m" 404 -
+46.249.102.107 - - [02/Aug/2024 03:07:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 03:07:32] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 03:23:43] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 03:23:43] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 03:42:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 03:42:56] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 03:54:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 03:54:28] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 04:18:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 04:18:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 04:25:16] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 04:25:16] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 04:42:29] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 04:42:29] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 04:56:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 04:56:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 05:24:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 05:24:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 05:28:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 05:28:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.161 - - [02/Aug/2024 05:50:18] code 400, message Bad request version ('À\x13À')
+87.236.176.161 - - [02/Aug/2024 05:50:18] "[35m[1m, (YÇ"û«$KíåÉhü»G·íÝ´aqÖO"í¸#÷ 'tG\NÙúÆNZÌÏT;®IÛðÅ©Ælû <À+À/À,À0Ì©Ì¨À	ÀÀ[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.155 - - [02/Aug/2024 05:50:33] "[33mGET / HTTP/1.1[0m" 404 -
+36.156.145.152 - - [02/Aug/2024 05:59:41] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 05:59:41] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 06:02:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 06:02:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 06:31:40] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 06:31:40] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 06:46:00] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 06:46:00] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 07:03:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 07:03:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 07:29:26] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 07:29:26] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 07:35:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 07:35:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 08:04:20] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 08:04:20] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 08:07:01] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 08:07:01] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+91.238.181.34 - - [02/Aug/2024 08:17:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+91.238.181.34 - - [02/Aug/2024 08:17:47] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 08:37:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 08:37:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 08:52:17] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 08:52:17] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 09:08:46] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 09:08:46] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 09:40:26] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 09:40:26] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 09:40:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 09:40:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 10:12:26] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 10:12:26] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 10:27:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 10:27:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 10:44:30] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 10:44:30] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 11:16:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 11:16:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 11:17:15] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 11:17:15] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 11:47:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 11:47:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 12:10:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 12:10:09] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 12:19:12] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 12:19:12] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 12:50:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 12:50:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 13:03:49] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 13:03:49] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 13:23:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 13:23:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 13:54:58] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 13:54:58] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 13:55:39] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 13:55:39] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 14:27:20] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 14:27:20] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 14:53:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 14:53:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 14:59:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 14:59:14] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 15:31:33] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 15:31:33] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 15:47:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 15:47:14] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 16:03:29] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 16:03:29] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 16:35:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 16:35:53] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 16:47:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 16:47:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 17:07:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 17:07:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 17:39:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 17:39:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 17:52:31] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 17:52:31] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 18:11:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 18:11:34] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 18:43:35] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 18:43:35] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 19:01:29] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 19:01:29] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 19:16:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 19:16:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 19:47:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 19:47:55] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 20:11:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 20:11:34] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 20:19:11] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 20:19:11] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [02/Aug/2024 20:38:17] "[33mGET /.git/config HTTP/1.0[0m" 404 -
+36.156.145.152 - - [02/Aug/2024 20:50:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 20:50:28] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 21:17:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 21:17:55] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 21:22:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 21:22:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 21:54:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 21:54:44] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 22:27:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 22:27:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+91.238.181.31 - - [02/Aug/2024 22:33:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+91.238.181.31 - - [02/Aug/2024 22:33:18] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [02/Aug/2024 22:36:58] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [02/Aug/2024 22:36:58] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 22:59:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 22:59:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [02/Aug/2024 23:31:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [02/Aug/2024 23:31:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 00:01:58] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 00:01:58] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 00:03:45] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 00:03:45] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 00:35:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 00:35:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 01:06:37] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 01:06:37] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 01:25:33] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 01:25:33] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 01:38:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 01:38:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 02:09:38] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 02:09:38] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 02:41:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 02:41:09] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 03:05:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 03:05:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 03:12:41] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 03:12:41] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 03:45:01] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 03:45:01] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 04:17:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 04:17:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 04:47:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 04:47:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 04:49:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 04:49:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 05:21:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 05:21:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 05:52:45] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 05:52:45] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 06:24:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 06:24:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+152.32.174.186 - - [03/Aug/2024 06:29:18] code 400, message Bad request version ('\x00\x9eÌ¨Ìª\x003\x00=\x00\x16À')
+152.32.174.186 - - [03/Aug/2024 06:29:18] "[35m[1m ¾öÆnF.YØ§8sJy2¤ý¥Ì·ýILR-:[ *LÏNëuâ@ÛÏÄÓ5+V7¥ëþv­Z<x@ 4Ì¨Ì©À/À0À+À,À	 Ì¨Ìª 3 = À[0m" HTTPStatus.BAD_REQUEST -
+152.32.174.186 - - [03/Aug/2024 06:29:28] "[33mGET / HTTP/1.1[0m" 404 -
+152.32.174.186 - - [03/Aug/2024 06:29:29] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+152.32.174.186 - - [03/Aug/2024 06:29:29] "[33mGET /robots.txt HTTP/1.1[0m" 404 -
+152.32.174.186 - - [03/Aug/2024 06:29:30] "[33mGET /sitemap.xml HTTP/1.1[0m" 404 -
+46.249.102.107 - - [03/Aug/2024 06:35:00] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 06:35:00] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 06:56:12] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 06:56:12] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 07:28:01] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 07:28:01] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 07:59:51] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 07:59:51] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.2 - - [03/Aug/2024 08:30:22] code 400, message Bad request syntax ('\x16\x03\x01\x01')
+87.236.176.2 - - [03/Aug/2024 08:30:22] "[35m[1m[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.11 - - [03/Aug/2024 08:30:40] code 400, message Bad request version ('\x00\x00.\x01\x00\x00\x000\x00\x00\x111.2.840.10008.1.1@\x00\x00\x111.2.840.10008.1.2P\x00\x00:Q\x00\x00\x04\x00\x00\x00\x00R\x00\x00\x1b1.2.276.0.7230010.3.0.3.6.2U\x00\x00\x0fOFFIS_DCMTK_362')
+87.236.176.11 - - [03/Aug/2024 08:30:40] "[35m[1m    Í   ANY-SCP         ECHOSCU                                           1.2.840.10008.3.1.1.1   .   0  1.2.840.10008.1.1@  1.2.840.10008.1.2P  :Q      R  1.2.276.0.7230010.3.0.3.6.2U  OFFIS_DCMTK_362[0m" HTTPStatus.BAD_REQUEST -
+87.236.176.11 - - [03/Aug/2024 08:30:55] "[33mGET / HTTP/1.1[0m" 404 -
+36.156.145.152 - - [03/Aug/2024 08:31:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 08:31:44] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 08:45:35] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 08:45:35] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 09:04:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 09:04:18] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [03/Aug/2024 09:06:01] "[33mGET //wp-admin/setup-config.php?step=1 HTTP/1.0[0m" 404 -
+192.168.80.4 - - [03/Aug/2024 09:06:02] "[33mGET //wordpress/wp-admin/setup-config.php?step=1 HTTP/1.0[0m" 404 -
+36.156.145.152 - - [03/Aug/2024 09:37:23] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 09:37:23] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 10:09:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 10:09:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 10:41:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 10:41:14] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 10:42:45] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 10:42:45] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 11:13:12] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 11:13:12] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 11:45:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 11:45:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 12:17:02] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 12:17:02] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 12:48:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 12:48:56] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 13:12:41] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 13:12:41] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+167.94.138.125 - - [03/Aug/2024 13:13:37] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.138.125 - - [03/Aug/2024 13:13:38] code 505, message Invalid HTTP version (2.0)
+167.94.138.125 - - [03/Aug/2024 13:13:38] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+36.156.145.152 - - [03/Aug/2024 13:20:49] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 13:20:49] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 13:52:49] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 13:52:49] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+91.238.181.23 - - [03/Aug/2024 13:54:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+91.238.181.23 - - [03/Aug/2024 13:54:52] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 14:24:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 14:24:53] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+185.217.143.40 - - [03/Aug/2024 14:31:08] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+185.217.143.40 - - [03/Aug/2024 14:31:08] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 14:57:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 14:57:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 15:29:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 15:29:18] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 15:38:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 15:38:52] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+185.217.143.40 - - [03/Aug/2024 15:43:21] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+185.217.143.40 - - [03/Aug/2024 15:43:21] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 16:01:40] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 16:01:40] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 16:35:17] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 16:35:17] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 17:09:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 17:09:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 17:42:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 17:42:52] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 18:15:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 18:15:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 18:29:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 18:29:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 18:49:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 18:49:28] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 19:22:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 19:22:34] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 19:56:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 19:56:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 20:29:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 20:29:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 21:01:34] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 21:01:34] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 21:35:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 21:35:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 22:08:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 22:08:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [03/Aug/2024 22:28:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [03/Aug/2024 22:28:44] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 22:41:43] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 22:41:43] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 23:14:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 23:14:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [03/Aug/2024 23:48:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [03/Aug/2024 23:48:28] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 00:22:02] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 00:22:02] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [04/Aug/2024 00:48:07] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [04/Aug/2024 00:55:46] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 00:55:46] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 01:28:21] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 01:28:21] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [04/Aug/2024 01:50:36] "[33mGET / HTTP/1.0[0m" 404 -
+192.168.80.4 - - [04/Aug/2024 01:58:40] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [04/Aug/2024 02:00:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 02:00:56] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 02:33:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 02:33:32] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 03:06:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 03:06:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 03:38:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 03:38:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+88.214.25.63 - - [04/Aug/2024 03:53:20] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+88.214.25.63 - - [04/Aug/2024 03:53:20] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 04:11:38] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 04:11:38] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [04/Aug/2024 04:40:26] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [04/Aug/2024 04:44:22] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 04:44:22] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 05:17:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 05:17:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [04/Aug/2024 05:35:03] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [04/Aug/2024 05:35:03] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 05:49:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 05:49:53] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 06:23:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 06:23:53] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 06:57:15] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 06:57:15] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 07:31:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 07:31:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 08:04:40] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 08:04:40] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 08:37:41] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 08:37:41] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 09:10:43] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 09:10:43] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 09:43:49] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 09:43:49] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 10:16:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 10:16:56] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 10:50:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 10:50:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 11:23:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 11:23:09] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 11:56:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 11:56:14] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 12:29:29] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 12:29:29] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 13:03:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 13:03:55] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 13:37:23] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 13:37:23] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 14:10:37] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 14:10:37] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 14:45:05] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 14:45:05] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 15:18:46] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 15:18:46] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 15:52:13] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 15:52:13] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 16:26:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 16:26:47] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 17:00:36] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 17:00:36] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 17:35:12] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 17:35:12] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 18:09:04] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 18:09:04] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 18:43:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 18:43:55] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+91.238.181.32 - - [04/Aug/2024 18:57:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+91.238.181.32 - - [04/Aug/2024 18:57:53] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 19:17:42] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 19:17:42] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 19:52:20] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 19:52:20] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 20:26:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 20:26:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+206.168.34.35 - - [04/Aug/2024 20:39:24] "[33mGET / HTTP/1.1[0m" 404 -
+206.168.34.35 - - [04/Aug/2024 20:39:25] code 505, message Invalid HTTP version (2.0)
+206.168.34.35 - - [04/Aug/2024 20:39:25] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+36.156.145.152 - - [04/Aug/2024 21:00:43] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 21:00:43] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 21:34:27] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 21:34:27] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 22:07:53] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 22:07:53] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [04/Aug/2024 22:25:00] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [04/Aug/2024 22:42:30] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 22:42:30] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 23:16:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 23:16:24] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [04/Aug/2024 23:50:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [04/Aug/2024 23:50:09] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+91.191.209.206 - - [05/Aug/2024 00:18:30] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+91.191.209.206 - - [05/Aug/2024 00:18:30] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 00:25:06] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 00:25:06] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 00:59:09] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 00:59:09] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [05/Aug/2024 01:20:59] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [05/Aug/2024 01:32:46] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 01:32:46] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [05/Aug/2024 01:56:55] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [05/Aug/2024 02:06:26] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 02:06:26] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 02:41:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 02:41:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [05/Aug/2024 03:04:44] "[33mGET /.env HTTP/1.0[0m" 404 -
+36.156.145.152 - - [05/Aug/2024 03:15:18] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 03:15:18] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 03:49:02] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 03:49:02] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+46.249.102.107 - - [05/Aug/2024 03:53:19] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+46.249.102.107 - - [05/Aug/2024 03:53:19] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+91.191.209.206 - - [05/Aug/2024 04:02:23] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+91.191.209.206 - - [05/Aug/2024 04:02:23] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 04:22:50] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 04:22:50] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 04:57:49] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 04:57:49] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 05:31:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 05:31:56] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [05/Aug/2024 05:55:22] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [05/Aug/2024 06:05:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 06:05:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 06:39:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 06:39:52] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 07:13:59] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 07:13:59] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 07:48:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 07:48:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 08:22:16] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 08:22:16] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 08:56:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 08:56:28] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 09:31:38] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 09:31:38] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+91.238.181.32 - - [05/Aug/2024 09:36:28] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+91.238.181.32 - - [05/Aug/2024 09:36:28] "[35m[1m  /*à     Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 10:05:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 10:05:48] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 10:40:54] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 10:40:54] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 11:15:07] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 11:15:07] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 11:50:21] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 11:50:21] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 12:24:33] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 12:24:33] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 12:58:40] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 12:58:40] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+192.168.80.4 - - [05/Aug/2024 13:21:38] "[33mGET / HTTP/1.0[0m" 404 -
+36.156.145.152 - - [05/Aug/2024 13:34:10] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 13:34:10] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 14:08:37] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 14:08:37] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 14:44:11] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 14:44:11] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -
+36.156.145.152 - - [05/Aug/2024 15:18:49] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00+&à\x00\x00\x00\x00\x00Cookie:')
+36.156.145.152 - - [05/Aug/2024 15:18:49] "[35m[1m  +&à     Cookie: mstshash=hello[0m" HTTPStatus.BAD_REQUEST -

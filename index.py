@@ -987,7 +987,7 @@ def validate_user():
                 "serviceAccountsEnabled": True,
                 "publicClient": False,  # Access type: confidential
                 "authorizationServicesEnabled": True,
-                "redirectUris": [f"{frost_newURL}/FROST-Server/*"],
+                "redirectUris": [f"{frost_newURL}/FROST-Server/v1.0","*"],
                 "webOrigins": ["*"],
                 "protocol": "openid-connect",
                 "bearerOnly": False,
