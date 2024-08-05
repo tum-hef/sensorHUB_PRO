@@ -438,6 +438,9 @@ server {{
             "docker", "exec", "e921945659fe",  # Replace with your actual container name
             "nginx", "-s", "reload"
         ], check=True)
+        subprocess.run([
+            "sudo", "ufw", "allow",{port}  # allow firewall port so nginx can access the port
+        ], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error reloading Nginx configuration: {e}")
         return
