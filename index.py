@@ -14,6 +14,7 @@ from email.mime.multipart import MIMEMultipart
 import re
 import json
 from time import sleep
+from threading import Thread
 app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app)
@@ -161,7 +162,7 @@ def verifyTUMresponseString(response):
         return False
 
 
-def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL):
+def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,):
     print(clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL)
     new_file_content = f"""
     module.exports = {{
@@ -241,7 +242,7 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCL
 
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL):
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,nodered_newURL):
     # Construct the mountpoint using the provided volume name
     mountpoint = subprocess.check_output(f"docker volume inspect {node_red_storage} --format='{{{{.Mountpoint}}}}'", shell=True, text=True).strip()
 
@@ -249,7 +250,7 @@ def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL,
     settings_file_path = f"{mountpoint}/settings.js"
 
     new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL)
+        clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,)
 
     # Write new_file_content to the settings file
     with open(settings_file_path, "w") as settings_file:
@@ -363,10 +364,69 @@ def generate_success_email(firstName, email):
     except Exception as err:
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
-    
+
+def create_dns_and_generate_ssl(domain, email, dns_script_path="/root/dns_script/nsupdate_hef_dynamic.sh", webroot_path="/var/www/html"):
+    """
+    Runs the DNS update script with the given domain using sudo, generates a Let's Encrypt SSL certificate
+    using the webroot method, and returns paths to the generated certificate and key.
+
+    Parameters:
+    domain (str): The domain to be updated and for which the SSL certificate will be generated.
+    email (str): Email address for notifications from Let's Encrypt.
+    dns_script_path (str): Path to the DNS update script.
+    webroot_path (str): Webroot path used by Certbot for domain validation.
+
+    Returns:
+    dict: A dictionary containing status and paths to the certificate and key, or error messages.
+    """
+    # Clean up the domain string
+    domain = domain.replace("https://", "").replace("http://", "")
+    print(f"Cleaned domain: {domain}")
+
+    # Prepare the command to run the DNS update script with sudo
+    command = ['sudo', 'bash', dns_script_path, domain]
+    print(f"Running command: {' '.join(command)}")
+
+    try:
+       
+        # Run the DNS update script with sudo
+        dns_update_result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        print(f"DNS Update STDOUT: {dns_update_result.stdout}")
+        print(f"DNS Update STDERR: {dns_update_result.stderr}")
+        
+        subprocess.run(['docker', 'stop', 'nginx'], check=True)
+
+        # Wait for DNS propagation (if necessary)
+        # Note: This is a placeholder. You may need to implement a wait/check for DNS propagation.
+        sleep(30)
+        command = [
+            'certbot', 'certonly',
+            '--standalone',
+            '--domain', domain,
+            '--email', 'your-email@example.com',  # Replace with your email
+            '--agree-tos',
+            '--non-interactive'
+        ]
+        print("letsenrcypt command",command)
+        # Run the certbot command
+        result = subprocess.run(command, capture_output=True, text=True)
+        subprocess.run(['docker', 'start', 'nginx'], check=True)
+        # Check if the command was successful
+        if result.returncode == 0:
+            print(f"Certbot ran successfully for domain: {domain}")
+        else:
+            print(f"Certbot failed. Error: {result.stderr}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 def append_https_server_block(domain, port, nginx_conf_path="/root/keycloak-setup/nginx.conf"):
     # Remove scheme if present in the domain
     domain = domain.replace("https://", "").replace("http://", "")
+    
     # Define the HTTPS server block
     https_server_block = f"""
 server {{
@@ -387,7 +447,7 @@ server {{
         proxy_set_header X-Forwarded-Proto $scheme;
     }}
 }}
-"""
+    """
 
     # Ensure the Nginx configuration path is an absolute path
     nginx_conf_path = os.path.abspath(nginx_conf_path)
@@ -405,18 +465,14 @@ server {{
         print(f"HTTPS server block for {domain} already exists in {nginx_conf_path}")
         return
 
-    # Find the end of the `http` block
-    http_block_end_index = existing_conf.rfind('}')
-    if http_block_end_index == -1:
-        print(f"Cannot find the end of the `http` block in {nginx_conf_path}")
-        return
-
-    # Split the configuration into before and after the `http` block's closing brace
-    before_http_end = existing_conf[:http_block_end_index]
-    after_http_end = existing_conf[http_block_end_index:]
-
+    # Split the existing configuration into parts
+    # Ensure there are no extra closing braces at the end
+    existing_conf = existing_conf.strip()
+    if existing_conf.endswith('}'):
+        existing_conf = existing_conf[:-1].strip()
+    
     # Prepare the updated configuration
-    updated_conf = before_http_end + https_server_block + "\n}" + after_http_end
+    updated_conf = existing_conf + "\n" + https_server_block + "\n}\n"
 
     # Write the updated configuration back to the file
     with open(nginx_conf_path, "w") as file:
@@ -424,8 +480,16 @@ server {{
 
     # Test the Nginx configuration inside the Docker container
     try:
+        # Convert port to string before passing to subprocess
+        port_str = str(port)
+        
+        # Allow the port in the firewall
+        subprocess.run(['sudo', 'ufw', 'allow', port_str], check=True)
+        print("Firewall rule added for port", port_str)
+        
+        # Test Nginx configuration
         subprocess.run([
-            "docker", "exec", "e921945659fe",  # Replace with your actual container name
+            "docker", "exec", "nginx",  # Replace with your actual container name
             "nginx", "-t"
         ], check=True)
     except subprocess.CalledProcessError as e:
@@ -435,18 +499,22 @@ server {{
     # Reload Nginx to apply the changes inside the Docker container
     try:
         subprocess.run([
-            "docker", "exec", "e921945659fe",  # Replace with your actual container name
+            "docker", "exec", "nginx",  # Replace with your actual container name
             "nginx", "-s", "reload"
         ], check=True)
-        subprocess.run([
-            "sudo", "ufw", "allow",{port}  # allow firewall port so nginx can access the port
-        ], check=True)
+        print("Nginx reloaded successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error reloading Nginx configuration: {e}")
         return
 
     print(f"HTTPS server block for {domain} appended to {nginx_conf_path}")
 
+def run_tasks_sequentially(frost_newURL, nodered_newURL, clientPORT, new_node_red_port):
+    # Run tasks sequentially
+    create_dns_and_generate_ssl(frost_newURL, "tumhefservicetest@gmail.com")
+    create_dns_and_generate_ssl(nodered_newURL, "tumhefservicetest@gmail.com")
+    append_https_server_block(frost_newURL, clientPORT)
+    append_https_server_block(nodered_newURL, new_node_red_port)
 
 @app.route("/frost-server", methods=["GET"])
 def frost_server():
@@ -1228,7 +1296,6 @@ def validate_user():
         new_yml_template = generateYML(
             new_clientId, clientPORT, internalPORT, client_secret, KEYCLOAK_REALM, ROOT_URL,KEYCLOAK_SERVER_URL ,frost_newURL)
         
-        append_https_server_block(frost_newURL,clientPORT)
         # Successful of generating the YML file
         query = "UPDATE user_registered SET yml_genereration = 1 WHERE token = %s;"
         print(query, flush=True)
@@ -1345,8 +1412,8 @@ def validate_user():
         new_clientId_node_red = f"node_red_{new_clientIDNumber_node_red}"
 
         # Step 15.2 : Create the new client in the new node-red
-
-        print(f"{ROOT_URL} {new_node_red_port} DOMAIN PRINT", flush=True)
+        nodered_newURL =  f"https://{new_node_red_port}-{NODERED_URL[len('https://'):]}"
+        print(f"{nodered_newURL} DOMAIN PRINT", flush=True)
 
         create_client_request_node_red = requests.post(
             f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/clients",
@@ -1360,9 +1427,9 @@ def validate_user():
                 "bearerOnly": False,
                 "serviceAccountsEnabled": True,
                 "authorizationServicesEnabled": True,
-                "redirectUris": [f"{ROOT_URL}:{new_node_red_port}/*"],
-                "adminUrl": f"{ROOT_URL}:{new_node_red_port}",
-                "rootUrl": f"{ROOT_URL}:{new_node_red_port}",
+                "redirectUris": [f"{nodered_newURL}/*"],
+                "adminUrl": f"{nodered_newURL}",
+                "rootUrl": f"{nodered_newURL}",
             },
             headers={
                 "Authorization": f"Bearer {access_token}",
@@ -1530,12 +1597,12 @@ def validate_user():
         print(node_red_client_secret + " SECRET OF NODE RED", flush=True)
         print(client_id_node_red + " ID OF RED NODE CLIENT", flush=True)
 
-        callbackURL = f"{ROOT_URL}:{new_node_red_port}/auth/strategy/callback"
+        callbackURL = f"{nodered_newURL}/auth/strategy/callback"
 
         print(new_clientId_node_red + " TEST ", flush=True)
 
         replace_settings_file(node_red_name_storage_name,
-                              new_clientId_node_red, node_red_client_secret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL)
+                              new_clientId_node_red, node_red_client_secret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,nodered_newURL)
 
         # Successful settings.js update
         query = "UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;"
@@ -1548,7 +1615,12 @@ def validate_user():
         restart_node_red_container = subprocess.run(
             f"docker restart {container_node_red_id}", shell=True, check=True)
 
-        print(restart_node_red_container, flush=True)
+        print(restart_node_red_container, flush=True) 
+        
+        # Step 16.0 Create nginx configuration for the above nodered application
+        print("nodered port check again for func execution ,{new_node_red_port}")
+    
+        
 
         if restart_node_red_container.returncode != 0:
             # return jsonify(success=False, error="Server Error by restarting container"), 500
@@ -1577,6 +1649,12 @@ def validate_user():
 
         # Send confirmation mail
         generate_success_email(firstName, email)
+        thread = Thread(target=run_tasks_sequentially, args=(frost_newURL, nodered_newURL, clientPORT, new_node_red_port))
+        # create_dns_and_generate_ssl(frost_newURL,"tumhefservicetest@gmail.com")
+        # create_dns_and_generate_ssl(nodered_newURL,"tumhefservicetest@gmail.com")
+        # append_https_server_block(frost_newURL,clientPORT)
+        # append_https_server_block(nodered_newURL,new_node_red_port)
+        thread.start()
 
         return render_template('token.html', token="Account created successfully")
 
@@ -2275,6 +2353,8 @@ def test_path():
     try:
         # Replace "node_red_storage_38" with the dynamic volume name
         node_red_storage = "node_red_storage_38"
+        create_dns_and_generate_ssl('https://6033-frost-dev.hef.tum.de','tumhefservicetest@gmail.com')
+        # append_https_server_block('https://6023-frost-dev.hef.tum.de',6023)
         
         # Construct the directory path
         directory = f"/var/lib/docker/volumes/{node_red_storage}/_data"
