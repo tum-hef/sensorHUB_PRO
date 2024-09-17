@@ -15,6 +15,8 @@ import re
 import json
 from time import sleep
 from threading import Thread
+import aiohttp
+import asyncio
 app = Flask(__name__)
 app.config['DEBUG'] = True
 CORS(app)
@@ -648,12 +650,46 @@ def node_red():
     return jsonify({"success": True, "PORT": PORT})
 
 
+# Function to get access token asynchronously
+async def fetch_access_token(session, keycloak_server_url, keycloak_realm, client_id, username, password):
+    async with session.post(
+        f"{keycloak_server_url}/realms/{keycloak_realm}/protocol/openid-connect/token",
+        data={
+            "client_id": client_id,
+            "username": username,
+            "password": password,
+            "grant_type": "password",
+        },
+        headers={"Content-Type": "application/x-www-form-urlencoded"}
+    ) as response:
+        response.raise_for_status()
+        json_data = await response.json()
+        return json_data["access_token"]
+
+# Function to fetch group details asynchronously
+async def fetch_group_details(session, group_id, access_token, keycloak_server_url, keycloak_realm):
+    async with session.get(
+        f"{keycloak_server_url}/admin/realms/{keycloak_realm}/groups/{group_id}",
+        headers={"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+    ) as response:
+        response.raise_for_status()
+        return await response.json()
+
+# Function to fetch client mappings asynchronously
+async def fetch_client_mappings(session, group_id, access_token, keycloak_server_url, keycloak_realm):
+    async with session.get(
+        f"{keycloak_server_url}/admin/realms/{keycloak_realm}/groups/{group_id}/role-mappings",
+        headers={"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+    ) as response:
+        response.raise_for_status()
+        return await response.json()
+
 @app.route('/get_clients', methods=["GET"])
-def get_cllients():
+async def get_clients():
     try:
         user_id = request.args.get('user_id')
 
-        if (user_id == None):
+        if user_id is None:
             return jsonify({"success": False, "message": "user_id not provided"}), 400
 
         KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
@@ -662,117 +698,41 @@ def get_cllients():
         KEYCLOAK_PASSWORD = os.getenv("KEYCLOAK_PASSWORD")
         KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
 
-        # Step 1: Get access token
-        token_request = requests.post(
-            f"{KEYCLOAK_SERVER_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token",
-            data={
-                "client_id": KEYCLOAK_CLIENT_ID,
-                "username": KEYCLOAK_USERNAME,
-                "password": KEYCLOAK_PASSWORD,
-                "grant_type": "password",
-            },
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        )
-
-        token_request.raise_for_status()
-        access_token = token_request.json()["access_token"]
-
-        # Step 2: Get group where user is part
-
-        group_request = requests.get(
-            f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups",
-            headers={
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json"
-            }
-        )
-
-        group_request.raise_for_status()
-        groups_json = group_request.json()
-        groups = []
-
-        if (len(groups_json) == 0):
-            return jsonify({"success": False, "message": "User does not belong to any group"}), 404
-
-        for group in groups_json:
-            group_request = requests.get(
-                f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}",
-                headers={
-                    "Authorization": f"Bearer {access_token}",
-                    "Content-Type": "application/json"
-                }
+        async with aiohttp.ClientSession() as session:
+            # Step 1: Get access token asynchronously
+            access_token = await fetch_access_token(
+                session, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM,
+                KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD
             )
-            group_request.raise_for_status()
 
-            group_json = group_request.json()
+            # Step 2: Get group where user is part asynchronously
+            async with session.get(
+                f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/users/{user_id}/groups",
+                headers={"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+            ) as group_request:
+                group_request.raise_for_status()
+                groups_json = await group_request.json()
 
-            # print inside an objcet the id and inside that object the attributes
-            print(group_json['id'])
-            print(group_json['attributes'])
+            if len(groups_json) == 0:
+                return jsonify({"success": False, "message": "User does not belong to any group"}), 404
 
-            object = {
-                "id": group_json['id'],
-                "attributes": group_json['attributes']
-            }
+            # Step 3: Fetch group details and client mappings asynchronously
+            group_tasks = [fetch_group_details(session, group['id'], access_token, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM)
+                           for group in groups_json]
+            groups = await asyncio.gather(*group_tasks)
 
-            groups.append(object)
-            # print(json.dumps(group_json, indent=4, sort_keys=True))
+            client_tasks = [fetch_client_mappings(session, group['id'], access_token, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM)
+                            for group in groups_json]
+            clients = await asyncio.gather(*client_tasks)
 
-        print(groups)
+            # Simplify group response
+            group_data = [{"id": group['id'], "attributes": group['attributes']} for group in groups]
 
-        # for each group, get attributes
-        # Step 3: For each group, get the clients by doing the role mapping
-
-        clients_name = []
-        clients = []
-
-        for group in groups:
-            clients_request = requests.get(
-                f"{KEYCLOAK_SERVER_URL}/admin/realms/{KEYCLOAK_REALM}/groups/{group['id']}/role-mappings",
-                headers={
-                    "Authorization": f"Bearer {access_token}",
-                    "Content-Type": "application/json"
-                }
-            )
-            clients_request.raise_for_status()
-            clients_json = clients_request.json()
-
-            # # print(json.dumps(clients_json, indent=4, sort_keys=True))
-
-            # print(clients_json)
-
-            # for client in clients_json['clientMappings']:
-            #     clients_name.append(client)
-
-            # # Step 3: For each client, get the the root url
-
-            # for client in clients_name:
-            #     client_request = requests.get(
-            #         f"{KEYCLOAK_SERVER_URL}/auth/admin/realms/{KEYCLOAK_REALM}/clients?clientId={client}",
-            #         headers={
-            #             "Authorization": f"Bearer {access_token}",
-            #             "Content-Type": "application/json"
-            #         }
-            #     )
-
-            #     client_request.raise_for_status()
-            #     client_data = client_request.json()
-
-            #     for client in client_data:
-            #         clients.append({
-            #             'root_url': client['rootUrl'],
-            #             'client_id': client['clientId']
-            #         })
-
-        return jsonify({"success": True, "groups": groups}), 200
+            return jsonify({"success": True, "groups": group_data, "clients": clients}), 200
 
     except Exception as e:
-        tb = traceback.format_exception(
-            type(e), e, e.__traceback__)
+        tb = traceback.format_exception(type(e), e, e.__traceback__)
         error_message = tb[-1].strip()  # Get the last line of the traceback
-        # Get the line number from the second-to-last line of the traceback
         line_number = tb[-2].split(", ")[1].strip()
         print("***********************************************", flush=True)
         print(error_message, flush=True)
