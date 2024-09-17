@@ -440,7 +440,7 @@ server {{
     ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
 
     location / {{
-        proxy_pass http://138.246.225.198:{port};
+        proxy_pass http://138.246.225.192:{port};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -1103,6 +1103,7 @@ def validate_user():
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
             })
+        print("admin")
 
         create_role_admin_request.raise_for_status()
 
@@ -1115,7 +1116,7 @@ def validate_user():
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
             })
-
+        print("read")
         create_role_read_request.raise_for_status()
 
         # Update role for the new client
@@ -1129,7 +1130,7 @@ def validate_user():
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
             })
-
+        print("update")
         create_role_update_request.raise_for_status()
 
         create_role_create_request = requests.post(
@@ -1141,6 +1142,7 @@ def validate_user():
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
             })
+        print("create")
 
         create_role_create_request.raise_for_status()
 
@@ -1153,6 +1155,7 @@ def validate_user():
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json"
             })
+        print("delete")
 
         create_role_delete_request.raise_for_status()
 
@@ -1691,6 +1694,7 @@ def validate_user():
 @ app.route("/register", methods=["POST"])
 def register():
     try:
+        # print("before",request.json.get())
         KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
         KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
         KEYCLOAK_USERNAME = os.getenv("KEYCLOAK_USERNAME")
@@ -1707,7 +1711,9 @@ def register():
         SMTP_PORT = int(os.getenv("SMTP_PORT"))
         SMTP_USERNAME = os.getenv("SMTP_USERNAME")
         SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-
+        print("check", KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, host, user, password, port, database,
+                    SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD)
+        
         if not all([KEYCLOAK_SERVER_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_USERNAME, KEYCLOAK_PASSWORD, KEYCLOAK_REALM, host, user, password, port, database,
                     SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD]):
             return jsonify(success=False, error="One or more .env variable is missing"), 500
@@ -1726,6 +1732,7 @@ def register():
             return jsonify(success=False, error="Failed to connect to the database"), 500
 
         cursor = db.cursor()
+        print("cursor",cursor)
 
         firstName = request.json.get("firstName")
         lastName = request.json.get("lastName")
@@ -1784,6 +1791,7 @@ def register():
         query = "SELECT * FROM user_registered WHERE email = %s AND isVerified = 1 AND isCompleted = 0"
         cursor.execute(query, (email,))
         result = cursor.fetchall()
+        print("result",result)
         if len(result) > 0:
             generate_email(status=2, token=token,
                            firstName=firstName, expiredAt=expiredAt)
