@@ -276,7 +276,7 @@ def generate_email(status, token, firstName, expiredAt):
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "TUM-HEF Account Verification"
         msg['From'] = SMTP_USERNAME
-        msg['To'] = "tumhefservicetest@gmail.com"
+        msg['To'] = SMTP_USERNAME
 
         URL = f'{SERVER_URL}/validate?token={token}'
 
@@ -317,7 +317,7 @@ def generate_email(status, token, firstName, expiredAt):
             server.starttls()
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.sendmail(
-                SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string())
+                SMTP_USERNAME,SMTP_USERNAME , msg.as_string())
 
     except Exception as err:
         print(err, flush=True)
@@ -330,12 +330,13 @@ def generate_success_email(firstName, email):
         SMTP_SERVER = os.getenv("SMTP_SERVER")
         SMTP_PORT = int(os.getenv("SMTP_PORT"))
         SMTP_USERNAME = os.getenv("SMTP_USERNAME")
-        SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+        SMTP_PASSWORD = os.getenv("SMTP_PASSWORD") 
+        USER_DEFAULT_PASSWORD=os.getenv("USER_DEFAULT_PASSWORD")
 
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "TUM-HEF Success"
         msg['From'] = SMTP_USERNAME
-        msg['To'] = "tumhefservicetest@gmail.com"  # email of the user
+        msg['To'] = SMTP_USERNAME  # email of the user
 
         html = """\
         <html>
@@ -344,7 +345,7 @@ def generate_success_email(firstName, email):
             <h2>Mr. {firstname}, thank you for registering!</h2>
             <p>Your account has been successfully created.</p>
             <p>You can access your account now.</p>
-            <p>Initial password is:  </p> <b> TUM@HEF@2023 </b>
+            <p>Initial password is:  </p> <b> {USER_DEFAULT_PASSWORD} </b>
             <p>Thank you!</p>
         </body>
         </html>
@@ -361,13 +362,13 @@ def generate_success_email(firstName, email):
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             # Here should be the user's email
             server.sendmail(
-                SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string())
+                SMTP_USERNAME, SMTP_USERNAME, msg.as_string())
 
     except Exception as err:
         print(err, flush=True)
         return jsonify(success=False, error=str(err)), 500
 
-def create_dns_and_generate_ssl(domain, email, dns_script_path="/root/dns_script/nsupdate_hef_dynamic.sh", webroot_path="/var/www/html"):
+def create_dns_and_generate_ssl(domain, email, dns_script_path=os.getenv("DNS_PATH"), webroot_path="/var/www/html"):
     """
     Runs the DNS update script with the given domain using sudo, generates a Let's Encrypt SSL certificate
     using the webroot method, and returns paths to the generated certificate and key.
@@ -383,7 +384,8 @@ def create_dns_and_generate_ssl(domain, email, dns_script_path="/root/dns_script
     """
     # Clean up the domain string
     domain = domain.replace("https://", "").replace("http://", "")
-    print(f"Cleaned domain: {domain}")
+    print(f"Cleaned domain: {domain}") 
+    
 
     # Prepare the command to run the DNS update script with sudo
     command = ['sudo', 'bash', dns_script_path, domain]
@@ -425,10 +427,10 @@ def create_dns_and_generate_ssl(domain, email, dns_script_path="/root/dns_script
             print(f"Certbot failed. Error: {result.stderr}")
     except Exception as e:
         print(f"An error occurred: {e}")
-def append_https_server_block(domain, port, nginx_conf_path="/root/keycloak-setup/nginx.conf"):
+def append_https_server_block(domain, port, nginx_conf_path=os.getenv("NGINX_PATH")):
     # Remove scheme if present in the domain
     domain = domain.replace("https://", "").replace("http://", "")
-    
+    server_ip= os.getenv("SERVER_IP")
     # Define the HTTPS server block
     https_server_block = f"""
 server {{
@@ -442,7 +444,7 @@ server {{
     ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
 
     location / {{
-        proxy_pass http://138.246.225.192:{port};
+        proxy_pass http://{server_ip}:{port};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -513,8 +515,8 @@ server {{
 
 def run_tasks_sequentially(frost_newURL, nodered_newURL, clientPORT, new_node_red_port):
     # Run tasks sequentially
-    create_dns_and_generate_ssl(frost_newURL, "tumhefservicetest@gmail.com")
-    create_dns_and_generate_ssl(nodered_newURL, "tumhefservicetest@gmail.com")
+    create_dns_and_generate_ssl(frost_newURL, os.getenv("SMTP_USERNAME"))
+    create_dns_and_generate_ssl(nodered_newURL, os.getenv("SMTP_USERNAME"))
     append_https_server_block(frost_newURL, clientPORT)
     append_https_server_block(nodered_newURL, new_node_red_port)
 
@@ -802,7 +804,7 @@ def validate_user():
         lastName = result[0][2]
         email = result[0][3]
         createdAt = result[0][24]
-        password = "TUM@HEF@2023"
+        password = os.getenv("USER_DEFAULT_PASSWORD")
 
         # Checking if token is valid based on the time that was created
 
@@ -1613,10 +1615,6 @@ def validate_user():
         # Send confirmation mail
         generate_success_email(firstName, email)
         thread = Thread(target=run_tasks_sequentially, args=(frost_newURL, nodered_newURL, clientPORT, new_node_red_port))
-        # create_dns_and_generate_ssl(frost_newURL,"tumhefservicetest@gmail.com")
-        # create_dns_and_generate_ssl(nodered_newURL,"tumhefservicetest@gmail.com")
-        # append_https_server_block(frost_newURL,clientPORT)
-        # append_https_server_block(nodered_newURL,new_node_red_port)
         thread.start()
 
         return render_template('token.html', token="Account created successfully")
@@ -2002,7 +2000,7 @@ def generate_contact_email(first_name, last_name, email, subject, details, type)
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "sensorHUB Contact - " + type + " - " + subject
         msg['From'] = SMTP_USERNAME
-        msg['To'] = "tumhefservicetest@gmail.com"
+        msg['To'] =SMTP_USERNAME
 
         html = """\
          <html>
@@ -2032,7 +2030,7 @@ def generate_contact_email(first_name, last_name, email, subject, details, type)
             server.starttls()
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.sendmail(
-                SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string())
+                SMTP_USERNAME, SMTP_USERNAME, msg.as_string())
 
     except Exception as err:
         print(err, flush=True)
@@ -2050,7 +2048,7 @@ def generate_mutation_error_log_email(keycloak_id, method, attribute,attribute_i
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "sensorHUB Mutation Error Log"
         msg['From'] = SMTP_USERNAME
-        msg['To'] = "tumhefservicetest@gmail.com"
+        msg['To'] = SMTP_USERNAME
 
         html = f"""\
             <html>
@@ -2083,7 +2081,7 @@ def generate_mutation_error_log_email(keycloak_id, method, attribute,attribute_i
             server.starttls()
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.sendmail(
-                SMTP_USERNAME, "tumhefservicetest@gmail.com", msg.as_string())
+                SMTP_USERNAME, SMTP_USERNAME, msg.as_string())
 
     except Exception as err:
         print(err, flush=True)
@@ -2322,26 +2320,6 @@ def test_db_connection():
     except Exception as e:
         # If an exception is raised, return error response
         return jsonify(success=False, error=str(e))
-@app.route('/pathcheck', methods=['GET'])
-def test_path():
-    try:
-        # Replace "node_red_storage_38" with the dynamic volume name
-        node_red_storage = "node_red_storage_38"
-        create_dns_and_generate_ssl('https://6033-frost-dev.hef.tum.de','tumhefservicetest@gmail.com')
-        # append_https_server_block('https://6023-frost-dev.hef.tum.de',6023)
-        
-        # Construct the directory path
-        directory = f"/var/lib/docker/volumes/{node_red_storage}/_data"
-        
-        # Check if the directory exists
-        if os.path.exists(directory):
-            current_path = os.getcwd()
-            return jsonify({'success': True, 'message': f'Directory {directory} exists', 'current_path': current_path})
-        else:
-            return jsonify({'success': False, 'error': f'Directory {directory} does not exist'})
-    except Exception as e:
-        return jsonify({'success': False, 'error': f"Error: {e}"})
-
  
 
     
