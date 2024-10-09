@@ -2090,10 +2090,8 @@ def generate_mutation_error_log_email(keycloak_id, method, attribute,attribute_i
         return jsonify(success=False, error=str(err)), 500
 
 
-@app.route("/send_email/contact", methods=["POST"])
-def send_email():
+def handle_request(data):
     try:
-        data = request.json
         type = data.get("type")
         subject = data.get("subject")
         details = data.get("details")
@@ -2101,13 +2099,7 @@ def send_email():
         first_name = data.get("first_name")
         last_name = data.get("last_name")
 
-        print(type, subject, details, email, first_name, last_name, flush=True)
-
-        if not all([type, subject, details, email, first_name, last_name]):
-            return jsonify(success=False, error="Inputs are missing"), 400
-
-        generate_contact_email(first_name, last_name,
-                               email, subject, details, type)
+        generate_contact_email(first_name, last_name, email, subject, details, type)
 
         DATABASE_HOST = os.getenv("DATABASE_HOST")
         DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
@@ -2115,19 +2107,33 @@ def send_email():
         DATABASE_PORT = int(os.getenv("DATABASE_PORT"))
         DATABASE_NAME = os.getenv("DATABASE_NAME")
 
-        # Try to connect to the database
-        db = pymysql.connect(host=DATABASE_HOST, port=DATABASE_PORT,
-                             user=DATABASE_USERNAME, password=DATABASE_PASSWORD, database=DATABASE_NAME)
-
-        # Check if the connection to the database was successful
-        if db is None:
-            return jsonify(success=False, error="Failed to connect to the database"), 500
+        db = pymysql.connect(
+            host=DATABASE_HOST,
+            port=DATABASE_PORT,
+            user=DATABASE_USERNAME,
+            password=DATABASE_PASSWORD,
+            database=DATABASE_NAME
+        )
 
         cursor = db.cursor()
         query = "INSERT INTO contact_form (type, subject, details, email, first_name, last_name) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(
-            query, (type, subject, details, email, first_name, last_name))
+        cursor.execute(query, (type, subject, details, email, first_name, last_name))
         db.commit()
+
+        cursor.close()
+        db.close()
+    except Exception as e:
+        print(e, flush=True)
+
+@app.route("/send_email/contact", methods=["POST"])
+def send_email():
+    try:
+        data = request.json
+        if not all([data.get(key) for key in ["type", "subject", "details", "email", "first_name", "last_name"]]):
+            return jsonify(success=False, error="Inputs are missing"), 400
+
+        # Start a thread for handling email generation and database insertion
+        Thread(target=handle_request, args=(data,)).start()
 
         return jsonify(success=True), 200
     except Exception as e:
