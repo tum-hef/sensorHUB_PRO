@@ -87,14 +87,14 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 
 #### Cloning Backend from GitHub
 
-    git clone https://github.com/HEFLoRa/KEYCLOAK_SERVICES
+    git clone https://github.com/HEFLoRa/sensorHUB_LITE
 
-    cd KEYCLOAK_SERVICES
+    cd sensorHUB_LITE
   
     
-Run the Initial queries  `KEYCLOAK_SERVICES/initial_queries.sql` on the DB instance you created.
+Run the Initial queries  `sensorHUB_LITE/initial_queries.sql` on the DB instance you created.
 
-Inside the the KEYCLOAK_SERVICES folder, create a new file `.env` for env variables, you also follow `.env example`
+Inside the the sensorHUB_LITE folder, create a new file `.env` for env variables, you also follow `.env example`
 
 ```
 ROOT_URL= (e.g. http://tuzehez-sensors.srv.mwn.de)
@@ -109,6 +109,7 @@ SMTP_SERVER=
 SMTP_PORT=
 SMTP_USERNAME=
 SMTP_PASSWORD=
+SMTP_ROOT_PASSWORD= (e.g Test@123 this will be default password when creating user afterwards user had to change it )
 
 DATABASE_HOST=
 DATABASE_USERNAME=
@@ -128,11 +129,35 @@ sudo ufw allow out from any to any
   
 The provided commands configure the firewall to allow all incoming and outgoing traffic on any port from any source or to any destination. This effectively opens up the firewall, allowing unrestricted communication to and from the system. This allows to allow traffic in created ports for NodeRED and FROST.
 
-    docker build -t hefsensorhub_image_backend .
-    docker run -d -p 4500:4500 --env-file .env --name HEFsensorHUB_container_backend -v /var/run/docker.sock:/var/run/docker.sock --restart always hefsensorhub_image_backend
+### Deploying sensorHUB_LITE
 
-  
-The first command builds a Docker image named `hefsensorhub_image_backend` from the Dockerfile in the current directory. The second command runs a detached Docker container named `HEFsensorHUB_container_backend` based on the `hefsensorhub_image_backend` image, mapping port 4500, using environment variables from a file (`.env`), and allowing interaction with the host's Docker daemon through a volume mount. The container restarts automatically.
+Create a systemd service file: Generate a service file for your sensorHUB_LITE:
+sudo nano /etc/systemd/system/sensorHUB_LITE.service
+
+Add the following configuration: Save the configuration below in the service file, then press Ctrl + O, hit Enter, and finally press Ctrl + X to exit.
+
+[Unit]
+Description=sensorHUB_LITE
+After=network.target
+
+[Service]
+WorkingDirectory=/root/sensorHUB_LITE
+ExecStart=/usr/bin/python3 /root/sensorHUB_LITE/index.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+Reload the systemd daemon: Run the following command to reload the systemd configuration:
+sudo systemctl daemon-reload
+
+Restart the Flask application: Start your Flask application with the new configuration:
+sudo systemctl restart sensorHUB_LITE
+
+Check the running status: Verify the status of your Flask application:
+systemctl status my_flask_app
+    
 
 
 ### Running Frontend
