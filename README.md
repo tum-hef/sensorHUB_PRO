@@ -133,11 +133,11 @@ The provided commands configure the firewall to allow all incoming and outgoing 
 
 Create a systemd service file: Generate a service file for your sensorHUB_LITE:
 
-  `sudo nano /etc/systemd/system/sensorHUB_LITE.service`
+ ```sudo nano /etc/systemd/system/sensorHUB_LITE.service`  ```
 
 Add the following configuration: Save the configuration below in the service file, then press Ctrl + O, hit Enter, and finally press Ctrl + X to exit.
 
-``
+```
 [Unit]
 Description=sensorHUB_LITE
 After=network.target
@@ -150,7 +150,7 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-``
+```
 
 Reload the systemd daemon: Run the following command to reload the systemd configuration:
 sudo systemctl daemon-reload
