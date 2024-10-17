@@ -132,7 +132,8 @@ The provided commands configure the firewall to allow all incoming and outgoing 
 ### Deploying sensorHUB_LITE
 
 Create a systemd service file: Generate a service file for your sensorHUB_LITE:
-sudo nano /etc/systemd/system/sensorHUB_LITE.service
+
+  sudo nano /etc/systemd/system/sensorHUB_LITE.service
 
 Add the following configuration: Save the configuration below in the service file, then press Ctrl + O, hit Enter, and finally press Ctrl + X to exit.
 
