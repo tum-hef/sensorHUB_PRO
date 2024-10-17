@@ -87,9 +87,9 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 
 #### Cloning Backend from GitHub
 
-    `git clone https://github.com/HEFLoRa/sensorHUB_LITE`
+  ```git clone https://github.com/HEFLoRa/sensorHUB_LITE ```
 
-    cd sensorHUB_LITE
+   ``` cd sensorHUB_LITE```
   
     
 Run the Initial queries  `sensorHUB_LITE/initial_queries.sql` on the DB instance you created.
@@ -153,13 +153,14 @@ WantedBy=multi-user.target
 ```
 
 Reload the systemd daemon: Run the following command to reload the systemd configuration:
-sudo systemctl daemon-reload
+
+``` sudo systemctl daemon-reload ```
 
 Restart the Flask application: Start your Flask application with the new configuration:
-sudo systemctl restart sensorHUB_LITE
+``` sudo systemctl restart sensorHUB_LITE ```
 
 Check the running status: Verify the status of your Flask application:
-systemctl status my_flask_app
+``` systemctl status sensorHUB_LITE```
     
 
 
