@@ -1,4 +1,4 @@
 .env
 .env.dev
-__pycache__
+__pycache__/
 flask.log
