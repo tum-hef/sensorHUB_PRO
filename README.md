@@ -87,7 +87,7 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 
 #### Cloning Backend from GitHub
 
-    git clone https://github.com/HEFLoRa/sensorHUB_LITE
+    `git clone https://github.com/HEFLoRa/sensorHUB_LITE`
 
     cd sensorHUB_LITE
   
