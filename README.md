@@ -89,7 +89,9 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 
   ```git clone https://github.com/HEFLoRa/sensorHUB_LITE ```
 
-   ``` cd sensorHUB_LITE```
+   ```
+ cd sensorHUB_LITE
+   ```
   
     
 Run the Initial queries  `sensorHUB_LITE/initial_queries.sql` on the DB instance you created.
