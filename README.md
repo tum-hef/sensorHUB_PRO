@@ -21,7 +21,8 @@ The sensorHUB technology stack comprises the following components:
 6.  **NodeRED**, integrated into the stack, enhances the overall functionality and connectivity of the application.
 
 
-![iot_stack_concept_finals2](https://github.com/user-attachments/assets/193af270-2ce4-46eb-857d-b68b87c6632f)
+![iot_stack_concept_v11](https://github.com/user-attachments/assets/30ca3929-fc20-429e-bf59-9ab4172723df)
+
 
 ## Changes and Updates
 
