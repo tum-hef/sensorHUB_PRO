@@ -189,7 +189,7 @@ Change directory to the `WEB_APP` folder
 
 Creating a file `.env`
 
-	
+    NODE_ENV="development"   # for LITE-version; when in PRO mode replace it with production
     REACT_APP_KEYCLOAK_URL=
     REACT_APP_KEYCLOAK_REALM=
     REACT_APP_KEYCLOAK_CLIENT_ID=
