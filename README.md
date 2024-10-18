@@ -40,7 +40,7 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
 
   #### Installing Keycloak and running it from docker
 
-     docker run -d --name keycloak --restart=always -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true jboss/keycloak
+     docker run -d --name keycloak --restart=always -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true jboss/keycloak:23.0.6
 -   `docker run`: This is the command to run a Docker container.
 -   `-d`: This flag stands for "detached" mode, which means the container runs in the background.
 -   `--name keycloak`: This flag assigns the name "keycloak" to the running container.
