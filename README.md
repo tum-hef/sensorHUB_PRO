@@ -48,7 +48,7 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
 -   `-p 8080:8080`: This flag maps port 8080 on the host machine to port 8080 on the container. Port 8080 is typically used for accessing Keycloak's web interface.
 -   `-e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin`: These environment variables set the username and password for the initial Keycloak administrator account. In this case, the username is "admin" and the password is also "admin."
 -   `-e PROXY_ADDRESS_FORWARDING=true`: This environment variable is set to "true" and is related to handling proxy address forwarding. It is often used when Keycloak is running behind a reverse proxy.
--   `jboss/keycloak`: This is the name of the Docker image that will be used to create the container. It specifies the official Keycloak Docker image provided by the JBoss organization.
+-   `jboss/keycloak:23.0.6`: This is the name of the Docker image and 23.0.6 is the version that will be used to create the container. It specifies the official Keycloak Docker image provided by the JBoss organization.
 
 
   
