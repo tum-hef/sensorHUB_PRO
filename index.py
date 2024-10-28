@@ -244,19 +244,25 @@ def create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCL
 
 
 
-def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,nodered_newURL):
+def replace_settings_file(node_red_storage, clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,container_node_red_id):
     # Construct the mountpoint using the provided volume name
-    mountpoint = subprocess.check_output(f"docker volume inspect {node_red_storage} --format='{{{{.Mountpoint}}}}'", shell=True, text=True).strip()
-
-    # Construct the full path to the settings file
-    settings_file_path = f"{mountpoint}/settings.js"
-
-    new_file_content = create_node_red_new_settings_file(
-        clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,)
-
-    # Write new_file_content to the settings file
-    with open(settings_file_path, "w") as settings_file:
-        settings_file.write(new_file_content)
+    new_file_content = create_node_red_new_settings_file(clientID, clientSecret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL)
+    command = f"echo '{new_file_content}' > /data/settings.js"
+    try:
+        subprocess.run(
+            [
+                "docker",
+                "exec",
+                container_node_red_id,  # Name of the running container
+                "sh",
+                "-c",
+                command  # Execute the echo command in the container's shell
+            ],
+            check=True  # Raise an error if the command fails
+        )
+        print(f"Successfully replaced /data/settings.js in the container {container_node_red_id}.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error writing to settings.js: {e}")
 
 def generate_email(status, token, firstName, expiredAt):
     try:
