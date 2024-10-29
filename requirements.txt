@@ -6,3 +6,5 @@ python-dotenv
 Werkzeug==2.2.2
 cryptography==2.8
 pyopenssl
+aiohttp
+Flask[async]
