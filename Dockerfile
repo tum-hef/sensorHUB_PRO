@@ -5,9 +5,18 @@ FROM python:3.9
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update \
-    && apt-get install -y curl ldap-utils \
-    && rm -rf /var/lib/apt/lists/*
+# Install dnsutils for nsupdate and clean up after installation
+RUN apt-get update && \
+    apt-get install -y dnsutils && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install sudo
+RUN apt-get update && apt-get install -y sudo    
+
+# Install Certbot
+RUN apt-get update && apt-get install -y certbot
+
+
 
 # Install Docker Compose
 RUN curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \

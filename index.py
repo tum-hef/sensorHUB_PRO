@@ -389,6 +389,7 @@ def create_dns_and_generate_ssl(domain, email, dns_script_path=os.getenv("DNS_PA
     dict: A dictionary containing status and paths to the certificate and key, or error messages.
     """
     # Clean up the domain string
+    print("dns script path",dns_script_path)
     domain = domain.replace("https://", "").replace("http://", "")
     print(f"Cleaned domain: {domain}") 
     
@@ -420,7 +421,11 @@ def create_dns_and_generate_ssl(domain, email, dns_script_path=os.getenv("DNS_PA
             '--domain', domain,
             '--email', 'your-email@example.com',  # Replace with your email
             '--agree-tos',
-            '--non-interactive'
+            '--non-interactive',
+            '--config-dir',
+            '/etc/letsencrypt',
+            '--logs-dir',
+            '/var/log/letsencrypt'
         ]
         print("letsenrcypt command",command)
         # Run the certbot command
@@ -436,6 +441,7 @@ def create_dns_and_generate_ssl(domain, email, dns_script_path=os.getenv("DNS_PA
 def append_https_server_block(domain, port, nginx_conf_path=os.getenv("NGINX_PATH")):
     # Remove scheme if present in the domain
     domain = domain.replace("https://", "").replace("http://", "")
+    print("domain for nginx config",domain)
     server_ip= os.getenv("SERVER_IP")
     # Define the HTTPS server block
     https_server_block = f"""
@@ -494,8 +500,6 @@ server {{
         port_str = str(port)
         
         # Allow the port in the firewall
-        subprocess.run(['sudo', 'ufw', 'allow', port_str], check=True)
-        print("Firewall rule added for port", port_str)
         
         # Test Nginx configuration
         subprocess.run([
@@ -1573,7 +1577,7 @@ def validate_user():
         print(new_clientId_node_red + " TEST ", flush=True)
 
         replace_settings_file(node_red_name_storage_name,
-                              new_clientId_node_red, node_red_client_secret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email, ROOT_URL,nodered_newURL)
+                              new_clientId_node_red, node_red_client_secret, callbackURL, KEYCLOAK_SERVER_URL, KEYCLOAK_REALM, email,nodered_newURL,container_node_red_id)
 
         # Successful settings.js update
         query = "UPDATE user_registered SET node_red_replace_settings = 1 WHERE token = %s;"
