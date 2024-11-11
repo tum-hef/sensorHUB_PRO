@@ -1,4 +1,10 @@
 yml_files/*
 .env
+.env.dev
+.env.save
+.env.save.1
+.env.save.2
+.env.save.3
+*venv/
 # Ignore all flask.log files in the project
 flask.log
