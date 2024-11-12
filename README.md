@@ -38,6 +38,9 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
 
 ### Setting up Certbot for Let's Encrypt
 Certbot is a free and open-source tool that simplifies obtaining SSL/TLS certificates from Let’s Encrypt.
+    ``` sudo apt update
+sudo apt install certbot 
+```
 
 ### Running Keycloak 
   #### Creating common network for focker 
