@@ -40,7 +40,13 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
 ### Certbot is a free and open-source tool that simplifies obtaining SSL/TLS certificates from Let’s Encrypt.
     sudo apt update
     sudo apt install certbot
-
+### Obtain Certificate for the sensorHUB PRO
+    sudo certbot certonly --manual -d example.com -d  example.com
+-   `sudo`: Runs the command with superuser privileges, allowing Certbot to save the SSL certificate files to system directories.
+-   `certbot`: The main tool for requesting and managing SSL certificates from Let’s Encrypt.
+-   `--manual`: Specifies manual mode, which requires you to manually create DNS records to verify domain ownership. This is often used when automated DNS API integration is not available or when requesting a wildcard certificate.
+-   `-d example.com`: Obtains a certificate for the main domain example.com.
+  
 
         
 
