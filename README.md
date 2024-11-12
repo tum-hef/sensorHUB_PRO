@@ -37,7 +37,7 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
 ## Compiling
 
 ### Setting up Certbot for Let's Encrypt
-    Certbot is a free and open-source tool that simplifies obtaining SSL/TLS certificates from Let’s Encrypt.
+Certbot is a free and open-source tool that simplifies obtaining SSL/TLS certificates from Let’s Encrypt.
 
 ### Running Keycloak 
   #### Creating common network for focker 
