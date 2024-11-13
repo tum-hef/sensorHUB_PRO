@@ -54,7 +54,50 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
         
 
 ### Running Keycloak 
-      
+  #### Create a nginx.conf file and add the following configurations in it.
+```
+worker_processes auto;
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+        listen 80;
+        server_name keycloak.example.com;
+
+        # Redirect HTTP to HTTPS
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen 443 ssl;
+        server_name keycloak.example.com;
+
+        ssl_certificate "/etc/letsencrypt/live/keycloak.example.com/fullchain.pem";
+        ssl_certificate_key "/etc/letsencrypt/live/keycloak.example.com/privkey.pem";
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
+
+        location / {
+            proxy_pass http://keycloak:8080;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}
+```
+-   `Worker and Connection Settings`: worker_processes auto; and worker_connections 1024; optimize NGINX for better performance.
+-   `HTTP and HTTPS Configuration`: Redirects HTTP (port 80) to HTTPS (port 443) for security.Uses SSL certificates and TLS protocols (1.2 and 1.3) for encrypted connections.
+-   `Proxying to Keycloak`: proxy_pass http://keycloak:8080; forwards requests to Keycloak.Headers: Adds headers to retain client IP and protocol info (X-Real-IP, X-Forwarded-For, X-Forwarded-Proto).
+
   #### Installing Keycloak and running it from docker. Create a docker-compose.yaml file.
    ```
 version: "2.3"
@@ -99,7 +142,7 @@ services:
       KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
       KC_PROXY: edge
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin_password
+      KEYCLOAK_ADMIN_PASSWORD: admin
       KEYCLOAK_FRONTEND_URL: https://my-keycloak-domain.com
 
   nginx:
@@ -130,15 +173,6 @@ networks:
   
 The provided Docker command runs a Keycloak container in detached mode, naming it "keycloak," ensuring automatic restarts, mapping host port 8080 to the container's port 8080, setting the initial admin credentials to admin/admin (**for security purpose, please change the default password**), and enabling proxy address forwarding. The container is based on the official Keycloak Docker image (`quay.io/keycloak/keycloak`).
 
-#### Removing HTTPs (Optional and NOT recommended)
-
-`contaierID` - container ID of the keycloak
-
-    docker exec -it {contaierID} bash
-    cd /opt/keycloak/bin
-    ./kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin
-    (Enter your password that you typed in the arguments of running keycloak on the first step)
-    ./kcadm.sh update realms/master -s sslRequired=NONE
 
  1. Create new realm (Or use Master)
  2. Create a new client, in the `clientI ID`, put the name of the client the you are going to use e.g. `hefSensorHub_production`
