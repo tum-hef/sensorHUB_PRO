@@ -173,6 +173,8 @@ networks:
   
 The provided Docker command runs a Keycloak container in detached mode, naming it "keycloak," ensuring automatic restarts, mapping host port 8080 to the container's port 8080, setting the initial admin credentials to admin/admin (**for security purpose, please change the default password**), and enabling proxy address forwarding. The container is based on the official Keycloak Docker image (`quay.io/keycloak/keycloak`).
 
+#### Running the docker-compose.yaml file.
+    docker-compose up -d
 
  1. Create new realm (Or use Master)
  2. Create a new client, in the `clientI ID`, put the name of the client the you are going to use e.g. `hefSensorHub_production`
