@@ -137,13 +137,13 @@ services:
       KC_DB_URL_DATABASE: keycloak_db
       KC_DB_USERNAME: keycloak_user
       KC_DB_PASSWORD: keycloak_password
-      KC_HOSTNAME_URL: https://my-keycloak-domain.com
+      KC_HOSTNAME_URL: https:/keycloak.example.com
       KC_HOSTNAME_STRICT_HTTPS: "true"
       KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
       KC_PROXY: edge
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KEYCLOAK_FRONTEND_URL: https://my-keycloak-domain.com
+      KEYCLOAK_FRONTEND_URL: https:/keycloak.example.com
 
   nginx:
     image: nginx:latest
