@@ -199,10 +199,10 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 
 #### Cloning Backend from GitHub
 
-  ```git clone https://github.com/HEFLoRa/sensorHUB_LITE ```
+  ```git clone https://github.com/HEFLoRa/sensorHUB_PRO ```
 
    ```
- cd sensorHUB_LITE
+ cd sensorHUB_PRO
    ```
   
     
@@ -223,14 +223,17 @@ SMTP_SERVER=
 SMTP_PORT=
 SMTP_USERNAME=
 SMTP_PASSWORD=
-SMTP_ROOT_PASSWORD= (e.g Test@123 this will be default password when creating user afterwards user had to change it )
-
 DATABASE_HOST=
 DATABASE_USERNAME=
 DATABASE_PASSWORD=
 DATABASE_PORT=
 DATABASE_NAME=
-
+USER_DEFAULT_PASSWORD= (e.g Test@123 this will be default password when creating user afterwards user had to change it.)
+DNS_PATH= (Path for the dns script to create new text records on server.)
+NGINX_PATH = (Path of nginx.conf file that we created earlier.)
+SERVER_IP = (root IP of server)
+NODERED_URL = (URL format for node-red applications e.g node-red.hef.tum.de. Later node-red port such as 2001-node-red.hef.tum.de will be added.)
+FROST_URL =(URL format for Frost Servers e.g frost.hef.tum.de. Later frost port such as 6003-frost.hef.tum.de will be added.)
 # FLUSK Service
 SERVER_URL= (e.g http://tuzehez-sensors.srv.mwn.de:4500) 
 ```
