@@ -246,7 +246,7 @@ sudo ufw allow out from any to any
   
 The provided commands configure the firewall to allow all incoming and outgoing traffic on any port from any source or to any destination. This effectively opens up the firewall, allowing unrestricted communication to and from the system. This allows to allow traffic in created ports for NodeRED and FROST.
 
-### Deploying sensorHUB_LITE
+### Deploying sensorHUB_PRO
 
 Create image from the docker file inside repository
 ```
