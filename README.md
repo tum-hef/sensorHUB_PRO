@@ -257,7 +257,7 @@ docker build -t sensorhub_pro .
 Running the container
 ```
 
-docker run --network host -u root -d -p 4500:4500 --env-file .env --name sensorhub_pro  -v /var/run/docker.sock:/var/run/docker.sock  -v /root/dns_script:/app/dns_script  -v /root/nginx.conf:/app/nginx.conf -v /etc/letsencrypt:/etc/letsencrypt  --restart always sensorhub_pro  ```
+docker run --network host -u root -d -p 4500:4500 --env-file .env --name sensorhub_pro  -v /var/run/docker.sock:/var/run/docker.sock  -v /root/dns_script:/app/dns_script  -v /root/nginx.conf:/app/nginx.conf -v /etc/letsencrypt:/etc/letsencrypt  --restart always sensorhub_pro 
 ```
 -   `docker run`: Runs a Docker container from an image.
 -   `--network host`: Connects the container directly to the host’s network, giving it access to the same network interfaces as the host. Useful for services needing direct host network access.
