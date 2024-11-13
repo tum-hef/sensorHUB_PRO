@@ -178,7 +178,7 @@ The provided Docker command runs a Keycloak container in detached mode, naming i
 
  1. Create new realm (Or use Master)
  2. Create a new client, in the `clientI ID`, put the name of the client the you are going to use e.g. `hefSensorHub_production`
- 3. In the Root URL, please use the frontend URL (also port if you are using it/or you can use dev URL `e.g. http://localhost:3000`
+ 3. In the Root URL, please use the frontend URL (also port if you are using it/or you can use dev URL `e.g. https://sensorhubpro.example.com`
 
 ### Running a MySQL instance and cloning Backend
 
@@ -213,7 +213,7 @@ Inside the the sensorHUB_LITE folder, create a new file `.env` for env variables
 ```
 ROOT_URL= (e.g. http://tuzehez-sensors.srv.mwn.de)
 
-KEYCLOAK_SERVER_URL= (e.g. Keycloak URL http://tuzehez-sensors.srv.mwn.de:8080) 
+KEYCLOAK_SERVER_URL= (e.g. Keycloak URL https:/keycloak.example.com) 
 KEYCLOAK_CLIENT_ID= (client ID registered in keycloak)
 KEYCLOAK_USERNAME= (username created in keycloak)
 KEYCLOAK_PASSWORD= (password created in keycloak)
@@ -277,7 +277,11 @@ docker run --network host -u root -d -p 4500:4500 --env-file .env --name sensorh
 #### Cloning the Frontend From GitHub
 
     git clone https://github.com/HEFLoRa/WEB_APP.git
+    
+#### Obtain Certificate for the sensorHUB PRO
+    sudo certbot certonly --manual -d sensorhubpro.example.com
 
+    git clone https://github.com/HEFLoRa/WEB_APP.git
 
 ### Filling the ENV variables
 
@@ -285,10 +289,12 @@ Change directory to the `WEB_APP` folder
 
 Creating a file `.env`
  
-    REACT_APP_IS_DEVELOPMENT=true  # for LITE-version; when in PRO mode replace it with false
+    REACT_APP_IS_DEVELOPMENT=false  # for PRO-version; when in LIte mode replace it with true
     REACT_APP_KEYCLOAK_URL=
     REACT_APP_KEYCLOAK_REALM=
     REACT_APP_KEYCLOAK_CLIENT_ID=
+    REACT_APP_FROST_URL=  Frost Url that we defined in our sensorhub PRO application
+    REACT_APP_NODERED_URL=Node-red Url that we defined in our sensorhub PRO application
     REACT_APP_BACKEND_URL=
     REACT_APP_BACKEND_URL_ROOT=
     REACT_APP_GOOGLE_ANALYTICS_ID=
