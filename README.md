@@ -2,7 +2,7 @@
 # sensorHUB - PRO Version
 The sensorHUB software is a novel, open-source software stack for enhanced accessibility and secure interoperability in IoT project management. It is developed by Technical University of Munich's (TUM) Hans Eisenmann-Forum for Agricultural Sciences (HEF). For more background details see https://github.com/tum-hef/sensorHUB/ and the related publication [sensorHUB – a Novel, Open-source Software Stack for Enhanced Accessibility and Secure Interoperability in IoT Project Management](10.5194/isprs-archives-xlviii-4-2024-197-2024).
 
-This repository presents the sensorHUB's PRO version, which in contrast to the Pro version (provided in a separate repository: [sensorHUB_PRO](https://github.com/HEFLoRa/sensorHUB_PRO) is only based on HTTP-network communication without operationally oriented domain-specific adresses and SSL-enhancement. 
+This repository presents the sensorHUB's PRO version, which in contrast to the Lite version (provided in a separate repository: [sensorHUB_Lite](https://github.com/HEFLoRa/sensorHUB_Lite) is only based on HTTP-network communication without operationally oriented domain-specific adresses and SSL-enhancement. 
 
 
 ## Conceptual Overview
