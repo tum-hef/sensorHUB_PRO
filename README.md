@@ -55,9 +55,74 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
 
 ### Running Keycloak 
   #### Creating common network for focker 
-     docker network create sensorhub_lite
+     docker network create sensorhub_pro
       
-  #### Installing Keycloak and running it from docker
+  #### Installing Keycloak and running it from docker. Create a docker-compose.yaml file.
+   ```
+version: "2.3"
+
+services:
+  postgres:
+    image: postgres:16.0
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - keycloak-network
+    environment:
+      POSTGRES_USER: keycloak_user
+      POSTGRES_PASSWORD: keycloak_password
+      POSTGRES_DB: keycloak_db
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.6
+    container_name: keycloak
+    restart: always
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    depends_on:
+      - postgres
+    command:
+      - start
+    networks:
+      - keycloak-network
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: keycloak_db
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_PASSWORD: keycloak_password
+      KC_HOSTNAME_URL: https://my-keycloak-domain.com
+      KC_HOSTNAME_STRICT_HTTPS: "true"
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
+      KC_PROXY: edge
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_password
+      KEYCLOAK_FRONTEND_URL: https://my-keycloak-domain.com
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - keycloak
+    networks:
+      - keycloak-network
+
+networks:
+  keycloak-network:
+    driver: bridge
+
+```     
 
      docker run -d --name keycloak --network=sensorhub_lite --restart=always -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true quay.io/keycloak/keycloak:23.0.6 start-dev
 -   `docker run`: This is the command to run a Docker container.
