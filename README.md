@@ -303,16 +303,16 @@ Creating a file `.env`
   #### Building the frontend
   
 
-    docker build -t hefsensorhub_image_frontend .
-    docker run -p 3000:3000 --env-file .env --name hefsensorhub_container_frontend -d --restart always hefsensorhub_image_frontend
+    docker build -t hefsensorhub_pro_frontend .
+    docker run -p 3000:3000 --env-file .env --name hefsensorhub_pro_frontend -d --restart always hefsensorhub_pro_frontend
 
 -   `docker run`: This is the command to run a Docker container.
 -   `-p 3000:3000`: This flag maps port 3000 on the host machine to port 3000 on the container. It establishes a communication bridge between the host and the container.
 -   `--env-file .env`: This flag specifies an environment file (`.env`) to provide environment variables to the container. The file likely contains configuration settings needed by the frontend application.
--   `--name hefsensorhub_container_frontend`: This flag assigns the name "hefsensorhub_container_frontend" to the running container.
+-   `--name hefsensorhub_pro_frontend`: This flag assigns the name "hefsensorhub_pro_frontend" to the running container.
 -   `-d`: This flag runs the container in detached mode, meaning it runs in the background.
 -   `--restart always`: This flag ensures that the container restarts automatically if it stops unexpectedly.
--   `hefsensorhub_image_frontend`: This is the name of the Docker image to use for creating the container. It indicates that the container is based on the specified Docker image, presumably containing the frontend application.
+-   `hefsensorhub_pro_frontend`: This is the name of the Docker image to use for creating the container. It indicates that the container is based on the specified Docker image, presumably containing the frontend application.
 
 
 Now the application should run on port `3000`.
