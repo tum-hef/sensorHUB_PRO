@@ -250,18 +250,28 @@ The provided commands configure the firewall to allow all incoming and outgoing 
 
 Create image from the docker file inside repository
 ```
-docker build -t sensorhub_lite .
+docker build -t sensorhub_pro .
 
 ```
 
 Running the container
 ```
 
-docker run --network=sensorhub_lite -u root -d -p 4500:4500 --env-file .env --name sensorhub_lite_container  -v /var/run/docker.sock:/var/run/docker.sock --restart always sensorhub_lite ```
+docker run --network host -u root -d -p 4500:4500 --env-file .env --name sensorhub_pro  -v /var/run/docker.sock:/var/run/docker.sock  -v /root/dns_script:/app/dns_script  -v /root/nginx.conf:/app/nginx.conf -v /etc/letsencrypt:/etc/letsencrypt  --restart always sensorhub_pro  ```
 ```
-    
-
-
+-   `docker run`: Runs a Docker container from an image.
+-   `--network host`: Connects the container directly to the host’s network, giving it access to the same network interfaces as the host. Useful for services needing direct host network access.
+-   `-u root`:  Runs the container as the root user inside the container, allowing it to perform tasks requiring elevated privileges.
+-   `-d`:  Runs the container in "detached" mode, so it continues running in the background.
+-   `-p 4500:4500`:  Maps port 4500 on the host machine to port 4500 in the container, making it accessible from the host on that port.
+-   `--env-file .env`: Loads environment variables from a .env file, which is used to configure settings inside the container.
+-   `--name sensorhub_pro`: Assigns the name "sensorhub_backend" to the container, making it easier to reference in future commands.
+-   `-v /var/run/docker.sock:/var/run/docker.sock`: Mounts the Docker socket from the host to the container, allowing the container to manage Docker on the host (useful for scenarios needing access to Docker commands).
+-   `-v /root/dns_script:/app/dns_script`: Mounts the dns_script directory from the host to /app/dns_script in the container, providing the container access to the DNS script.
+-   `-v /root/nginx.conf:/app/nginx.conf`: Mounts the nginx.conf file from the host to /app/nginx.conf in the container, so the container can use this specific NGINX configuration
+-   `-v /etc/letsencrypt:/etc/letsencrypt`: Mounts the Let's Encrypt SSL certificates from the host to the container, allowing access to SSL files for HTTPS configuration.
+-   `--restart always`: Configures the container to restart automatically if it stops, ensuring it remains available.
+-   `sensorhub_pro`: Specifies the name of the Docker image to create the container from.
 ### Running Frontend
 
 #### Cloning the Frontend From GitHub
