@@ -54,8 +54,6 @@ You can read more in our [contribution guidelines](CONTRIBUTING.md).
         
 
 ### Running Keycloak 
-  #### Creating common network for focker 
-     docker network create sensorhub_pro
       
   #### Installing Keycloak and running it from docker. Create a docker-compose.yaml file.
    ```
@@ -71,7 +69,7 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
     networks:
-      - keycloak-network
+      - sensorhub_pro
     environment:
       POSTGRES_USER: keycloak_user
       POSTGRES_PASSWORD: keycloak_password
@@ -89,7 +87,7 @@ services:
     command:
       - start
     networks:
-      - keycloak-network
+      - sensorhub_pro
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: postgres
@@ -116,26 +114,18 @@ services:
     depends_on:
       - keycloak
     networks:
-      - keycloak-network
+      - sensorhub_pro
 
 networks:
-  keycloak-network:
+  sensorhub_pro:
     driver: bridge
 
 ```     
 
-     docker run -d --name keycloak --network=sensorhub_lite --restart=always -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true quay.io/keycloak/keycloak:23.0.6 start-dev
--   `docker run`: This is the command to run a Docker container.
--   `-d`: This flag stands for "detached" mode, which means the container runs in the background.
--   `--name keycloak`: This flag assigns the name "keycloak" to the running container.
--   `--network`: This flag assigns the network to the running container.
--   `--restart always`: This flag ensures that the container automatically restarts if it stops unexpectedly.
--   `-p 8080:8080`: This flag maps port 8080 on the host machine to port 8080 on the container. Port 8080 is typically used for accessing Keycloak's web interface.
--   `-e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin`: These environment variables set the username and password for the initial Keycloak administrator account. In this case, the username is "admin" and the password is also "admin."
--   `-e PROXY_ADDRESS_FORWARDING=true`: This environment variable is set to "true" and is related to handling proxy address forwarding. It is often used when Keycloak is running behind a reverse proxy.
--   `quay.io/keycloak/keycloak:23.0.6`: This is the name of the Docker image and 23.0.6 is the version that will be used to create the container. It specifies the official Keycloak Docker image provided by the quay organization.
--   `start-dev`: This is used because we are using it in HTTP meanwhile start is used for HTTPS.
-
+-   `PostgreSQL Service`: Provides the database backend for Keycloak.Uses the official postgres:16.0 Docker image.Data is stored in a ./data volume on the host for persistence.Ports are exposed for database access.
+-   `Keycloak Service`: Runs Keycloak using quay.io/keycloak/keycloak:23.0.6.Connects to the PostgreSQL database, with database credentials configured in environment variables.Accessible on ports 8080 (HTTP) and 8443 (HTTPS).Configured with admin credentials and URL variables.
+-   `NGINX Service`: Acts as a reverse proxy for Keycloak, managing incoming HTTP and HTTPS requests.Uses a custom nginx.conf for configuration.SSL certificates are stored in /etc/letsencrypt, with NGINX managing SSL termination.
+-   `Networks`: All services are connected on the sensorhub_pro (bridge driver) for isolated communication.
 
   
 The provided Docker command runs a Keycloak container in detached mode, naming it "keycloak," ensuring automatic restarts, mapping host port 8080 to the container's port 8080, setting the initial admin credentials to admin/admin (**for security purpose, please change the default password**), and enabling proxy address forwarding. The container is based on the official Keycloak Docker image (`quay.io/keycloak/keycloak`).
